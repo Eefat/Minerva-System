@@ -1,0 +1,31 @@
+﻿@model MinervaSystem.Base.Models.HeaderContentModel
+ <!-- Content Header (Page header) -->
+<section class="content-header">
+    @if (!string.IsNullOrEmpty(Model.PageTitle))
+    {
+        <h1>
+            @Model.PageTitle
+            @if (!string.IsNullOrEmpty(Model.PageTitle))
+                {
+                <small>@Model.SmallDescription</small>
+            }
+        </h1>
+    }
+    @if (Model.Breadcrumb != null)
+    {
+        <ol class="breadcrumb">
+            <li><a href="@Model.Breadcrumb.Root.Url"><i class="fa fa-dashboard"></i>@Model.Breadcrumb.Root.Text</a></li>
+            @if (Model.Breadcrumb.Links != null)
+            {
+                foreach (var link in Model.Breadcrumb.Links)
+                {
+                    <li><a href="@link.Url">@link.Text</a></li>
+                }
+            }
+            <li class="active">@Model.Breadcrumb.ActiveText</li>
+        </ol>
+    }
+</section>
+
+
+

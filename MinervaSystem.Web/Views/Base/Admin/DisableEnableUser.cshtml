@@ -1,0 +1,65 @@
+﻿@using MinervaSystem.Base.Models;
+
+@{
+    ViewBag.ReturnUrl = "/Admin";
+    @Styles.Render("~/Content/kendo.office365")
+
+    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Disable Enable User",
+        new BreadcrumbModel("Disable Enable User", new List<LinkModel>() { new LinkModel("/Admin", "Site Actions") }));
+}
+
+@Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
+
+<div id="placeHolder-main">
+    <div class="col-md-6 panel panel-default">
+        <div class="panel-body">
+		<label class="control-label">Inactive Users:</label><br />
+            <select class="form-control" id="ddlDisabledUsers">
+                @foreach (var user in MinervaSystem.Base.ContextPerRequest.GetAllUsers(activeUsers: false))
+                {
+                    <option value="@user.Id">@(user.Profile == null ? user.UserName : user.Profile.Name)</option>
+                }
+            </select>
+            <button onclick="EnableDisableUser(true)" type="button" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Enable</button>
+
+            <br /><br />
+			
+			<label class="control-label">Active Users:</label><br />
+            <select class="form-control" id="ddlActiveUsers">
+                @foreach (var user in MinervaSystem.Base.ContextPerRequest.GetAllUsers(currentUser: false, inactiveUsers: false, systemUsers:false))
+                {
+                    <option value="@user.Id">@(user.Profile == null ? user.UserName : user.Profile.Name)</option>
+                }
+            </select>
+            <button onclick="EnableDisableUser(false)" type="button" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Disable</button>
+			<br /><br />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/kendo")
+    <script type="text/javascript">
+        var ddlDisabledUsers, ddlActiveUsers;
+
+        $(document).ready(function () {
+            ddlDisabledUsers = $("#ddlDisabledUsers").kendoDropDownList({ optionLabel: "Please Select...", filter: "contains" }).data("kendoDropDownList");
+            ddlActiveUsers = $("#ddlActiveUsers").kendoDropDownList({ optionLabel: "Please Select...", filter: "contains" }).data("kendoDropDownList");
+        });
+
+        function EnableDisableUser(enable) {
+            var userId = enable ? ddlDisabledUsers.value() : ddlActiveUsers.value();
+            if (typeof userId == "undefined" || userId == null || userId == "") {
+                KendoAlert("Please select an user!");
+            } else {
+                $.ajax({
+                    url: '@Url.Action("EnableDisableUser", "Admin")', type: "Post",
+                    data: { userId: userId, enable: enable },
+                    async: false, cache: false,
+                    success: function (response) { location.reload(); },
+                    error: function (xhr, status, err) { alert("Error: " + err); }
+                });
+            }
+        }
+    </script>
+}

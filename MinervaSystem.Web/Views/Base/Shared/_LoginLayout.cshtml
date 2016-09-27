@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/ico" href="favicon.ico" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/layout.js")
+    @RenderSection("scripts", required: false)
+    <style>
+        .navbar-inverse {
+            border: none;
+        }
+        .navbar-inverse .navbar-brand {color:#ffffff;}
+        .navbar-inverse .navbar-nav > .open > a,
+        .navbar-inverse .navbar-nav > .open > a:hover,
+        .navbar-inverse .navbar-nav > .open > a:focus {
+          color: #fff;
+          background-color: #1c3873;
+        }
+        #sidebar-wrapper{background-color: #354c79;border:none;}
+      
+        .navbar-inverse .navbar-nav > li > a {color:#ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    @if (Request.IsAuthenticated)
+    {
+        <div id="wrapper">
+            <div id="sidebar-wrapper">
+                <ul class="sidebar-nav">
+                    <li class="sidebar-brand"><a href="/">Home</a></li>
+                    <li><a href="~/SugerMill/ManageFarmers">Farmer Information</a></li>
+                    <li><a href="#">Supply Information</a></li>
+                    <li><a href="#">Yearly Reporting</a></li>
+                    @*<li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Shortcuts</a></li>
+                    <li><a href="#">Overview</a></li>
+                    <li><a href="#">Events</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Contact</a></li>*@
+                </ul>
+            </div>
+
+            <div id="page-content-wrapper">
+                <div class="navbar navbar-inverse navbar-fixed-top" style="background-color:#3b5998">
+                    <div class="container">
+                        <button id="menu-toggle" type="button" class="navbar-toggle pull-left"><i class="fa fa-toggle-on"></i></button>
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><i class="fa fa-bars btn-save"></i></button>
+                            @Html.ActionLink(MinervaSystem.Base.SiteConfig.SiteTitle, "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                        </div>
+                        <div class="navbar-collapse collapse">
+                            @Html.Partial("_LoginPartial")
+                        </div>
+                    </div>
+                </div>
+                <div class="container body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @RenderBody()
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><i class="fa fa-bars btn-save"></i></button>
+                    @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    @Html.Partial("_LoginPartial")
+                </div>
+            </div>
+        </div>
+        <div class="container body-content">
+            <div class="row">
+                <div class="col-md-12">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    }
+  
+</body>
+</html>

@@ -1,0 +1,7 @@
+﻿.form-control.k-multiselect, .k-upload {
+    max-width: 280px;
+}
+
+.k-dropdown, .k-combobox {
+	width: 280px;
+}

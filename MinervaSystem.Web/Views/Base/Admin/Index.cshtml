@@ -1,0 +1,82 @@
+﻿@using MinervaSystem.Base.Models
+
+@{
+	ViewBag.StatusMessage = ViewBag.StatusMessage ?? string.Empty;
+    @Styles.Render("~/Content/kendo.office365")
+    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Site Administration", null);
+}
+
+@Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
+
+@if (!string.IsNullOrEmpty(ViewBag.StatusMessage))
+{
+    <div id="winMessage">
+        <p>@ViewBag.StatusMessage</p>
+        <div class="modal-btn-toolbar">
+            <button onclick="winMessage.close()" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Ok</button>
+        </div>
+    </div>
+}
+
+<div class="row" id="placeHolder-main">
+    <div class="col-md-4 col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Users & Groups</strong></div>
+            <div class="panel-body">
+                <ul>
+                    <li><a href="/Admin/Register">Create New User</a></li>
+                    <li><a href="/Admin/ManageUserGroups">Groups & Membership</a></li>
+                    <li><a href="/Admin/ResetPassword">Reset User Password</a></li>
+                    <li><a href="/Admin/DisableEnableUser">Disable/Enable User</a></li>
+                    <li><a href="/Admin/ViewUserGroups">View User Groups</a></li>
+                    <li><a href="/Admin/ViewUserProfile">View User Profile</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Permissions</strong></div>
+            <div class="panel-body">
+                <ul>
+                    <li><a href="/Admin/ManageControllerPermission">Page Permission</a></li>
+                    <li><a href="/Home/Index">Change Password</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Site Contents</strong></div>
+            <div class="panel-body">
+                <ul>
+                    <li><a href="/Admin/ManageAnnouncements">Announcements</a></li>
+                    <li><a href="/Admin/ManageAnnouncements">Announcements</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/kendo")
+    <script type="text/javascript" language="javascript">
+        var winMessage;
+        $(document).ready(function () {
+            if ($("#winMessage").length > 0) {
+                winMessage = $("#winMessage").kendoWindow({
+                    minWidth: 400,
+                    modal: true,
+                    visible: false,
+                    draggable: false,
+                    resizable: false,
+                    title: "Status Message"
+                }).data("kendoWindow").center().open();
+            }
+        });
+    </script>
+}

@@ -1,0 +1,23 @@
+﻿@model Exception
+
+<div id="placeHolder-main">
+    @if (Response.StatusCode == 404)
+    {
+        <span class="header-title">404 Page Not Found</span>
+        <span>Return to <a href="/">Home Page</a></span>
+    }
+    else
+    {
+        <span class="header-title">@Response.StatusCode - Error</span>
+        <span>Return to <a href="/">Home Page</a></span>
+        <br />
+        if (Model != null)
+        {
+            <p>
+                @Model.Message
+                <br /><br />
+                @Model.StackTrace
+            </p>
+        }
+    }
+</div>

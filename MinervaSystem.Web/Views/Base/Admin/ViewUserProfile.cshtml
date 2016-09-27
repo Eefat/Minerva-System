@@ -1,0 +1,93 @@
+﻿@using MinervaSystem.Base.Models;
+
+@{
+    ViewBag.ReturnUrl = "/Admin";
+    @Styles.Render("~/Content/kendo.office365")
+
+    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("View User Profile",
+        new BreadcrumbModel("View User Profile", new List<LinkModel>() { new LinkModel("/Admin", "Site Actions") }));
+}
+
+<style type="text/css">
+    .form-label{ width: 35%; }
+</style>
+
+@Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
+
+<div id="placeHolder-main">
+    <div class="col-md-8 panel panel-default">
+        <div class="panel-body">
+            <label class="control-label">User: </label>
+            <select class="form-control" id="ddlUsers">
+                @foreach (var user in MinervaSystem.Base.ContextPerRequest.GetAllUsers())
+                {
+                    <option value="@user.Id">@user.UserName</option>
+                }
+            </select>
+            <button onclick="ShowUserProfile()" type="button" class="btn btn-default">View Profile</button>
+            <br />
+        </div>
+    </div>
+
+    <table style="width:66.66%" class="table table-bordered" id="userProfile">
+        <tr>
+            <td colspan="2" id="photo" align="center">
+                <img src="~/Images/nophoto.png" height="125" width="125" class="img-circle" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" id="name" align="center" style="font-weight:bold;">Person Name</td>
+        </tr>
+        <tr><td class="form-label">Date of Birth:</td><td style="width:65%" id="birthDate"></td></tr>
+        <tr><td class="form-label">Phone:</td><td id="phone"></td></tr>
+        <tr><td class="form-label">Cell Phone:</td><td id="cellPhone"></td></tr>
+        <tr><td class="form-label">Personal E-Mail:</td><td id="alternateEmail"></td></tr>
+        <tr><td class="form-label">Address:</td><td id="address"></td></tr>
+        <tr><td class="form-label">City:</td><td id="city"></td></tr>
+        <tr><td class="form-label">Province:</td><td id="province"></td></tr>
+        <tr><td class="form-label">Postal Code:</td><td id="postalCode"></td></tr>
+        <tr><td class="form-label">Emergency Contact:</td><td id="emergencyContact"></td></tr>
+        <tr><td class="form-label">Emergency Contact Phone:</td><td id="emergencyContactPhone"></td></tr>
+        <tr><td class="form-label">Notes:</td><td id="notes"></td></tr>
+    </table>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/kendo")
+    <script type="text/javascript">
+        var ddlUsers;
+
+        $(document).ready(function () {
+            ddlUsers = $("#ddlUsers").kendoDropDownList({ optionLabel: "Please select an user...", filter: "contains" }).data("kendoDropDownList");
+            ddlUsers.value("");
+        });
+
+        function ShowUserProfile() {
+            $.ajax({
+                url: '@Url.Action("GetUserProfile", "Admin")', type: "Post",
+                data: { userId: ddlUsers.value() },
+                async: false, cache: false,
+                success: function (response) {
+                    var imageSource = (response.Photo == null) ? "/Images/nophoto.png" : "data:image/jpeg;base64," + response.Photo;
+                    $("#photo img").attr("src", imageSource);
+
+                    $("#name").text(GetJsonColumnValue(response.Name));
+                    $("#birthDate").text(FormatDateValue(ParseJsonDate(response.BirthDate), { "format": "MMMM dd, yyyy" }));
+                    $("#phone").text(GetJsonColumnValue(response.Phone));
+                    $("#cellPhone").text(GetJsonColumnValue(response.CellPhone));
+                    $("#alternateEmail").text(GetJsonColumnValue(response.AlternateEmail));
+                    $("#address").text(GetJsonColumnValue(response.Address));
+                    $("#city").text(GetJsonColumnValue(response.City));
+                    $("#province").text(GetJsonColumnValue(response.Province));
+                    $("#postalCode").text(GetJsonColumnValue(response.PostalCode));
+                    $("#emergencyContact").text(GetJsonColumnValue(response.EmergencyContact));
+                    $("#emergencyContactPhone").text(GetJsonColumnValue(response.EmergencyContactPhone));
+                    $("#notes").text(GetJsonColumnValue(response.Notes));
+                },
+                error: function (xhr, status, err) {
+                    alert("Error: " + err);
+                }
+            });
+        }
+    </script>
+}

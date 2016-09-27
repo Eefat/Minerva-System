@@ -1,0 +1,268 @@
+﻿@using MinervaSystem.Base
+@using MinervaSystem.Base.Models
+@{
+    @Styles.Render("~/Content/datatables")
+    @Styles.Render("~/Content/kendo.office365")
+
+    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Manage User Groups",
+        new BreadcrumbModel("Manage User Groups", new List<LinkModel>() { new LinkModel("/Admin", "Site Actions") }));
+}
+
+@Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
+
+<div id="placeHolder-pageDescription">
+    <a onclick="winAddEditUserGroup.center().open(); return false;" class="addnew-link">
+        <i class="fa fa-plus-square add-icon"></i> Add new user group
+    </a>
+</div>
+
+<div id="placeHolder-main">
+    <table id="tableUserGroups" class="table datatable" cellspacing="0">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Group</th>
+                <th>Count Users</th>
+                <th>Notes</th>
+                <th>Users</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Group</th>
+                <th>Count Users</th>
+                <th>Notes</th>
+                <th>Users</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div id="winAddEditUserGroup">
+    <div class="alert alert-warning">Group Name is required and cannot be duplicate!</div>
+    <div class="form-group">
+        <label class="control-label">Group Name:</label><br />
+        <input type="text" id="txtGroupName" class="long"><br /><br />
+        <label class="control-label">Notes:</label><br />
+        <textarea id="txtGroupNotes" class="long" rows="3"></textarea>
+    </div>
+    <div class="modal-btn-toolbar">
+        <button onclick="CreateOrUpdateUserGroup()" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Save</button>
+        <button onclick="winAddEditUserGroup.close()" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Cancel</button>
+    </div>
+</div>
+
+<div id="winDeleteUserGroup">
+    <p>
+        The user group will be permanently deleted and cannot be recovered.<br />
+        Are you sure you want to delete the Group?
+    </p>
+    <div class="modal-btn-toolbar">
+        <button onclick="DeleteThisUserGroup()" class="btn btn-default"><i class="fa fa-close btn-delete"></i> Delete</button>
+        <button onclick="winDeleteUserGroup.close()" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Cancel</button>
+    </div>
+</div>
+
+<div id="winManageGroupUsers">
+    <div>
+        <label class="control-label groupTitle">Group:</label><br />
+        <select multiple id="ddlUsers" data-placeholder="Please select users...">
+            @{ 
+                var userList = ContextPerRequest.GetAllUsers(inactiveUsers: false).Select(u => new { Value = u.Id, Text = (u.Profile == null ? u.UserName : u.Profile.Name) });
+                foreach (var option in userList){ <option value="@option.Value">@option.Text</option> }
+            }
+        </select>
+    </div>
+
+    <div class="modal-btn-toolbar">
+        <button onclick="SaveUsersInGroup()" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Save</button>
+        <button onclick="winManageGroupUsers.close()" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Cancel</button>
+    </div>
+</div>
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/kendo")
+    <script type="text/javascript" language="javascript">
+        var datatable, datatableRow;
+        var winAddEditUserGroup, winManageGroupUsers, winDeleteUserGroup;
+        var multiSelectUsers;
+        var groupId = null;
+
+        $(document).ready(function () {
+
+            multiSelectUsers = $("#ddlUsers").kendoMultiSelect().data("kendoMultiSelect");
+
+            SetupUserGroupDataTable();
+            SetupPopupBoxes();
+        });
+
+        function SetupPopupBoxes()
+        {
+            winAddEditUserGroup = $("#winAddEditUserGroup").kendoWindow({
+                modal: true,
+                visible: false,
+                draggable: false,
+                title: "Create/Update Group",
+                close: function () {
+                    groupId = null;
+                    $("#txtGroupName").val("");
+                    $("#txtGroupNotes").val("");
+                }
+            }).data("kendoWindow");
+
+            winDeleteUserGroup = $("#winDeleteUserGroup").kendoWindow({
+                modal: true,
+                visible: false,
+                resizable: false,
+                draggable: false,
+                title: "Delete Confirmation",
+                close: function () { groupId = null; }
+            }).data("kendoWindow");
+
+            winManageGroupUsers = $("#winManageGroupUsers").kendoWindow({
+                width: 500,
+                modal: true,
+                visible: false,
+                draggable: false,
+                title: "Manage Users In Group",
+                close: function () {
+                    groupId = null;
+                    multiSelectUsers.value([]);
+                }
+            }).data("kendoWindow");
+        }
+
+        function SetupUserGroupDataTable()
+        {
+            datatable = $("#tableUserGroups").DataTable({
+                processing: true,
+                ajax: '@Url.Action("GetAllUserGroups", "Admin")',
+                columnDefs: [{ targets: 0, data: null, orderable: false, class: "details-control", defaultContent: "" },
+                    { targets: 1, data: "GroupName" },
+                    { targets: 2, data: "CountUsers", class: "text-center" },
+                    { targets: 3, data: "Notes" },
+                    { targets: 4, data: null, orderable: false, class: "text-center manageUsers-control", render: function (data, type, row) { return "<a><i class='fa fa-users'></i></a>"; } },
+                    { targets: 5, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a><i class='fa fa-edit'></i></a>"; } },
+                    { targets: 6, data: null, orderable: false, class: "text-center delete-control", render: function (data, type, row) { return (row.GroupName == "System Administrators" || row.GroupName == "Site Administrators") ? "" : "<a onclick='winDeleteUserGroup.center().open();return false;'><i class='fa fa-remove'></i></a>"; } }],
+                order: [[1, "asc"]]
+            });
+
+            $("#tableUserGroups tbody").on("click", "td.edit-control", function () {
+                datatableRow = $(this).closest("tr");
+                var rowData = datatable.row(datatableRow).data();
+                groupId = rowData.Id;
+                $("#txtGroupName").val(rowData.GroupName);
+                $("#txtGroupNotes").val(rowData.Notes);
+                winAddEditUserGroup.center().open();
+            });
+
+            $("#tableUserGroups tbody").on("click", "td.manageUsers-control", function () {
+                datatableRow = $(this).closest("tr");
+                var rowData = datatable.row(datatableRow).data();
+                groupId = rowData.Id;
+                $(".groupTitle").text("Group: " + rowData.GroupName);
+
+                $.ajax({ //select existing users in the group
+                    url:'@Url.Action("GetUserIdsByUserGroup", "Admin")', type: "Post",
+                    data: { groupId: groupId },
+                    async: false, cache: false,
+                    success: function (response) {
+                        if (response != null && typeof response != "undefined") {
+                            multiSelectUsers.value(response);
+                            winManageGroupUsers.center().open();
+                        }
+                    }, error: function (xhr, status, err) { alert("Error: " + err); }
+                });
+            });
+
+            $("#tableUserGroups tbody").on("click", "td.details-control", function () {
+                var tr = $(this).closest("tr");
+                var row = datatable.row(tr);
+                //var rowData = datatable.row(tr).data();
+
+                if (row.child.isShown()) {  // This row is already open, close it
+                    row.child.hide();
+                    tr.removeClass("shown");
+                }
+                else {
+                    //Close any opened rows
+                    var openedTr = $(this).closest("table").find("tr.shown");
+                    datatable.row(openedTr).child.hide();
+                    openedTr.removeClass("shown");
+
+                    //Get users in this group & open the row
+                    $.ajax({
+                        url: '@Url.Action("GetUserNamesByUserGroup", "Admin")', type: "Post", data: { groupId: row.data().Id }, async: false, cache: false,
+                        success: function (response) {
+                            var html = "<table><thead><tr><th>This Group contains the following Users:</th></tr></thead><tbody><tr><td>";
+                            if (response.length > 0) html += response.join(", ");
+                            else html = "<table><tbody><tr><td>This Group does not contain any users.";
+                            row.child(html + "</tr></tbody></table>").show();
+                            tr.addClass("shown");
+                        },
+                        error: function () { alert("An error occurred whilst getting the group users."); }
+                    });
+                }
+            });
+        }
+
+        function SaveUsersInGroup()
+        {
+            if (groupId && datatable.row(datatableRow).data().Id == groupId) {
+                $.ajax({
+                    url: '@Url.Action("UpdateUsersInUserGroup", "Admin")', type: "Post",
+                    data: { groupId: groupId, userIds: multiSelectUsers.value() },
+                    async: false, cache: false,
+                    success: function (response) {
+                        winManageGroupUsers.close();
+                        datatable.ajax.reload();
+                        return true;
+                    }, error: function (xhr, status, err) { alert("Error: " + err); }
+                });
+            }
+        }
+
+        function DeleteThisUserGroup() {
+            if (groupId && datatable.row(datatableRow).data().Id == groupId) {
+                $.ajax({
+                    url: '@Url.Action("DeleteUserGroup", "Admin")', type: "Post",
+                    data: { id: groupId },
+                    async: false, cache: false,
+                    success: function (response) {
+                        winDeleteUserGroup.close();
+                        datatable.row(datatableRow).remove().draw();
+                        return true;
+                    }, error: function (xhr, status, err) { alert("Error: " + err); }
+                });
+            }
+        }
+
+        function CreateOrUpdateUserGroup() {
+            var name = $.trim($("#txtGroupName").val());
+            var notes = $.trim($("#txtGroupNotes").val());
+
+            if (name == null || typeof name == "undefined" || name.length == 0) {
+                alert("Group Name is not valid. Please provide a valid Group Name.");
+            } else {
+                $.ajax({
+                    url: '@Url.Action("CreateOrUpdateUserGroup", "Admin")', type: "Post",
+                    data: { id: groupId, name: name, notes: notes },
+                    async: false, cache: false,
+                    success: function (response) {
+                        winAddEditUserGroup.close();
+                        datatable.ajax.reload();
+                        return true;
+                    }, error: function (xhr, status, err) { alert("Error: " + err); }
+                });
+            }
+        }
+
+    </script>
+}

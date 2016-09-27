@@ -1,0 +1,28 @@
+﻿@using MinervaSystem.Base.Models
+@{
+    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Announcements", new BreadcrumbModel("More Announcements"));
+}
+
+@Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
+
+<div id="placeHolder-main">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            @if (((List<Announcement>)ViewBag.Announcements).Count > 0)
+            {
+                <table width="100%" class="table table-striped">
+                    @foreach (var announcement in ((List<Announcement>)ViewBag.Announcements))
+                    {
+                        <tr>
+                            <td>
+                                <strong>@announcement.Title</strong><br />
+                                <i style="font-size:11px">By @MinervaSystem.Base.ContextPerRequest.GetUserNameById(announcement.Author) on @announcement.Created.ToString("dd-MMM-yyyy")</i>
+                                <p style="margin-top:10px">@announcement.Body</p>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+        </div>
+    </div>
+</div>

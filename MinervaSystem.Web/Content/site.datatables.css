@@ -1,0 +1,80 @@
+﻿table.datatable {
+    width: 100%;
+}
+
+table.datatable td {
+    border: 1px solid #fff;
+}
+
+table.datatable > thead th {
+    padding-left: 10px;
+    color: #333;
+    background-color: dimgrey;
+    padding-right: 25px !important;
+}
+ 
+table.datatable tbody td {
+    background-color: gainsboro;
+    padding: 6px;
+}
+
+/*table.datatable tbody tr.odd td {
+    background-color: gainsboro;
+}*/
+
+table.datatable > tfoot th {
+    background-color: dimgrey;
+    color: #333;
+    border: none;
+}
+
+/*Inner Table*/
+table.datatable > tbody table {
+    margin-left: 50px;
+}
+
+table.datatable > tbody table thead tr {
+    border-bottom: 1px solid whitesmoke;
+}
+
+table.datatable > tbody table tbody tr:not(:last-child) {
+    border-bottom: 1px solid whitesmoke;
+}
+
+table.datatable > tbody table td,
+table.datatable > tbody table th {
+    border: none;
+    padding: 4px 15px 4px 2px;
+    font-size: 9pt;
+}
+/*Inner Table*/
+
+table.datatable td.details-control {
+    background-image: url('/Images/Icons/details_open.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+table.datatable tr.shown td.details-control {
+    background-image: url('/Images/Icons/details_close.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/*-------- Simple datatable -------------*/
+table.datatable-simple {
+    width: 100%;
+    clear: both;
+    font-size: 12px;
+    background-color: #fff;
+}
+
+table.datatable-simple > thead tr {
+    background-color: #d6e8ff;
+}
+
+table.datatable-simple > tbody tr th {
+    background-color: whitesmoke;
+    font-weight: normal;
+}

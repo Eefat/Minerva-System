@@ -1,0 +1,346 @@
+﻿
+@using MinervaSystem.Base.Models
+@{
+    @Styles.Render("~/Content/datatables")
+    @Styles.Render("~/Content/kendo.office365")
+    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Manage Announcements",
+        new BreadcrumbModel("Manage Announcements", new List<LinkModel>() { new LinkModel("/Admin", "Site Actions") }));
+}
+
+@Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
+
+
+<div id="placeHolder-pageDescription">
+    <a onclick="winAddItem.center().open(); return false;" class="addnew-link">
+        <i class="fa fa-plus-square add-icon"></i> Add new announcement
+    </a>
+</div>
+
+<div id="placeHolder-main">
+    <table id="tableAnnouncements" class="table datatable" cellspacing="0">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th width="20%">Title</th>
+                <th width="50%">Description</th>
+                <th>Expire Date</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Expire Date</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div id="winViewItem">
+    <div class="form-group">
+        <label class="control-label col-sm-3">Title:</label>
+        <div id="view-title" class="col-sm-7"></div>
+    </div><br />
+    <div class="form-group">
+        <label class="control-label col-sm-3">Body:</label>
+        <div id="view-body" class="col-sm-7"></div>
+    </div><br />
+    <div class="form-group">
+        <label class="control-label col-sm-3">Expires:</label>
+        <div id="view-expires" class="col-sm-7"></div>
+    </div><br />
+    <div class="form-group">
+        <label class="control-label col-sm-3">Created By:</label>
+        <div id="view-author" class="col-sm-7"></div>
+    </div><br />
+    <div class="form-group">
+        <label class="control-label col-sm-3">Created Date:</label>
+        <div id="view-created" class="col-sm-7"></div>
+    </div><br />
+    <div class="form-group">
+        <label class="control-label col-sm-3">Modified By:</label>
+        <div id="view-editor" class="col-sm-7"></div>
+    </div><br />
+    <div class="form-group">
+        <label class="control-label col-sm-3">Modified Date:</label>
+        <div id="view-modified" class="col-sm-7"></div>
+    </div>
+    <div class="modal-btn-toolbar">
+        <button onclick="winViewItem.close()" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Close</button>
+    </div>
+</div>
+
+<div id="winAddItem">
+    <div class="alert alert-warning" style="display:none">Required Fields: Title, Body</div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Title:</label>
+        <div class="col-sm-8">
+            <input type="text" id="add-title" class="long" />
+        </div>
+    </div><br />
+    <div class="form-group">
+        <label class="control-label col-sm-2">Body:</label>
+        <div class="col-sm-8">
+            <textarea rows="3" id="add-body" class="long"></textarea>
+        </div>
+    </div><br /><br />
+    <div class="form-group">
+        <label class="control-label col-sm-2">Expires:</label>
+        <div class="col-sm-8">
+            <input type="text" id="add-expires" class="long kendo-datepicker" />
+        </div>
+    </div>
+    <div class="modal-btn-toolbar">
+        <button onclick="AddAnnouncement()" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Save</button>
+        <button onclick="winAddItem.close()" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Cancel</button>
+    </div>
+</div>
+
+<div id="winEditItem">
+    <div class="alert alert-warning" style="display:none">Required Fields: Title, Body</div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Title:</label>
+        <div class="col-sm-8">
+            <input type="text" id="edit-title" class="long" />
+        </div>
+    </div><br />
+    <div class="form-group">
+        <label class="control-label col-sm-2">Body:</label>
+        <div class="col-sm-8">
+            <textarea rows="3" id="edit-body" class="long"></textarea>
+        </div>
+    </div><br /><br />
+    <div class="form-group">
+        <label class="control-label col-sm-2">Expires:</label>
+        <div class="col-sm-8">
+            <input type="text" id="edit-expires" class="long kendo-datepicker" />
+        </div>
+    </div>
+    <div class="modal-btn-toolbar">
+        <button onclick="EditAnnouncement()" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Save</button>
+        <button onclick="winEditItem.close()" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Cancel</button>
+    </div>
+</div>
+
+<div id="winDeleteItem">
+    <p>
+        The announcement will be permanently deleted and cannot be recovered.<br />
+        Are you sure you want to delete the announcement?
+    </p>
+    <div class="modal-btn-toolbar">
+        <button onclick="DeleteAnnouncement()" class="btn btn-default"><i class="fa fa-close btn-delete"></i> Delete</button>
+        <button onclick="winDeleteItem.close()" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Cancel</button>
+    </div>
+</div>
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/kendo")
+    <script type="text/javascript" language="javascript">
+        var datatable;
+        var winAddItem, winEditItem, winViewItem, winDeleteItem;
+        var itemId = null;
+
+        $(document).ready(function () {
+            SetupAnnouncementsDataTable();
+            SetupPopupBoxes();
+        });
+
+        function SetupAnnouncementsDataTable()
+        {
+            datatable = $("#tableAnnouncements").DataTable({
+                processing: true,
+                ajax: '@Url.Action("GetAllAnnouncements", "Admin")',
+                columnDefs: [{ targets: 0, data: null, orderable: false, class: "details-control", defaultContent: "" },
+                    { targets: 1, data: "Title" },
+                    { targets: 2, data: "Body", orderable: false },
+                    { targets: 3, data: "Expires", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "yyyy-MM-dd" }) } },
+                    { targets: 4, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='itemId=" + row.Id + ";winViewItem.center().open();'><i class='fa fa-bars'></i></a>"; } },
+                    { targets: 5, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a onclick='itemId=" + row.Id + ";winEditItem.center().open();'><i class='fa fa-edit'></i></a>"; } },
+                    { targets: 6, data: null, orderable: false, class: "text-center delete-control", render: function (data, type, row) { return "<a onclick='itemId=" + row.Id + ";winDeleteItem.center().open();'><i class='fa fa-remove'></i></a>"; } }],
+                order: [[1, "asc"]]
+            });
+
+            $("#tableAnnouncements tbody").on("click", "td.details-control", function () {
+                var tr = $(this).closest("tr");
+                var row = datatable.row(tr);
+                //var rowData = datatable.row(tr).data();
+
+                if (row.child.isShown()) {  // This row is already open, close it
+                    row.child.hide();
+                    tr.removeClass("shown");
+                }
+                else {
+                    //Close any opened rows
+                    var openedTr = $(this).closest("table").find("tr.shown");
+                    datatable.row(openedTr).child.hide();
+                    openedTr.removeClass("shown");
+
+                    //Get Announcement details and open row details
+                    $.ajax({
+                        url: '@Url.Action("GetAnnouncementDetails", "Admin")',
+                        type: "Post",
+                        data: { announcementId: row.data().Id },
+                        async: false, cache: false,
+                        success: function (response) {
+                            var html = "<table><tr><th>Created:</th><td>" + FormatDateValue(ParseJsonDate(response.Created), { "format": "MM/dd/yyyy hh:mm tt" }) + "</td></tr>";
+                            html += "<tr><th>Created By:</th><td>" + GetJsonColumnValue(response.Author) + "</td></tr>";
+                            html += "<tr><th>Modified:</th><td>" + FormatDateValue(ParseJsonDate(response.Modified), { "format": "MM/dd/yyyy hh:mm tt" }) + "</td></tr>";
+                            html += "<tr><th>Modified By:</th><td>" + GetJsonColumnValue(response.Editor) + "</td></tr></table>";
+
+                            row.child(html).show();
+                            tr.addClass("shown");
+                        }, error: function () {
+                            alert("An error occurred whilst getting the Item Details.");
+                        }
+                    });
+                }
+            });
+        }
+
+        function SetupPopupBoxes() {
+            winViewItem = $("#winViewItem").kendoWindow({
+                minWidth: 500,
+                modal: true,
+                visible: false,
+                draggable: false,
+                title: "View Announcement",
+                open: function () {
+                    $.ajax({
+                        url: '@Url.Action("GetAnnouncementDetails", "Admin")',
+                        data: { announcementId: itemId },
+                        async: false, cache: false,
+                        success: function (response) {
+                            $("#view-title").text(response.Title);
+                            $("#view-body").text(response.Body);
+                            $("#view-expires").text(FormatDateValue(ParseJsonDate(response.Expires)));
+                            $("#view-author").text(response.Author);
+                            $("#view-created").text(FormatDateValue(ParseJsonDate(response.Created), { "format": "MM/dd/yyyy hh:mm tt" }));
+                            $("#view-editor").text(response.Editor);
+                            $("#view-modified").text(FormatDateValue(ParseJsonDate(response.Modified), { "format": "MM/dd/yyyy hh:mm tt" }));
+                        }, error: function () { return false; }
+                    });
+                },
+                close: function () {
+                    itemId = null;
+                    $("#winViewItem div[id^='view-']").text("");
+                }
+            }).data("kendoWindow");
+
+            winAddItem = $("#winAddItem").kendoWindow({
+                minWidth: 500,
+                modal: true,
+                visible: false,
+                draggable: false,
+                title: "Add Announcement",
+                close: function () {
+                    $("#winAddItem *[id^='add-']").val("");
+                    $("#winAddItem div.alert").hide();
+                }
+            }).data("kendoWindow");
+
+            winEditItem = $("#winEditItem").kendoWindow({
+                minWidth: 500,
+                modal: true,
+                visible: false,
+                draggable: false,
+                title: "Edit Announcement",
+                open: function () {
+                    $.ajax({
+                        url: '@Url.Action("GetAnnouncementDetails", "Admin")', type: "Post",
+                        data: { announcementId: itemId },
+                        async: false, cache: false,
+                        success: function (response) {
+                            $("#edit-title").val(response.Title);
+                            $("#edit-body").val(response.Body);
+                            var datepicker = $("#edit-expires").data("kendoDatePicker");
+                            datepicker.value(ParseJsonDate(response.Expires));
+                        }, error: function () { return false; }
+                    });
+                },
+                close: function () {
+                    itemId = null;
+                    $("#winEditItem *[id^='edit-']").val("");
+                    $("#winEditItem div.alert").hide();
+                }
+            }).data("kendoWindow");
+
+            winDeleteItem = $("#winDeleteItem").kendoWindow({
+                minWidth: 500,
+                modal: true,
+                visible: false,
+                draggable: false,
+                title: "Delete Announcement",
+                close: function () { itemId = null; }
+            }).data("kendoWindow");
+        }
+
+        function AddAnnouncement() {
+            var title = $.trim($("#add-title").val());
+            var body = $.trim($("#add-body").val());
+            var datepicker = $("#add-expires").data("kendoDatePicker");
+            var expires = (datepicker.value()) ? datepicker.value().toJSON() : null;
+
+            if (title.length > 0 && body.length > 0) {
+                $.ajax({
+                    url: '@Url.Action("AddAnnouncement", "Admin")', type: "Post",
+                    data: { title: title, body: body, expires: expires },
+                    async: false, cache: false,
+                    success: function (response) {
+                        winAddItem.close();
+                        datatable.ajax.reload();
+                        return true;
+                    }, error: function () { return false; }
+                });
+            } else {
+                $("#winAddItem div.alert").show();
+            }
+        }
+
+        function EditAnnouncement() {
+            var title = $.trim($("#edit-title").val());
+            var body = $.trim($("#edit-body").val());
+            var datepicker = $("#edit-expires").data("kendoDatePicker");
+            var expires = (datepicker.value()) ? datepicker.value().toJSON() : null;
+
+            if (title.length > 0 && body.length > 0 && itemId != null) {
+                $.ajax({
+                    url: '@Url.Action("EditAnnouncement", "Admin")', type: "Post",
+                    data: { announcementId: itemId, title: title, body: body, expires: expires },
+                    async: false, cache: false,
+                    success: function (response) {
+                        winEditItem.close();
+                        datatable.ajax.reload();
+                        return true;
+                    }, error: function () { return false; }
+                });
+            } else {
+                $("#winEditItem div.alert").show();
+            }
+        }
+
+        function DeleteAnnouncement() {
+            if (itemId != null) {
+                $.ajax({
+                    url: '@Url.Action("DeleteAnnouncement", "Admin")', type: "Post",
+                    data: { announcementId: itemId },
+                    async: false, cache: false,
+                    success: function (response) {
+                        winDeleteItem.close();
+                        datatable.ajax.reload();
+                        return true;
+                    }, error: function () { return false; }
+                });
+            }
+        }
+
+    </script>
+}

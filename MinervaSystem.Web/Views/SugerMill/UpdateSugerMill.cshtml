@@ -1,0 +1,150 @@
+﻿@using MinervaSystem.Base.Models
+@using MinervaSystem.Base.Models.ViewModels;
+@model SugerMillViewModel
+@{
+    ViewBag.Title = "Update Suger Mill";
+    @Styles.Render("~/Content/kendo.office365")
+    ViewBag.ReturnUrl = "/";
+    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Update Suger Mill", new BreadcrumbModel("Suger Mill"));
+}
+
+@Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div id="placeHolder-main" class="col-md-6">
+                    @using (Html.BeginForm("UpdateSugerMill", "SugerMill", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
+                        @Html.HiddenFor(m => m.Photo)
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Name, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Photo, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @if (Model.Photo != null)
+                {
+                                    <img id="imgPhoto" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Photo)" height="125" width="125" class="img-thumbnail" />
+                                }
+                                else
+                                {
+                                    <img id="imgPhoto" src="" height="125" width="125" class="img-thumbnail" style="display:none" />
+                                }
+                                @Html.TextBoxFor(m => m.PhotoFile, new { @class = "form-control", type = "file", id = "txtPhoto" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.EstablishDate, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.EstablishDate, new { @Value = (Model.EstablishDate.HasValue ? Model.EstablishDate.Value.ToString("MM/dd/yyyy") : ""), @class = "form-control kendo-datepicker" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Email, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CellPhone, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.CellPhone, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Phone, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Address, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Division, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Division, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.District, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.District, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Thana, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Thana, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.PostalCode, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.PostalCode, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Note, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Note, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="btn-toolbar" style="float: right;">
+                            <button type="submit" value="Submit" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Submit</button>
+                            <a href="~/SugerMill/ManageSugerMill" class="btn btn-default "><i class="fa fa-ban btn-cancel"></i> Cancel</a>
+                        </div>
+                    }
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#txtPhoto").kendoUpload({
+                multiple: false,
+                select: function (e) {
+                    if (e.files && $.inArray(e.files[0].extension.toLowerCase(), G_oImageFileExtensions) > -1) {
+                        var reader = new FileReader();
+                        reader.onload = function (event) { $("#imgPhoto").attr("src", event.target.result) };
+                        reader.readAsDataURL(e.files[0].rawFile);
+                        $("#imgPhoto").show();
+                    } else {    //clear the preview and model data
+                        $("#imgPhoto").attr("src", "");
+                        $("#imgPhoto").hide();
+                        e.preventDefault();
+                        $("ul.k-upload-files").remove();
+                        KendoAlert("Selected file is not an image file. Please select an image file.");
+                        $("#txtPhoto").val("");
+                    }
+                }
+            });
+        });
+    </script>
+}

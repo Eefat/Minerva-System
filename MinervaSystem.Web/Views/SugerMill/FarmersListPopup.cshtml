@@ -1,0 +1,148 @@
+﻿
+@using MinervaSystem.Base.Models
+@{
+    @Styles.Render("~/Content/datatables")
+    @Styles.Render("~/Content/kendo.office365")
+}
+
+<link href="~/Content/DataTables/css/dataTables.bootstrap.css" rel="stylesheet" />
+<link href="~/Content/DataTables/css/responsive.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/telerik/kendo.common-material.min.css" rel="stylesheet" />
+<link href="~/Content/telerik/kendo.rtl.min.css" rel="stylesheet" />
+<link href="~/Content/telerik/kendo.material.min.css" rel="stylesheet" />
+<link href="~/Content/telerik/kendo.material.mobile.min.css" rel="stylesheet" />
+
+
+<script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+<script src="~/Scripts/telerik/kendo.all.min.js"></script>
+<script src="~/Scripts/DataTables/dataTables.buttons.js"></script>
+<script src="~/Scripts/DataTables/buttons.bootstrap.min.js"></script>
+<script src="~/Scripts/DataTables/dataTables.responsive.js"></script>
+<script src="~/Scripts/DataTables/responsive.bootstrap.min.js"></script>
+<script src="~/Scripts/DataTables/jszip.min.js"></script>
+<script src="~/Scripts/DataTables/pdfmake.min.js"></script>
+<script src="~/Scripts/DataTables/vfs_fonts.js"></script>
+<script src="~/Scripts/DataTables/buttons.print.min.js"></script>
+<script src="~/Scripts/DataTables/buttons.html5.min.js"></script>
+
+<style>
+        /*.table > thead > tr > th {
+      background: #dae6f0;
+    }
+    .table > tfoot > tr > th {
+      background: #dae6f0;
+    }*/
+        .table > thead > tr > th {
+            background: #537c9e;
+            color: #fff;
+        }
+
+        .table > tfoot > tr > th {
+            background: #537c9e;
+            color: #fff;
+        }
+        /*.table {
+        width: 100%;
+        border-radius: 4px;
+        margin-right: 14px;
+    }
+
+    .table th, .table td {
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        border-right: 1px solid #FFFFFF;
+    }
+
+    .table th {
+        font-weight: bold;
+        color: #FFFFFF;
+        padding: 5px 2px;
+        text-align: center;
+        border-right: 1px solid #FFFFFF;
+    }
+
+    .table th a {
+        color: #FFFFFF;
+        text-decoration: none;
+    }
+
+    .table th a:hover {
+        color: #FFFFFF;
+        cursor: pointer;
+    }
+
+    .table-striped tbody tr:nth-child(odd) td, .table-striped tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .table tbody tr:hover td, .table tbody tr:hover {
+        background: none repeat scroll 0 0 #F5F5F5;
+    }
+
+    .table tbody tr th {
+        background: none repeat scroll 0 0 #0088CC;
+    }*/
+        .body-content {
+            background-color: #ffffff;
+        }
+</style>
+
+<div style="margin:0">
+    <fieldset>
+        <legend>Personal Information</legend>
+        <div class='row'>
+            <div class='col-sm-2'>
+                <div class='form-group'>
+                    <label for="user_title">Name</label>
+                    <input class="form-control" id="user_title" name="user[title]" size="30" type="text" />
+                </div>
+            </div>
+            <div class='col-sm-2'>
+                <div class='form-group'>
+                    <label for="user_firstname">Mobile No</label>
+                    <input class="form-control" id="user_firstname" name="user[firstname]" required="true" size="30" type="text" />
+                </div>
+            </div>
+            <div class='col-sm-2'>
+                <div class='form-group'>
+                    <label for="user_lastname">Member Key</label>
+                    <input class="form-control" id="user_lastname" name="user[lastname]" required="true" size="30" type="text" />
+                    @*<button type="submit" value="Submit" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Search</button>*@
+                </div>
+            </div>
+            <div class='col-sm-3'>
+                <div class="form-group">
+                    <label for="" style="visibility:hidden;">dsdsdsdsdsdsdsdsds</label><br>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <table id="tableFarmerListPopup" class="table table-bordered table-striped" cellspacing="0" style="margin:0;width:98%">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th width="15%">Name</th>
+                <th width="20%">Address</th>
+                <th width="20%">MObile No</th>
+                <th width="20%">National Id No</th>
+                <th width="20%">Birth Date</th>
+            </tr>
+        </thead>
+        @*<tfoot>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>MObile No</th>
+                    <th>National Id No</th>
+                    <th>Birth Date</th>
+                </tr>
+            </tfoot>*@
+    </table>
+</div>
+<hr>
+@*<footer>
+        <p>© 2016 - SCMC Management System</p>
+    </footer>*@

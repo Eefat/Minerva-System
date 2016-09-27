@@ -1,0 +1,35 @@
+﻿@using MinervaSystem.Base
+
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hello @User.Identity.Name <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    @if (ContextPerRequest.CurrentUser.IsSystemOrSiteAdmin)
+                    {
+                        <li><a href="/Admin"><i class="fa fa-cog"></i> Admin</a></li>
+                    }
+                    <li class="divider"></li>
+                    <li>@Html.ActionLink("Change Password", "ChangePassword", "Account", routeValues: null, htmlAttributes: null)</li>
+                    <li class="divider"></li>
+                    <li>@Html.ActionLink("Update Profile", "UpdateProfile", "Account", routeValues: null, htmlAttributes: null)</li>
+                    <li class="divider"></li>
+                    @*need to clear the local storage when logout to clear jQuery datatable state save*@
+                    <li><a href="javascript:document.getElementById('logoutForm').submit();localStorage.clear()"><i class="fa fa-sign-out"></i> Log off</a></li>
+                </ul>
+            </li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        @*<li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>*@
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        <li>@Html.ActionLink("Forgot Password?", "Login", "Account", routeValues: null, htmlAttributes: new { id = "forgorPasswordLink" })</li>
+    </ul>
+}

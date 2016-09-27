@@ -1,0 +1,67 @@
+﻿@using MinervaSystem.Base.Models;
+
+@{
+    ViewBag.ReturnUrl = "/Admin";
+    @Styles.Render("~/Content/kendo.office365")
+
+    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("View User Groups",
+        new BreadcrumbModel("View User Groups", new List<LinkModel>() { new LinkModel("/Admin", "Site Actions") }));
+}
+
+@Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
+
+<div id="placeHolder-main">
+    <div class="col-md-6 panel panel-default">
+        <div class="panel-body">
+			<label class="control-label">Active Users:</label><br />
+            <select class="form-control" id="ddlUsers">
+                @foreach (var user in MinervaSystem.Base.ContextPerRequest.GetAllUsers(inactiveUsers: false))
+                {
+                    <option value="@user.Id">@(user.Profile == null ? user.UserName : user.Profile.Name)</option>
+                }
+            </select>
+            <button onclick="GetUserGroups()" type="button" class="btn btn-default">View Groups</button>
+            <br />
+        </div>
+    </div>
+
+    <table cellspacing="5" cellpadding="10" id="userGroups" class="table table-striped"></table>
+    
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/kendo")
+    <script type="text/javascript">
+        var ddlUsers;
+
+        $(document).ready(function () {
+            ddlUsers = $("#ddlUsers").kendoDropDownList({ optionLabel: "Please select an user...", filter: "contains" }).data("kendoDropDownList");
+        });
+
+        function GetUserGroups() {
+            var userId = ddlUsers.value();
+            $("#userGroups").html("");
+            if (userId != "") {
+                $.ajax({
+                    url: '@Url.Action("GetGroupsByUser", "Admin")', type: "Post",
+                    data: { userId: userId },
+                    async: false, cache: false,
+                    success: function (response) {
+                        var html = "<tr><th>Security Groups for " + ddlUsers.text() + ":</th></tr>";
+                        if (response != null && response.length > 0) {
+                            for (var i = 0; i < response.length; i++) {
+                                html += "<tr><td>" + response[i] + "</td></tr>";
+                            }
+                        } else {
+                            html += "<tr><td>This user is not associated with any User Group.</td></tr>";
+                        }
+                        $("#userGroups").html(html);
+                    },
+                    error: function (xhr, status, err) {
+                        alert("Error: " + err);
+                    }
+                });
+            }
+        }
+    </script>
+}

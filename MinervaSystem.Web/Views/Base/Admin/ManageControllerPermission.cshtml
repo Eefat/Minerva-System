@@ -1,0 +1,348 @@
+﻿@using MinervaSystem.Base
+@using MinervaSystem.Base.Models
+@{
+    @Styles.Render("~/Content/datatables")
+    @Styles.Render("~/Content/kendo.office365")
+    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Manage Controller Permission",
+        new BreadcrumbModel("Manage Controller Permission", new List<LinkModel>() { new LinkModel("/Admin", "Site Actions") }));
+}
+
+@Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
+
+<div id="placeHolder-main">
+    <table id="tableControllerPermission" class="table datatable" cellspacing="0">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Controller</th>
+                <th>Count Groups</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Controller</th>
+                <th>Count Groups</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div id="winAddPermission">
+    <div class="form-group">
+        <label class="control-label lblController">Controller:</label><br />
+        <select multiple id="ddlAddGroups" class="form-control" data-placeholder="Please select user groups..." ></select>
+        <div style="padding: 15px 10px">
+            <input type="checkbox" name="chkAddPerm" value="0" onclick='SingleSelectCheckboxInGroup(this)' /> Limited - Has Limited Access<br />
+            <input type="checkbox" name="chkAddPerm" value="1" onclick='SingleSelectCheckboxInGroup(this)' /> Read - Can view only<br />
+            <input type="checkbox" name="chkAddPerm" value="2" onclick='SingleSelectCheckboxInGroup(this)' /> Add - Can view and add items<br />
+            <input type="checkbox" name="chkAddPerm" value="3" onclick='SingleSelectCheckboxInGroup(this)' /> Edit - Can view, add, and edit items<br />
+            <input type="checkbox" name="chkAddPerm" value="4" onclick='SingleSelectCheckboxInGroup(this)' /> FullControl - Has full control
+        </div>
+    </div>
+    <div class="modal-btn-toolbar">
+        <button onclick="AddPermission()" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Save</button>
+        <button onclick="winAddPermission.close()" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Cancel</button>
+    </div>
+</div>
+
+<div id="winEditPermission">
+    <div class="alert alert-warning" style="display:none"></div>
+    <div class="form-group">
+        <label class="control-label lblController">Controller:</label><br />
+        <select id="ddlEditGroup" class="form-control"></select>
+        <div style="padding: 15px 10px">
+            <input type="checkbox" name="chkEditPerm" value="0" onclick='SingleSelectCheckboxInGroup(this)' /> Limited - Has Limited Access<br />
+            <input type="checkbox" name="chkEditPerm" value="1" onclick='SingleSelectCheckboxInGroup(this)' /> Read - Can view only<br />
+            <input type="checkbox" name="chkEditPerm" value="2" onclick='SingleSelectCheckboxInGroup(this)' /> Add - Can view and add items<br />
+            <input type="checkbox" name="chkEditPerm" value="3" onclick='SingleSelectCheckboxInGroup(this)' /> Edit - Can view, add, and edit items<br />
+            <input type="checkbox" name="chkEditPerm" value="4" onclick='SingleSelectCheckboxInGroup(this)' /> FullControl - Has full control
+        </div>
+    </div>
+    <div class="modal-btn-toolbar">
+        <button onclick="EditPermission()" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Save</button>
+        <button onclick="winEditPermission.close()" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Cancel</button>
+    </div>
+</div>
+
+<div id="winRemovePermission">
+    <div class="form-group">
+        <label class="control-label lblController">Controller:</label><br /><br />
+        <select multiple id="ddlRemoveGroups" class="form-control" data-placeholder="Please select user groups to remove..."></select>
+    </div>
+    <div class="modal-btn-toolbar">
+        <button onclick="RemovePermission()" class="btn btn-default"><i class="fa fa-close btn-delete"></i> Remove</button>
+        <button onclick="winRemovePermission.close()" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Cancel</button>
+    </div>
+</div>
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/kendo")
+    <script type="text/javascript" language="javascript">
+        var datatable, datatableRow;
+        var winAddPermission, winEditPermission, winRemovePermission;
+        var multiSelectAddGroups, multiSelectRemoveGroups, ddlEditGroup;
+        var controllerId = null;
+
+        $(document).ready(function () {
+            multiSelectAddGroups = $("#ddlAddGroups").kendoMultiSelect({ dataSource: [], dataTextField: "Name", dataValueField: "Id"}).data("kendoMultiSelect");
+            multiSelectRemoveGroups = $("#ddlRemoveGroups").kendoMultiSelect({ dataSource: [], dataTextField: "Name", dataValueField: "Id" }).data("kendoMultiSelect");
+            ddlEditGroup = $("#ddlEditGroup").kendoDropDownList({
+                //dataSource: [],
+                dataTextField: "Name",
+                dataValueField: "Id",
+				optionLabel: "Select Group...",
+                change: function (e) {
+                    var groupId = this.value();
+                    $("input[name='chkEditPerm']:checked").prop("checked", false);
+                    $("#winEditPermission").find("div.alert").hide().html("");
+
+                    $.ajax({
+                        url: '@Url.Action("GetPermissionByControllerAndUserGroup", "Admin")', type: "Post",
+                        data: { controllerId: controllerId, groupId: groupId },
+                        async: false, cache: false,
+                        success: function (response) {
+                            $("input[name='chkEditPerm'][value='" + response + "']").prop("checked", true);
+                            return true;
+                        },
+                        error: function () { return false; }
+                    });
+                }
+            }).data("kendoDropDownList");
+
+            SetupControllerPermissionDataTable();
+            SetupPopupBoxes();
+        });
+
+        function SetupPopupBoxes()
+        {
+            winAddPermission = $("#winAddPermission").kendoWindow({
+                width: 500,
+                modal: true,
+                visible: false,
+                draggable: false,
+                title: "Add Permission",
+                close: function () {
+                    controllerId = null;
+                    multiSelectAddGroups.setDataSource(new kendo.data.DataSource({ data: [] }));
+                    $("input[name='chkAddPerm']:checked").prop("checked", false);
+                }
+            }).data("kendoWindow");
+
+            winEditPermission = $("#winEditPermission").kendoWindow({
+                width: 500,
+                modal: true,
+                visible: false,
+                draggable: false,
+                title: "Edit Permission",
+                close: function () {
+                    controllerId = null;
+                    ddlEditGroup.setDataSource(new kendo.data.DataSource({ data: [] }));
+                    ddlEditGroup.value("");
+                    $("input[name='chkEditPerm']:checked").prop("checked", false);
+                    $("#winEditPermission").find("div.alert").hide().html("");
+                    datatable.ajax.reload();
+                }
+            }).data("kendoWindow");
+
+            winRemovePermission = $("#winRemovePermission").kendoWindow({
+                width: 500,
+                modal: true,
+                visible: false,
+                draggable: false,
+                title: "Remove Permission",
+                close: function () {
+                    controllerId = null;
+                    multiSelectRemoveGroups.setDataSource(new kendo.data.DataSource({ data: [] }));
+                }
+            }).data("kendoWindow");
+        }
+
+        function SetupControllerPermissionDataTable()
+        {
+            datatable = $("#tableControllerPermission").DataTable({
+                processing: true,
+                ajax: '@Url.Action("GetAllControllers", "Admin")',
+                columnDefs: [{ targets: 0, data: null, orderable: false, class: "details-control", defaultContent: "" },
+                    { targets: 1, data: "Controller" },
+                    { targets: 2, data: "CountGroups", class: "text-center" },
+                    { targets: 3, data: null, orderable: false, class: "text-center addPermission-control", render: function (data, type, row) { return "<a><i class='fa fa-plus-square'></i> Add Permission</a>"; } },
+                    { targets: 4, data: null, orderable: false, class: "text-center editPermission-control", render: function (data, type, row) { return "<a><i class='fa fa-edit'></i> Edit permission</a>"; } },
+                    { targets: 5, data: null, orderable: false, class: "text-center removePermission-control", render: function (data, type, row) { return "<a><i class='fa fa-remove'></i> Remove permission</a>"; } }],
+                order: [[1, "asc"]]
+            });
+
+            $("#tableControllerPermission tbody").on("click", "td.addPermission-control", function () {
+                datatableRow = $(this).closest("tr");
+                var rowData = datatable.row(datatableRow).data();
+                controllerId = rowData.Id;
+                $(".lblController").text("Controller: " + rowData.Controller);
+
+                $.ajax({ //populate the groups those are not availabe in the controller
+                    url: '@Url.Action("GetNonExistingUserGroupsByController", "Admin")',
+                    type: "Post",
+                    data: { controllerId: controllerId },
+                    async: false,
+                    cache: false,
+                    success: function (response) {
+                        if (response != null && typeof response != "undefined") {
+                            multiSelectAddGroups.setDataSource(new kendo.data.DataSource({ data: response }));
+                            winAddPermission.center().open();
+                        }
+                    },
+                    error: function () { return false; }
+                });
+            });
+
+            $("#tableControllerPermission tbody").on("click", "td.editPermission-control", function () {
+                datatableRow = $(this).closest("tr");
+                var rowData = datatable.row(datatableRow).data();
+                controllerId = rowData.Id;
+                $(".lblController").text("Controller: " + rowData.Controller);
+
+                $.ajax({
+                    url: '@Url.Action("GetExistingUserGroupsByController", "Admin")',
+                    type: "Post",
+                    data: { controllerId: controllerId },
+                    async: false,
+                    cache: false,
+                    success: function (response) {
+                        if (response != null && typeof response != "undefined") {
+                            ddlEditGroup.setDataSource(new kendo.data.DataSource({ data: response }));
+                            winEditPermission.center().open();
+                        }
+                    },
+                    error: function () { return false; }
+                });
+            });
+
+            $("#tableControllerPermission tbody").on("click", "td.removePermission-control", function () {
+                datatableRow = $(this).closest("tr");
+                var rowData = datatable.row(datatableRow).data();
+                controllerId = rowData.Id;
+                $(".lblController").text("Controller: " + rowData.Controller);
+
+                $.ajax({
+                    url: '@Url.Action("GetExistingUserGroupsByController", "Admin")',
+                    type: "Post",
+                    data: { controllerId: controllerId },
+                    async: false,
+                    cache: false,
+                    success: function (response) {
+                        if (response != null && typeof response != "undefined") {
+                            multiSelectRemoveGroups.setDataSource(new kendo.data.DataSource({ data: response }));
+                            winRemovePermission.center().open();
+                        }
+                    },
+                    error: function () { return false; }
+                });
+            });
+
+            $("#tableControllerPermission tbody").on("click", "td.details-control", function () {
+                var tr = $(this).closest("tr");
+                var row = datatable.row(tr);
+                //var rowData = datatable.row(tr).data();
+
+                if (row.child.isShown()) {  // This row is already open, close it
+                    row.child.hide();
+                    tr.removeClass("shown");
+                }
+                else {
+                    //Close any opened rows
+                    var openedTr = $(this).closest("table").find("tr.shown");
+                    datatable.row(openedTr).child.hide();
+                    openedTr.removeClass("shown");
+
+                    //Get users in this group & open the row
+                    $.ajax({
+                        url: '@Url.Action("GetPermissionsByController", "Admin")',
+                        type: "Post",
+                        data: { controllerId: row.data().Id },
+                        async: false,
+                        cache: false,
+                        success: function (response) {
+                            var html = "<table><thead><tr><th>Group</th><th>Permission</th></tr></thead>";
+                            if (response.length > 0) {
+                                html += "<tbody>";
+                                for (var i = 0; i < response.length; i++) {
+                                    html += "<tr><td>" + GetJsonColumnValue(response[i].group) + "</td><td>" + GetJsonColumnValue(response[i].permission) + "</td></tr>";
+                                }
+                                html += "</tbody>";
+                            }
+                            row.child(html + "</table>").show();
+                            tr.addClass("shown");
+                        },
+                        error: function () {
+                            alert("An error occurred whilst getting the permissions.");
+                        }
+                    });
+                }
+            });
+        }
+
+        function AddPermission() {
+            var groups = multiSelectAddGroups.value();
+            if (groups.length > 0 && $("input[name='chkAddPerm']:checked").length > 0)
+            {
+                var permLevel = $("input[name='chkAddPerm']:checked").val();
+                $.ajax({
+                    url: '@Url.Action("AddPermissionsInController", "Admin")', type: "Post",
+                    data: { controllerId: controllerId, groupIds: groups, permLevel: permLevel },
+                    async: false, cache: false,
+                    success: function (response) {
+                        winAddPermission.close();
+                        datatable.ajax.reload();
+                        return true;
+                    },
+                    error: function () { return false; }
+                });
+            }
+        }
+
+        function EditPermission() {
+            var group = ddlEditGroup.value();
+            if (group.length > 0 && $("input[name='chkEditPerm']:checked").length > 0) {
+                var permLevel = $("input[name='chkEditPerm']:checked").val();
+                $.ajax({
+                    url: '@Url.Action("EditPermissionInController", "Admin")', type: "Post",
+                    data: { controllerId: controllerId, groupId: group, permLevel: permLevel },
+                    async: false, cache: false,
+                    success: function (response) {
+                        $("#winEditPermission").find("div.alert").show().html("Permission was saved successfully!");
+                        return true;
+                    },
+                    error: function () {
+                        $("#winEditPermission").find("div.alert").show().html("There was someting wrong while saving the permission.");
+                        return false;
+                    }
+                });
+            }
+        }
+
+        function RemovePermission() {
+            var groups = multiSelectRemoveGroups.value();
+            if (groups.length > 0) {
+                $.ajax({
+                    url: '@Url.Action("RemovePermissionsInController", "Admin")', type: "Post",
+                    data: { controllerId: controllerId, groupIds: groups },
+                    async: false, cache: false,
+                    success: function (response) {
+                        winRemovePermission.close();
+                        datatable.ajax.reload();
+                        return true;
+                    },
+                    error: function () { return false; }
+                });
+            }
+        }
+
+    </script>
+}

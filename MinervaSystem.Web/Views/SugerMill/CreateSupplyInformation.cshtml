@@ -1,0 +1,188 @@
+﻿@using MinervaSystem.Base.Models
+@using MinervaSystem.Base.Models.ViewModels;
+@model SupplyInformationViewModel
+@{
+    ViewBag.Title = "Create Supply Information";
+    @Styles.Render("~/Content/kendo.office365")
+    ViewBag.ReturnUrl = "/SugerMill";
+    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Create Supply Information", new BreadcrumbModel("Create Supply Information"));
+}
+@*<link href="~/Content/site.css" rel="stylesheet" />*@
+@Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div id="placeHolder-main" class="col-md-6">
+                    @*@Html.AntiForgeryToken()*@
+                    @Html.ValidationSummary("", new { @class = "text-danger" })
+                    @using (Html.BeginForm("CreateSupplyInformation", "SugerMill", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+                    {
+                        @Html.HiddenFor(m => m.FarmerId, new { @id = "txtFarmerId", @class = "form-control" })
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.FarmerName, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.FarmerName, new { @id = "txtFarmerName", @class = "form-control" })
+                                <input type="button" id="farmerPopup" value="Farmer">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.FarmerKey, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.FarmerKey, new { @id = "txtFarmerKey", @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.SugerMillId, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.DropDownListFor(m => m.SugerMillId, Model.AllSugerMills, "Please Select ...", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CaneVariety, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.EnumDropDownListFor(m => m.CaneVariety, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.CaneVariety, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.PlantRatoon, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.EnumDropDownListFor(m => m.PlantRatoon, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.PlantRatoon, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.LandArea, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.LandArea, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.EstimatedAmount, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.EstimatedAmount, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.DateofPlanting, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.DateofPlanting, new { @class = "form-control kendo-datepicker" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.SupplyDate, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.SupplyDate, new { @class = "form-control kendo-datepicker" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Note, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(m => m.Note, new { @id = "txtNote", @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="box-footer" style="float: right;">
+                            <button type="submit" value="Submit" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Submit</button>
+                            <a href="@ViewBag.ReturnUrl" class="btn btn-default "><i class="fa fa-ban btn-cancel"></i> Cancel</a>
+                        </div>
+                        @*<div class="btn-toolbar">
+                                <button type="submit" value="Submit" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Submit</button>
+                                <a href="@ViewBag.ReturnUrl" class="btn btn-default "><i class="fa fa-ban btn-cancel"></i> Cancel</a>
+                            </div>*@
+                    }
+
+
+                    @*<style>
+                        #winViewItem .k-grid-header .k-header {
+                            background-color: #ccc;
+                        }
+
+                        .k-grid-header {
+                            background-color: #ccc;
+                        }
+                    </style>*@
+
+                    <div id="winViewItem">
+                        @Html.Partial("~/Views/SugerMill/FarmersListPopup.cshtml")
+                    </div>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        var winViewItem;
+        $(document).ready(function () {
+            $('#farmerPopup').off('click').on('click', function () {
+                winViewItem.center().open();
+                $('#myWindow').parent().find('.k-window-titlebar,.k-window-actions').css('backgroundColor', '#fe2712');
+            });
+            winViewItem = $("#winViewItem").kendoWindow({
+                minWidth: 700,
+                modal: true,
+                visible: false,
+                draggable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"],
+                title: "Farmer Search",
+                open: function () {
+                    SetupAnnouncementsDataTable();
+                },
+                close: function () {
+                    itemId = null;
+                    $("#winViewItem div[id^='view-']").text("");
+                }
+            }).data("kendoWindow");
+        });
+        function SetupAnnouncementsDataTable() {
+
+            var datatable;
+            if (datatable != null) {
+                datatable.fnDestroy();
+                $('#tableFarmerListPopup').empty();
+            }
+            datatable = $("#tableFarmerListPopup").DataTable({
+                bDestroy: true,
+                bFilter: false,
+                ajax: "/SugerMill/GetAllFarmers",
+                columnDefs: [
+                    { targets: 0, data: null, defaultContent: "<button>Select</button>" },
+                    { targets: 1, data: "Name" },
+                    { targets: 2, data: "Address", orderable: false },
+                    { targets: 3, data: "CellPhone", orderable: false },
+                    { targets: 4, data: "NationalIdNo", orderable: false },
+                    {
+                        targets: 5, data: "BirthDate", render: function (data, type, row) {
+                            return FormatDateValue(ParseJsonDate(data), { "format": "yyyy-MM-dd" })
+                        }
+                    }
+                ],
+                order: [[1, "asc"]],
+                lengthChange: true,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
+            });
+            $('#tableFarmerListPopup tbody').on('click', 'button', function () {
+                var data = datatable.row($(this).parents('tr')).data();
+                getFarmerInfo(data);
+            });
+        }
+        function getFarmerInfo(farmerInfo) {
+            winViewItem.close();
+            $('#txtFarmerId').val(farmerInfo.Id);
+            $('#txtFarmerKey').val(farmerInfo.FarmerKey);
+            $('#txtFarmerName').val(farmerInfo.Name);
+        }
+    </script>
+}
