@@ -71,6 +71,22 @@ namespace MinervaSystem.Base.Models
         public virtual Farmer Farmer { get; set; }
         public virtual SugerMill SugerMill { get; set; }
     }
+    public class SupplyOrder : BaseEntity
+    {
+        public SupplyOrder() { }
+        public Int64 Id { get; set; }
+        public Int64 SugerMillId { get; set; }
+        public Int64 SupplyInformationId { get; set; }
+        public Int64? ZoneId { get; set; }
+        public Int64? ZoneManagerId { get; set; }
+        public string Code { get; set; }
+        public DateTime? CollectionDate { get; set; }
+        public Decimal? EstimatedAmount { get; set; }
+        public Decimal? CollectedAmount { get; set; }
+        public Boolean? IsCollected { get; set; }
+        public string Note { get; set; }
+        public virtual SupplyInformation SupplyInformation { get; set; }
+    }
     public class SupplyInformationSearch
     {
         public string MemberKey { get; set; }

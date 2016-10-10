@@ -655,5 +655,187 @@ namespace MinervaSystem.Web.Controllers
             }
         }
         #endregion
+
+
+        #region ----- Supply Order/Collection Information-----
+        public ActionResult ManageSupplyOrder()
+        {
+            ViewBag.HeaderContent = new HeaderContentModel("Supply Order",
+                new BreadcrumbModel("Supply Order", new List<LinkModel>() { new LinkModel("/SugerMill", "Site Actions") }));
+            return View();
+        }
+
+        public ActionResult ManageCollectionInformation()
+        {
+            ViewBag.HeaderContent = new HeaderContentModel("Collection Information",
+                new BreadcrumbModel("Collection Information", new List<LinkModel>() { new LinkModel("/SugerMill", "Site Actions") }));
+            return View();
+        }
+        //public PartialViewResult FarmerListPopup()
+        //{
+        //    return PartialView("FarmerListPopup.cshtml");
+        //}
+        public JsonResult GetAllSupplyOrders()
+        {
+            var supplyInformations = ContextPerRequest.CurrentContext.SupplyOrder.OrderBy(a => a.CollectionDate)
+                    .Select(a => new
+                    {
+                        a.Id,
+                        a.SugerMillId,
+                        a.SupplyInformationId,
+                        a.ZoneId,
+                        a.ZoneManagerId,
+                        a.Code,
+                        MemberKey = a.SupplyInformation.Farmer.FarmerIdNo,
+                        SugerMillName = a.SupplyInformation.SugerMill.Name,
+                        FarmerName = a.SupplyInformation.Farmer.Name,
+                        Address = a.SupplyInformation.Farmer.Address,
+                        a.CollectionDate,
+                        a.EstimatedAmount,
+                        a.CollectedAmount,
+                        a.IsCollected,
+                        a.Note
+                    }).ToList();
+            return Json(new { aaData = supplyInformations }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult GetAllSupplyOrders(SupplyInformationSearch supplyInformationSearch)
+        {
+            DateTime dateofPlanting = supplyInformationSearch.DateofPlanting != null ? DateTime.ParseExact(supplyInformationSearch.DateofPlanting, "d", null) : new DateTime();
+            DateTime supplyDate = supplyInformationSearch.SupplyDate != null ? DateTime.ParseExact(supplyInformationSearch.SupplyDate, "d", null) : new DateTime();
+     
+
+            var supplyOrders = from s in ContextPerRequest.CurrentContext.SupplyOrder
+                                     select s;
+            if (supplyInformationSearch.MemberKey != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.Farmer.FarmerIdNo.Contains(supplyInformationSearch.MemberKey));
+            if (supplyInformationSearch.Name != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.Farmer.Name.Contains(supplyInformationSearch.Name));
+            if (supplyInformationSearch.EstimatedAmount != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.EstimatedAmount == supplyInformationSearch.EstimatedAmount);
+            if (supplyInformationSearch.CaneVariety != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.CaneVariety == (CaneVariety)supplyInformationSearch.CaneVariety);
+            if (supplyInformationSearch.PlantRatoon != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.PlantRatoon == (PlantRatoon)supplyInformationSearch.PlantRatoon);
+            if (supplyInformationSearch.SugerMillId != null) supplyOrders = supplyOrders.Where(oh => oh.SugerMillId == supplyInformationSearch.SugerMillId);
+            if (supplyInformationSearch.LandArea != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.LandArea == supplyInformationSearch.LandArea);
+            if (supplyInformationSearch.DateofPlanting != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.DateofPlanting == dateofPlanting);
+            if (supplyInformationSearch.SupplyDate != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.SupplyDate == supplyDate);
+
+            var list = supplyOrders.OrderBy(a => a.CollectionDate)
+            .Select(a => new
+            {
+                a.Id,
+                a.SugerMillId,
+                a.SupplyInformationId,
+                a.ZoneId,
+                a.ZoneManagerId,
+                a.Code,
+                MemberKey = a.SupplyInformation.Farmer.FarmerIdNo,
+                SugerMillName = a.SupplyInformation.SugerMill.Name,
+                FarmerName = a.SupplyInformation.Farmer.Name,
+                Address = a.SupplyInformation.Farmer.Address,
+                a.CollectionDate,
+                a.EstimatedAmount,
+                a.CollectedAmount,
+                a.IsCollected,
+                a.Note
+            }).ToList();
+            return Json(new { aaData = list }, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetSupplyOrderDetails(int supplyOrderId)
+        {
+            var SupplyOrder = ContextPerRequest.CurrentContext.SupplyOrder.Find(Convert.ToInt64(supplyOrderId));
+            var Author = ContextPerRequest.GetUserNameById(SupplyOrder.Author);
+            var Editor = ContextPerRequest.GetUserNameById(SupplyOrder.Editor);
+            var json = new
+            {
+                SupplyOrder.Id,
+                SupplyOrder.SugerMillId,
+                SupplyOrder.SupplyInformationId,
+                SupplyOrder.ZoneId,
+                SupplyOrder.ZoneManagerId,
+                SupplyOrder.Code,
+                MemberKey = SupplyOrder.SupplyInformation.Farmer.FarmerIdNo,
+                SugerMillName = SupplyOrder.SupplyInformation.SugerMill.Name,
+                FarmerName = SupplyOrder.SupplyInformation.Farmer.Name,
+                Address = SupplyOrder.SupplyInformation.Farmer.Address,
+                SupplyOrder.CollectionDate,
+                SupplyOrder.EstimatedAmount,
+                SupplyOrder.CollectedAmount,
+                SupplyOrder.IsCollected,
+                SupplyOrder.Note,
+                Author,
+                Editor
+            };
+            return Json(json, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public ActionResult CreateSupplyOrder(SupplyOrderViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    SupplyOrder supplyOrder = new SupplyOrder();
+                    supplyOrder.Id = model.Id;
+                    supplyOrder.SugerMillId = model.SugerMillId;
+                    supplyOrder.SupplyInformationId = model.SupplyInformationId;
+                    supplyOrder.ZoneId = model.ZoneId;
+                    supplyOrder.ZoneManagerId = model.ZoneManagerId;
+                    supplyOrder.SupplyInformationId = model.SupplyInformationId;
+                    supplyOrder.Code = model.Code;
+                    supplyOrder.CollectionDate = model.CollectionDate;
+                    supplyOrder.CollectedAmount = model.CollectedAmount;
+                    supplyOrder.EstimatedAmount = model.EstimatedAmount;
+                    supplyOrder.IsCollected = model.IsCollected;
+                    supplyOrder.Note = model.Note;
+                    ContextPerRequest.CurrentContext.SupplyOrder.Add(supplyOrder);
+                    ContextPerRequest.CurrentContext.SaveChanges();
+                    return RedirectToAction("ManagCollectionInformation", "SupplyOrder");
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateSupplyOrder(SupplyOrderViewModel model)
+        {
+            try
+            {
+                var supplyOrder = ContextPerRequest.CurrentContext.SupplyOrder.Find(model.Id);
+                supplyOrder.ZoneId = model.ZoneId;
+                supplyOrder.ZoneId = model.ZoneId;
+                supplyOrder.ZoneManagerId = model.ZoneManagerId;
+                supplyOrder.CollectionDate = model.CollectionDate;
+                supplyOrder.EstimatedAmount = model.EstimatedAmount;
+                supplyOrder.CollectedAmount = model.CollectedAmount;
+                supplyOrder.IsCollected = model.IsCollected;
+                supplyOrder.Note = model.Note;
+                ContextPerRequest.CurrentContext.SaveChanges();
+                return RedirectToAction("ManagCollectionInformation", "SugerMill");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+            return View(model);
+        }
+        public ActionResult DeleteSupplyOrder(int supplyOrderId)
+        {
+            try
+            {
+                var supplyOrder = ContextPerRequest.CurrentContext.SupplyOrder.Find(supplyOrderId);
+                ContextPerRequest.CurrentContext.SupplyOrder.Remove(supplyOrder);
+                ContextPerRequest.CurrentContext.SaveChanges();
+                return new HttpStatusCodeResult(HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Conflict, ex.Message);
+            }
+        }
+        #endregion
     }
 }

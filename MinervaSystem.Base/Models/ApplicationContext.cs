@@ -27,6 +27,7 @@ namespace MinervaSystem.Base.Models
         public DbSet<PagePermission> PagePermissions { get; set; }
         public DbSet<Farmer> Farmer { get; set; }
         public DbSet<SupplyInformation> SupplyInformation { get; set; }
+        public DbSet<SupplyOrder> SupplyOrder { get; set; }
         public DbSet<SugerMill> SugerMill { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

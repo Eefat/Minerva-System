@@ -108,6 +108,34 @@ namespace MinervaSystem.Base.Models.ViewModels
         [Display(Name = "Note")]
         public string Note { get; set; }
     }
+    public class SupplyOrderViewModel
+    {
+        public Int64 Id { get; set; }
+        public Int64 SugerMillId { get; set; }
+        public Int64 SupplyInformationId { get; set; }
+        public Int64? ZoneId { get; set; }
+        public Int64? ZoneManagerId { get; set; }
+        [Display(Name = "Suger Mill")]
+        public string SugerMillName { get; set; }
+        [Display(Name = "Farmer")]
+        public string FarmerName { get; set; }
+        [Display(Name = "Farmer")]
+        public string MemberKey { get; set; }
+        [Display(Name = "Address")]
+        public string Address { get; set; }
+        [Display(Name = "Code")]
+        public string Code { get; set; }
+        [Display(Name = "Collection Date")]
+        public DateTime? CollectionDate { get; set; }
+        [Display(Name = "Estimated Amount")]
+        public Decimal? EstimatedAmount { get; set; }
+        [Display(Name = "Collected Amount")]
+        public Decimal? CollectedAmount { get; set; }
+        [Display(Name = "Is Collected")]
+        public Boolean? IsCollected { get; set; }
+        [Display(Name = "Note")]
+        public string Note { get; set; }
+    }
     public class SupplyInformationViewModel
     {
         public Int64 Id { get; set; }
