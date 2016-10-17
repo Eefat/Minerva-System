@@ -63,6 +63,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -670,8 +671,11 @@
     <Content Include="Views\SugerMill\UpdateSugerMill.cshtml" />
     <Content Include="Views\SugerMill\ManageMail.cshtml" />
     <Content Include="Views\SugerMill\ComposeMail.cshtml" />
+    <Content Include="Views\SugerMill\ManageCollectionInformation.cshtml" />
+    <Content Include="Views\SugerMill\ManageSupplyOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\telerik\images\" />
     <Folder Include="Controllers\" />
   </ItemGroup>
   <ItemGroup>

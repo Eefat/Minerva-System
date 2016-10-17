@@ -41,8 +41,10 @@ namespace MinervaSystem.Base
                 "~/Scripts/jquery.blockUI.js",
                 "~/Scripts/GlobalFunctions.js",
                 "~/Scripts/bootstrap.min.js",
-                "~/Scripts/DataTables/jquery.dataTables.js",
+                "~/Scripts/DataTables/jquery.dataTables.min.js",
                 "~/Scripts/DataTables/dataTables.bootstrap.min.js",
+                "~/Scripts/DataTables/dataTables.responsive.min.js",
+                "~/Scripts/DataTables/responsive.bootstrap.min.js",
                 "~/Scripts/Admin/app.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/DataTables/Allbuttons").Include(
@@ -57,7 +59,8 @@ namespace MinervaSystem.Base
             //------------------------ Style Bundle ----------------------------
             bundles.Add(new StyleBundle("~/Content/css").Include(   //Default load
                 "~/Content/bootstrap.css",
-                "~/Content/DataTables/dataTables.bootstrap.css",
+                //"~/Content/DataTables/dataTables.bootstrap.min.css",
+                //"~/Content/DataTables/responsive.bootstrap.min.css",
                 //"~/Content/site.bootstrap.css",
                 //"~/Content/simple-sidebar.css",
                 "~/Content/font-awesome.min.css",
@@ -71,7 +74,8 @@ namespace MinervaSystem.Base
                 "~/Content/chosen.css"));
 
             bundles.Add(new StyleBundle("~/Content/datatables").Include(
-                "~/Content/DataTables/css/dataTables.bootstrap.css",
+                "~/Content/DataTables/css/dataTables.bootstrap.min.css",
+                "~/Content/DataTables/css/responsive.bootstrap.min.css",
                 "~/Content/site.datatables.css"));
 
             bundles.Add(new StyleBundle("~/Content/kendo.office365").Include(

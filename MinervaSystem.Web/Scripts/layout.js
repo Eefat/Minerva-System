@@ -27,7 +27,14 @@
 
         //check if kendo is loaded and render default controls
         if ($("script[src*='/kendo.all.js']").length > 0 || $("script[src*='/kendo.all.min.js']").length > 0 || $("script[src*='/kendo.datepicker.min.js']").length > 0) {
-            $(".kendo-datepicker").kendoDatePicker();
+            $(".kendo-datepicker").kendoDatePicker(
+                { format: "dd/MM/yyyy" }
+            );
+            $(".kendo-datetimepicker").kendoDateTimePicker({
+                value: new Date(),
+                format: "dd/MM/yyyy hh:mm tt",
+                interval: 15
+            });
         }
         
     });

@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using MinervaSystem.Base;
 using MinervaSystem.Base.Models;
 using MinervaSystem.Base.Models.ViewModels;
+using System.Data.Entity.Core.Objects;
 
 namespace MinervaSystem.Web.Controllers
 {
@@ -675,7 +676,72 @@ namespace MinervaSystem.Web.Controllers
         //{
         //    return PartialView("FarmerListPopup.cshtml");
         //}
+
         public JsonResult GetAllSupplyOrders()
+        {
+            DateTime? dateofPlanting = System.DateTime.Now;
+            var supplyInformations = ContextPerRequest.CurrentContext.SupplyInformation
+                                    .Where(oh => ((oh.CaneVariety == (CaneVariety)1 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) >= 12
+                                                 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) <= 14))
+                                                 ||(oh.CaneVariety == (CaneVariety)1 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) == 12)).
+                                                                        OrderBy(a => a.Farmer.Name)
+                    .Select(a => new
+                    {
+                        a.Id,
+                        a.FarmerId,
+                        a.Farmer.Name,
+                        SugerMillName = a.SugerMill.Name,
+                        CaneVariety = a.CaneVariety.ToString(),
+                        PlantRatoon = a.PlantRatoon.ToString(),
+                        a.LandArea,
+                        a.EstimatedAmount,
+                        a.DateofPlanting,
+                        a.SupplyDate
+                        //Author = ContextPerRequest.GetUserNameById(a.Author),
+                        //Editor = ContextPerRequest.GetUserNameById(a.Editor)
+                    }).ToList();
+            return Json(new { aaData = supplyInformations }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult GetAllSupplyOrders(SupplyInformationSearch supplyInformationSearch)
+        {
+            //DateTime? currentDate = System.DateTime.Now;
+            DateTime? dateofPlanting = supplyInformationSearch.DateofPlanting != null ? DateTime.ParseExact(supplyInformationSearch.DateofPlanting, "d", null) : System.DateTime.Now;
+            var supplyInformations = from s in ContextPerRequest.CurrentContext.SupplyInformation
+                                     select s;
+            if (supplyInformationSearch.MemberKey != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.FarmerIdNo.Contains(supplyInformationSearch.MemberKey));
+            if (supplyInformationSearch.Name != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.Name.Contains(supplyInformationSearch.Name));
+            if (supplyInformationSearch.EstimatedAmount != null) supplyInformations = supplyInformations.Where(oh => oh.EstimatedAmount == supplyInformationSearch.EstimatedAmount);
+            if (supplyInformationSearch.CaneVariety != null)  supplyInformations = supplyInformations.Where(oh => (oh.CaneVariety == (CaneVariety)supplyInformationSearch.CaneVariety));
+            if (supplyInformationSearch.PlantRatoon != null) supplyInformations = supplyInformations.Where(oh => oh.PlantRatoon == (PlantRatoon)supplyInformationSearch.PlantRatoon);
+            if (supplyInformationSearch.SugerMillId != null) supplyInformations = supplyInformations.Where(oh => oh.SugerMillId == supplyInformationSearch.SugerMillId);
+            if (supplyInformationSearch.LandArea != null) supplyInformations = supplyInformations.Where(oh => oh.LandArea == supplyInformationSearch.LandArea);
+           
+
+            supplyInformations = supplyInformations.Where(oh => ((oh.CaneVariety == (CaneVariety)1 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) >= 12
+                                             && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) <= 14))
+                                             || (oh.CaneVariety == (CaneVariety)0 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) >= 12));
+
+
+            var list = supplyInformations.OrderBy(a => a.Farmer.Name)
+            .Select(a => new
+            {
+                a.Id,
+                a.FarmerId,
+                a.Farmer.Name,
+                SugerMillName = a.SugerMill.Name,
+                CaneVariety = a.CaneVariety.ToString(),
+                PlantRatoon = a.PlantRatoon.ToString(),
+                a.LandArea,
+                a.EstimatedAmount,
+                a.DateofPlanting,
+                a.SupplyDate
+            }).ToList();
+            return Json(new { aaData = list }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public JsonResult GetAllCollectionInformations()
         {
             var supplyInformations = ContextPerRequest.CurrentContext.SupplyOrder.OrderBy(a => a.CollectionDate)
                     .Select(a => new
@@ -699,7 +765,7 @@ namespace MinervaSystem.Web.Controllers
             return Json(new { aaData = supplyInformations }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public JsonResult GetAllSupplyOrders(SupplyInformationSearch supplyInformationSearch)
+        public JsonResult GetAllCollectionInformations(SupplyInformationSearch supplyInformationSearch)
         {
             DateTime dateofPlanting = supplyInformationSearch.DateofPlanting != null ? DateTime.ParseExact(supplyInformationSearch.DateofPlanting, "d", null) : new DateTime();
             DateTime supplyDate = supplyInformationSearch.SupplyDate != null ? DateTime.ParseExact(supplyInformationSearch.SupplyDate, "d", null) : new DateTime();

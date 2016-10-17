@@ -7,28 +7,28 @@
 }
 @Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
 
-<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" />
-<link href="~/Content/PqGrid/pqgrid.min.css" rel="stylesheet" />
-<link href="~/Content/PqGrid/pqgrid.ui.min.css" rel="stylesheet" />
-<link href="~/Content/PqGrid/themes/pqgrid.css" rel="stylesheet" />
+@Styles.Render("~/Content/datatables")
+
+
+<link href="~/Content/telerik/kendo.common-material.min.css" rel="stylesheet" />
+<link href="~/Content/telerik/kendo.rtl.min.css" rel="stylesheet" />
+<link href="~/Content/telerik/kendo.material.min.css" rel="stylesheet" />
+<link href="~/Content/telerik/kendo.material.mobile.min.css" rel="stylesheet" />
 <style>
     .table > thead > tr > th {
         background: #605ca8;
         color: #fff;
     }
+    .form-control {
+        height:auto;
+    }
+    /*.k-header{background:#ccc;}*/
 </style>
 
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
-            @*<div class="box">
-                <div class="box-header">
-                    <div id="placeHolder-pageDescription">
-                        <a href="javascript:void(0)" class="addnew-link">
-                            <i class="fa fa-plus-square add-icon"></i> Add new supply
-                        </a>
-                    </div>
-                </div>*@
+            <div class="box">
                 <form role="form">
                     <div class="box-body">
                         <div class="row">
@@ -100,11 +100,10 @@
                 </form>
 
                 <div class="box-body">
-                    <table id="tableSupplyInformation" class="table table-bordered table-striped" cellspacing="0">
+                    <table id="tableSupplyInformation" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0">
                         <thead>
                             <tr>
                                 <th width="20%">Farmer Name</th>
-                                @*<th width="10%">Cane Variety</th>*@
                                 <th width="10%">Plant/Ratoon</th>
                                 <th width="10%">Land Area</th>
                                 <th width="20%">Estimated Amount</th>
@@ -118,71 +117,83 @@
                 </div>
             </div>
         </div>
+    </div>
 </section>
 
-<div id="winViewItem">
-    <div class="form-group">
-        <label class="control-label col-sm-3">Name:</label>
-        <div id="view-FarmerName" class="col-sm-7"></div>
-    </div><br />
-    <div class="form-group">
-        <label class="control-label col-sm-3">Cane Variety:</label>
-        <div id="view-CaneVariety" class="col-sm-7"></div>
-    </div><br />
-    <div class="form-group">
-        <label class="control-label col-sm-3">Plant/Ratoon:</label>
-        <div id="view-PlantRatoon" class="col-sm-7"></div>
-    </div><br />
-    <div class="form-group">
-        <label class="control-label col-sm-3">Land Area:</label>
-        <div id="view-LandArea" class="col-sm-7"></div>
-    </div><br />
-    <div class="form-group">
-        <label class="control-label col-sm-3">Estimated Amount:</label>
-        <div id="view-EstimatedAmount" class="col-sm-7"></div>
-    </div><br />
-    <div class="form-group">
-        <label class="control-label col-sm-3">Date of Planting:</label>
-        <div id="view-DateofPlanting" class="col-sm-7"></div>
-    </div><br />
-    <div class="form-group">
-        <label class="control-label col-sm-3">Supply Date:</label>
-        <div id="view-SupplyDate" class="col-sm-7"></div>
-    </div>
-    <div class="modal-btn-toolbar">
-        <button onclick="winViewItem.close()" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Close</button>
+<div id="winViewItem" style="overflow:hidden;">
+    <div style="margin:1px; overflow:hidden;">
+        <div class="row">
+            <label class="col-xs-3 col-form-label">Name:</label>
+            <div class="col-sm-3">
+                <p id="soFarmerName" class="">dfdfdff</p>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-xs-3 col-form-label">Suger Mill:</label>
+            <div class="col-sm-7">
+                <p id="soSugerMillName" class="">dfdfdf</p>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-xs-3 col-form-label">Plant/Ratoon:</label>
+            <div class="col-sm-7">
+                <p id="soPlantRatoon" class="">sdsdsdsdsd</p>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-xs-3 col-form-label">Land Area:</label>
+            <div class="col-sm-7">
+                <p id="soLandArea" class="">sdsdsds</p>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-xs-3 col-form-label">Estimated Amount:</label>
+            <div class="col-sm-7">
+                <p id="soTotalAmount" class="">sdsdsdsdsd</p>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="txtAmountoCollecr" class="col-xs-3 col-form-label">Amount to Collect:</label>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" id="txtAmountoCollecr" placeholder="Amount to Collect">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-xs-3 col-form-label">Collection Date:</label>
+            <div class="col-xs-7"><input type="text" class="form-control kendo-datetimepicker" id="txtCollectionDate" placeholder="Collection Date"></div>
+        </div>
+        <div class="form-group row">
+            <label class="col-xs-3 col-form-label">Note:</label>
+            <div class="col-xs-7"><textarea rows="4" cols="10" class="form-control"></textarea></div>
+        </div>
+        <hr>
+        <div class="modal-btn-toolbar" style="float:right;">
+            <button type="button" id="btnSupplyOrderSubmit" value="Submit" class="btn btn-default" style="float:right"><i class="fa fa-check-square-o btn-save"></i> Submit</button>
+            <button onclick="winViewItem.close()" class="btn btn-default" style="float:right"><i class="fa fa-ban btn-cancel"></i> Close</button>
+        </div>
     </div>
 </div>
 
-<div id="winDeleteItem">
-    <p>
-        The supply information will be permanently deleted and cannot be recovered.<br />
-        Are you sure you want to delete the item?
-    </p>
-    <div class="modal-btn-toolbar">
-        <button onclick="DeleteSupplyOrder()" class="btn btn-default"><i class="fa fa-close btn-delete"></i> Delete</button>
-        <button onclick="winDeleteItem.close()" class="btn btn-default"><i class="fa fa-ban btn-cancel"></i> Cancel</button>
-    </div>
-</div>
 
 
-@*<div style="display:none">
-        @Html.Partial("~/Views/SugerMill/FarmersListPopup.cshtml")
-    </div>*@
+
 
 @section Scripts
 {
+@*<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>*@
     @Scripts.Render("~/bundles/DataTables/Allbuttons")
     @Scripts.Render("~/bundles/kendo")
 
-    <script src="~/Scripts/jquery-ui-1.11.4.min.js"></script>
-    <script src="~/Scripts/PqGrid/pqgrid.min.js"></script>
+
+@*<script src="https://cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.1.0/js/responsive.bootstrap.min.js"></script>*@
     <script type="text/javascript" language="javascript">
         var datatable;
         var winAddItem, winEditItem, winViewItem, winDeleteItem;
         var itemId = null;
 
         $(document).ready(function () {
+            $('#example').DataTable();
             populateDropDown();
             SetupSupplyOrdersDataTable();
             SetupPopupBoxes();
@@ -229,7 +240,7 @@
                     url: '@Url.Action("GetAllSupplyOrders", "SugerMill")',
                     type: "Post",
                     //dataType: 'json',
-                    data: supplyInformationSearchObj
+                    data: supplyOrderSearchObj
                 },
                 columnDefs: [
                     //{ targets: 0, data: null, orderable: false, class: "details-control", defaultContent: "", render: function (data, type, row) { return "<i class='fa fa-plus-circle' aria-hidden='true'></i>"; } },
@@ -239,8 +250,8 @@
                     { targets: 3, data: "EstimatedAmount", orderable: false },
                     { targets: 4, data: "DateofPlanting", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "yyyy-MM-dd" }) } },
                     //{ targets: 4, data: "SupplyDate", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "yyyy-MM-dd" }) } },
-                    { targets: 5, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='supplyId=" + row.Id + ";winViewItem.center().open();'><i id='addHide' class='fa fa-bars'></i></a>"; } },
-                    { targets: 6, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateSupplyInformation", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },
+                    { targets: 5, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='supplyorder.initSupplyOrder(this);'><i id='addHide' class='fa fa-bars'></i></a>"; } },
+                    { targets: 6, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateSupplyOrder", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },
                     { targets: 7, data: null, orderable: false, class: "text-center delete-control", render: function (data, type, row) { return "<a onclick='itemId=" + row.Id + ";winDeleteItem.center().open();'><i class='fa fa-remove'></i></a>"; } }],
                 order: [[1, "asc"]],
                 lengthChange: true,
@@ -285,28 +296,12 @@
 
         function SetupPopupBoxes() {
             winViewItem = $("#winViewItem").kendoWindow({
-                minWidth: 500,
+                minWidth: 600,
                 modal: true,
                 visible: false,
                 draggable: false,
-                title: "View Farmer",
-                open: function () {
-                    $.ajax({
-                        url: '@Url.Action("GetSupplyInformationDetails", "SugerMill")', type: "Post",
-                        data: { farmerId: farmerId },
-                        async: false, cache: false,
-                        success: function (response) {
-                            $("#view-Name").text(response.Name);
-                            $("#view-Address").text(response.Address);
-                            $("#view-CellPhone").text(response.CellPhone);
-                            $("#view-NationalIdNo").text(response.NationalIdNo);
-                            $("#view-BirthDate").text(FormatDateValue(ParseJsonDate(response.BirthDate), { "format": "MM/dd/yyyy hh:mm tt" }));
-                            $("#view-Division").text(response.Division);
-                            $("#view-District").text(response.District);
-                            $("#view-Thana").text(response.Thana);
-                            $("#view-Village").text(response.Village);
-                        }, error: function () { return false; }
-                    });
+                title: "Supply Order",
+                open: function (obj) {
                 },
                 close: function () {
                     itemId = null;
@@ -314,30 +309,6 @@
                 }
             }).data("kendoWindow");
         }
-
-        function AddAnnouncement() {
-            var title = $.trim($("#add-title").val());
-            var body = $.trim($("#add-body").val());
-            var datepicker = $("#add-expires").data("kendoDatePicker");
-            var expires = (datepicker.value()) ? datepicker.value().toJSON() : null;
-
-            if (title.length > 0 && body.length > 0) {
-                $.ajax({
-                    url: '@Url.Action("GetFarmerDetails", "AddFarmer")', type: "Post",
-                    data: { title: title, body: body, expires: expires },
-                    async: false, cache: false,
-                    success: function (response) {
-                        winAddItem.close();
-                        datatable.ajax.reload();
-                        return true;
-                    }, error: function () { return false; }
-                });
-            } else {
-                $("#winAddItem div.alert").show();
-            }
-        }
-
-
         function searchSupplyOrders() {
             var supplyInformationSearchObj = new Object();
             supplyInformationSearchObj.MemberKey = !$("#txtMemberKey").val() ? null : $("#txtMemberKey").val();
@@ -355,7 +326,7 @@
             supplyInformationSearchObj.DateofPlanting = !$("#txtDateofPlanting").val() ? null : $("#txtDateofPlanting").val();
             supplyInformationSearchObj.SupplyDate = !$("#txtSupplyDate").val() ? null : $("#txtSupplyDate").val();
             if (supplyInformationSearchObj) {
-                SetupSupplyOrderssDataTable(supplyOrderSearchObj);
+                SetupSupplyOrdersDataTable(supplyInformationSearchObj);
             }
         }
 
@@ -369,6 +340,41 @@
             $("#ddlPlantRatoon").val('');
             $("#txtSupplyDate").val('');
             $("#txtDateofPlanting").val('');
+        }
+
+        var supplyorder = {
+            initSupplyOrder: function (obj) {
+                var tr = $(obj).closest("tr");
+                var supplyOrderData = datatable.row(tr);
+                $('#btnSupplyOrderSubmit').off('click').click(function () {
+                    supplyorder.createSupplyOrder(supplyOrderData);
+                });
+                winViewItem.center().open();
+            },
+            createSupplyOrder: function (supplyOrderData) {
+
+            },
+            validateSupplyOrder: function(){
+
+            },
+            getSupplyOrderData: function (supplyOrderData) {
+                var supplyOrderObj = new Object();
+                supplyOrderObj.SugerMillId = supplyOrderData.SugerMillId;
+                supplyOrderObj.SupplyInformationId = supplyOrderData.SupplyInformationId;
+                supplyOrderObj.Name = !$("#txtName").val() ? null : $("#txtName").val();
+                var landArea = parseFloat($('#txtLandArea').val());
+                supplyOrderObj.LandArea = isNaN(landArea) ? null : landArea;
+                var estimatedAmount = parseFloat($('#txtEstimatedAmount').val());
+                supplyOrderObj.EstimatedAmount = isNaN(estimatedAmount) ? null : estimatedAmount;
+                var sugerMillId = parseInt($("#ddlSugerMillId").val());
+                supplyOrderObj.SugerMillId = isNaN(sugerMillId) ? null : sugerMillId;
+                var caneVariety = parseInt($("#ddlCaneVariety").val());
+                supplyOrderObj.CaneVariety = isNaN(caneVariety) ? null : caneVariety;
+                var plantRatoon = parseInt($("#ddlPlantRatoon").val());
+                supplyOrderObj.PlantRatoon = isNaN(plantRatoon) ? null : plantRatoon;
+                supplyOrderObj.DateofPlanting = !$("#txtDateofPlanting").val() ? null : $("#txtDateofPlanting").val();
+                supplyOrderObj.SupplyDate = !$("#txtSupplyDate").val() ? null : $("#txtSupplyDate").val();
+            }
         }
     </script>
 }
