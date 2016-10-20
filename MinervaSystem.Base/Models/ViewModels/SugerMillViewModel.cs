@@ -167,4 +167,20 @@ namespace MinervaSystem.Base.Models.ViewModels
         public string Note { get; set; }
 
     }
+
+
+    public class SupplyOrderRequest
+    {
+        public Int64 Id { get; set; }
+        public Int64 SugerMillId { get; set; }
+        public Int64 SupplyInformationId { get; set; }
+        public Int64? ZoneId { get; set; }
+        public Int64? ZoneManagerId { get; set; }
+        public Decimal? CollectedAmount { get; set; }
+        public Decimal? EstimatedAmount { get; set; }
+        public string Code { get; set; }
+        public Boolean? IsCollected { get; set; }
+        public String CollectionDate { get; set; }
+        public string Note { get; set; }
+    }
 }

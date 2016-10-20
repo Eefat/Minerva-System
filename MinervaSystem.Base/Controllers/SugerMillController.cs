@@ -690,6 +690,7 @@ namespace MinervaSystem.Web.Controllers
                         a.Id,
                         a.FarmerId,
                         a.Farmer.Name,
+                        SugerMillId = a.SugerMill.Id,
                         SugerMillName = a.SugerMill.Name,
                         CaneVariety = a.CaneVariety.ToString(),
                         PlantRatoon = a.PlantRatoon.ToString(),
@@ -729,6 +730,7 @@ namespace MinervaSystem.Web.Controllers
                 a.Id,
                 a.FarmerId,
                 a.Farmer.Name,
+                SugerMillId = a.SugerMill.Id,
                 SugerMillName = a.SugerMill.Name,
                 CaneVariety = a.CaneVariety.ToString(),
                 PlantRatoon = a.PlantRatoon.ToString(),
@@ -833,33 +835,27 @@ namespace MinervaSystem.Web.Controllers
         }
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public ActionResult CreateSupplyOrder(SupplyOrderViewModel model)
+        public ActionResult CreateSupplyOrder(SupplyOrderRequest model)
         {
             try
             {
+                DateTime dateofPlanting = DateTime.ParseExact(model.CollectionDate, "dd/MM/yyyy hh:mm tt", null);
                 if (ModelState.IsValid)
                 {
                     SupplyOrder supplyOrder = new SupplyOrder();
-                    supplyOrder.Id = model.Id;
                     supplyOrder.SugerMillId = model.SugerMillId;
                     supplyOrder.SupplyInformationId = model.SupplyInformationId;
-                    supplyOrder.ZoneId = model.ZoneId;
-                    supplyOrder.ZoneManagerId = model.ZoneManagerId;
-                    supplyOrder.SupplyInformationId = model.SupplyInformationId;
-                    supplyOrder.Code = model.Code;
-                    supplyOrder.CollectionDate = model.CollectionDate;
-                    supplyOrder.CollectedAmount = model.CollectedAmount;
+                    supplyOrder.CollectionDate = dateofPlanting;
                     supplyOrder.EstimatedAmount = model.EstimatedAmount;
-                    supplyOrder.IsCollected = model.IsCollected;
                     supplyOrder.Note = model.Note;
                     ContextPerRequest.CurrentContext.SupplyOrder.Add(supplyOrder);
                     ContextPerRequest.CurrentContext.SaveChanges();
-                    return RedirectToAction("ManagCollectionInformation", "SupplyOrder");
+                    return Json(new { success = 0, responseText = "Supply Order is Created." }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                return Json(new { success = false, responseText = ex.Message}, JsonRequestBehavior.AllowGet);
             }
 
             return View(model);
