@@ -391,10 +391,11 @@
                 var encodedString = Base64.encode(string);
                 $.ajax({
                     url: "https://api.infobip.com/sms/1/text/single",
-                    headers: { 'Authorization': 'Basic aXRlbDc4NjowMTgxODg1Njc5MlNNUw' },
-                    type: 'POST',
-                    dataType: 'json',
-                    data: { "from": "InfoSMS", "to": "8801720211262", "text": "My first Infobip SMS" },
+                    type: "POST",
+                    data: JSON.stringify({ "from": "InfoSMS", "to": "8801720211262", "text": "My first Infobip SMS" }),
+                    headers: { "Authorization": "Basic aXRlbDc4NjowMTgxODg1Njc5MlNNUw" },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
                     success: function (response) {
                         winViewItem.close();
 
