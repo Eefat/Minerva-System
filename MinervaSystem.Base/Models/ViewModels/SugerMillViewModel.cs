@@ -36,7 +36,7 @@ namespace MinervaSystem.Base.Models.ViewModels
 
         [Display(Name = "Address")]
         public string Address { get; set; }
- 
+
         [Display(Name = "Division")]
         public string Division { get; set; }
 
@@ -62,7 +62,7 @@ namespace MinervaSystem.Base.Models.ViewModels
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         [Display(Name = "User Name")]
         public string Name { get; set; }
-        
+
         [Display(Name = "Birth Date")]
         public DateTime? BirthDate { get; set; }
 
@@ -77,16 +77,16 @@ namespace MinervaSystem.Base.Models.ViewModels
 
         [Display(Name = "Cell Phone")]
         public string CellPhone { get; set; }
-        
+
         [Display(Name = "Phone")]
         public string Phone { get; set; }
-        
+
         [Display(Name = "Address")]
         public string Address { get; set; }
 
         [Display(Name = "National Id No")]
         public string NationalIdNo { get; set; }
-        
+
         [Display(Name = "Division")]
         public string Division { get; set; }
 
@@ -182,5 +182,38 @@ namespace MinervaSystem.Base.Models.ViewModels
         public Boolean? IsCollected { get; set; }
         public String CollectionDate { get; set; }
         public string Note { get; set; }
+        public string MobileNo { get; set; }
     }
+    public class SupplyOrderResponseMsg
+    {
+        public int status { get; set; }
+        public string responseMsg { get; set; }
+        public string mobileNo { get; set; }
+        public string url { get; set; }
+        public string from { get; set; }
+        public string authorization { get; set; }
+    }
+    public static class BasicInformation
+    {
+       public static string SmsUrl = "https://api.infobip.com/sms/1/text/single";
+       public static string CountryCode = "88";
+       public static string UserId = "itel786";
+       public static string Password = "01818856792SMS";
+       public static string smsAuth = "Basic "+Base64Encode(UserId + ":"+ Password);
+       public static string From = "InfoSMS";
+
+        #region----- Utility-----
+        public static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+        public static string Base64Decode(string base64EncodedData)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+        }
+        #endregion
+    }
+
 }

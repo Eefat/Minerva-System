@@ -510,10 +510,10 @@ namespace MinervaSystem.Web.Controllers
             //                           System.Globalization.CultureInfo.InvariantCulture) : new DateTime();
 
             var supplyInformations = from s in ContextPerRequest.CurrentContext.SupplyInformation
-                          select s;
+                                     select s;
             if (supplyInformationSearch.MemberKey != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.FarmerIdNo.Contains(supplyInformationSearch.MemberKey));
             if (supplyInformationSearch.Name != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.Name.Contains(supplyInformationSearch.Name));
-            if (supplyInformationSearch.EstimatedAmount != null) supplyInformations = supplyInformations.Where(oh => oh.EstimatedAmount==supplyInformationSearch.EstimatedAmount);
+            if (supplyInformationSearch.EstimatedAmount != null) supplyInformations = supplyInformations.Where(oh => oh.EstimatedAmount == supplyInformationSearch.EstimatedAmount);
             if (supplyInformationSearch.CaneVariety != null) supplyInformations = supplyInformations.Where(oh => oh.CaneVariety == (CaneVariety)supplyInformationSearch.CaneVariety);
             if (supplyInformationSearch.PlantRatoon != null) supplyInformations = supplyInformations.Where(oh => oh.PlantRatoon == (PlantRatoon)supplyInformationSearch.PlantRatoon);
             if (supplyInformationSearch.SugerMillId != null) supplyInformations = supplyInformations.Where(oh => oh.SugerMillId == supplyInformationSearch.SugerMillId);
@@ -683,7 +683,7 @@ namespace MinervaSystem.Web.Controllers
             var supplyInformations = ContextPerRequest.CurrentContext.SupplyInformation
                                     .Where(oh => ((oh.CaneVariety == (CaneVariety)1 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) >= 12
                                                  && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) <= 14))
-                                                 ||(oh.CaneVariety == (CaneVariety)1 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) == 12)).
+                                                 || (oh.CaneVariety == (CaneVariety)1 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) == 12)).
                                                                         OrderBy(a => a.Farmer.Name)
                     .Select(a => new
                     {
@@ -713,11 +713,11 @@ namespace MinervaSystem.Web.Controllers
             if (supplyInformationSearch.MemberKey != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.FarmerIdNo.Contains(supplyInformationSearch.MemberKey));
             if (supplyInformationSearch.Name != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.Name.Contains(supplyInformationSearch.Name));
             if (supplyInformationSearch.EstimatedAmount != null) supplyInformations = supplyInformations.Where(oh => oh.EstimatedAmount == supplyInformationSearch.EstimatedAmount);
-            if (supplyInformationSearch.CaneVariety != null)  supplyInformations = supplyInformations.Where(oh => (oh.CaneVariety == (CaneVariety)supplyInformationSearch.CaneVariety));
+            if (supplyInformationSearch.CaneVariety != null) supplyInformations = supplyInformations.Where(oh => (oh.CaneVariety == (CaneVariety)supplyInformationSearch.CaneVariety));
             if (supplyInformationSearch.PlantRatoon != null) supplyInformations = supplyInformations.Where(oh => oh.PlantRatoon == (PlantRatoon)supplyInformationSearch.PlantRatoon);
             if (supplyInformationSearch.SugerMillId != null) supplyInformations = supplyInformations.Where(oh => oh.SugerMillId == supplyInformationSearch.SugerMillId);
             if (supplyInformationSearch.LandArea != null) supplyInformations = supplyInformations.Where(oh => oh.LandArea == supplyInformationSearch.LandArea);
-           
+
 
             supplyInformations = supplyInformations.Where(oh => ((oh.CaneVariety == (CaneVariety)1 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) >= 12
                                              && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) <= 14))
@@ -730,6 +730,7 @@ namespace MinervaSystem.Web.Controllers
                 a.Id,
                 a.FarmerId,
                 a.Farmer.Name,
+                MobileNo = a.Farmer.CellPhone,
                 SugerMillId = a.SugerMill.Id,
                 SugerMillName = a.SugerMill.Name,
                 CaneVariety = a.CaneVariety.ToString(),
@@ -742,7 +743,7 @@ namespace MinervaSystem.Web.Controllers
             return Json(new { aaData = list }, JsonRequestBehavior.AllowGet);
         }
 
-
+   
         public JsonResult GetAllCollectionInformations()
         {
             var supplyInformations = ContextPerRequest.CurrentContext.SupplyOrder.OrderBy(a => a.CollectionDate)
@@ -757,10 +758,14 @@ namespace MinervaSystem.Web.Controllers
                         MemberKey = a.SupplyInformation.Farmer.FarmerIdNo,
                         SugerMillName = a.SupplyInformation.SugerMill.Name,
                         FarmerName = a.SupplyInformation.Farmer.Name,
+                        MobileNo = a.SupplyInformation.Farmer.CellPhone,
                         Address = a.SupplyInformation.Farmer.Address,
-                        a.CollectionDate,
-                        a.EstimatedAmount,
+                        PlantRatoon = a.SupplyInformation.PlantRatoon.ToString(),
+                        LandArea = a.SupplyInformation.LandArea,
+                        EstimatedAmount = a.SupplyInformation.EstimatedAmount,
+                        AmounttoCollect = a.EstimatedAmount,
                         a.CollectedAmount,
+                        a.CollectionDate,
                         a.IsCollected,
                         a.Note
                     }).ToList();
@@ -769,21 +774,12 @@ namespace MinervaSystem.Web.Controllers
         [HttpPost]
         public JsonResult GetAllCollectionInformations(SupplyInformationSearch supplyInformationSearch)
         {
-            DateTime dateofPlanting = supplyInformationSearch.DateofPlanting != null ? DateTime.ParseExact(supplyInformationSearch.DateofPlanting, "d", null) : new DateTime();
-            DateTime supplyDate = supplyInformationSearch.SupplyDate != null ? DateTime.ParseExact(supplyInformationSearch.SupplyDate, "d", null) : new DateTime();
-     
+            DateTime collectionDate = new DateTime();
 
             var supplyOrders = from s in ContextPerRequest.CurrentContext.SupplyOrder
-                                     select s;
-            if (supplyInformationSearch.MemberKey != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.Farmer.FarmerIdNo.Contains(supplyInformationSearch.MemberKey));
-            if (supplyInformationSearch.Name != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.Farmer.Name.Contains(supplyInformationSearch.Name));
-            if (supplyInformationSearch.EstimatedAmount != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.EstimatedAmount == supplyInformationSearch.EstimatedAmount);
-            if (supplyInformationSearch.CaneVariety != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.CaneVariety == (CaneVariety)supplyInformationSearch.CaneVariety);
-            if (supplyInformationSearch.PlantRatoon != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.PlantRatoon == (PlantRatoon)supplyInformationSearch.PlantRatoon);
-            if (supplyInformationSearch.SugerMillId != null) supplyOrders = supplyOrders.Where(oh => oh.SugerMillId == supplyInformationSearch.SugerMillId);
-            if (supplyInformationSearch.LandArea != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.LandArea == supplyInformationSearch.LandArea);
-            if (supplyInformationSearch.DateofPlanting != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.DateofPlanting == dateofPlanting);
-            if (supplyInformationSearch.SupplyDate != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.SupplyDate == supplyDate);
+                               select s;
+
+            supplyOrders = supplyOrders.Where(oh => oh.CollectionDate == collectionDate);
 
             var list = supplyOrders.OrderBy(a => a.CollectionDate)
             .Select(a => new
@@ -797,10 +793,14 @@ namespace MinervaSystem.Web.Controllers
                 MemberKey = a.SupplyInformation.Farmer.FarmerIdNo,
                 SugerMillName = a.SupplyInformation.SugerMill.Name,
                 FarmerName = a.SupplyInformation.Farmer.Name,
+                MobileNo = a.SupplyInformation.Farmer.CellPhone,
                 Address = a.SupplyInformation.Farmer.Address,
-                a.CollectionDate,
-                a.EstimatedAmount,
+                PlantRatoon = a.SupplyInformation.PlantRatoon.ToString(),
+                LandArea = a.SupplyInformation.LandArea,
+                EstimatedAmount = a.SupplyInformation.EstimatedAmount,
+                AmounttoCollect = a.EstimatedAmount,
                 a.CollectedAmount,
+                a.CollectionDate,
                 a.IsCollected,
                 a.Note
             }).ToList();
@@ -850,39 +850,62 @@ namespace MinervaSystem.Web.Controllers
                     supplyOrder.Note = model.Note;
                     ContextPerRequest.CurrentContext.SupplyOrder.Add(supplyOrder);
                     ContextPerRequest.CurrentContext.SaveChanges();
-                    return Json(new { success = 0, responseText = "Supply Order is Created." }, JsonRequestBehavior.AllowGet);
+
+                    SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                    response.status = 0;
+                    response.url = BasicInformation.SmsUrl;
+                    response.from = BasicInformation.From;
+                    response.responseMsg = "Hi Sir, Your Collection Date:" + model.CollectionDate + ", Amount to Collect: " + model.EstimatedAmount.ToString();
+                    response.mobileNo = BasicInformation.CountryCode + model.MobileNo;
+                    response.authorization = BasicInformation.smsAuth;
+                    return Json(response, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, responseText = ex.Message}, JsonRequestBehavior.AllowGet);
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 1;
+                response.responseMsg = ex.Message;
+                return Json(new { response }, JsonRequestBehavior.AllowGet);
             }
 
             return View(model);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult UpdateSupplyOrder(SupplyOrderViewModel model)
+        public ActionResult UpdateSupplyOrder(SupplyOrderRequest model)
         {
             try
             {
+                DateTime dateofPlanting = DateTime.ParseExact(model.CollectionDate, "dd/MM/yyyy hh:mm tt", null);
                 var supplyOrder = ContextPerRequest.CurrentContext.SupplyOrder.Find(model.Id);
-                supplyOrder.ZoneId = model.ZoneId;
-                supplyOrder.ZoneId = model.ZoneId;
-                supplyOrder.ZoneManagerId = model.ZoneManagerId;
-                supplyOrder.CollectionDate = model.CollectionDate;
+                supplyOrder.SugerMillId = model.SugerMillId;
+                supplyOrder.SupplyInformationId = model.SupplyInformationId;
+                //supplyOrder.ZoneId = model.ZoneId;
+                //supplyOrder.ZoneManagerId = model.ZoneManagerId;
+                supplyOrder.CollectionDate = dateofPlanting;
                 supplyOrder.EstimatedAmount = model.EstimatedAmount;
                 supplyOrder.CollectedAmount = model.CollectedAmount;
                 supplyOrder.IsCollected = model.IsCollected;
                 supplyOrder.Note = model.Note;
                 ContextPerRequest.CurrentContext.SaveChanges();
-                return RedirectToAction("ManagCollectionInformation", "SugerMill");
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 0;
+                response.url = BasicInformation.SmsUrl;
+                response.from = BasicInformation.From;
+                response.responseMsg = "Hi Sir, Your Collection Date:" + model.CollectionDate + ", Amount to Collect: " + model.EstimatedAmount.ToString();
+                response.mobileNo = BasicInformation.CountryCode + model.MobileNo;
+                response.authorization = BasicInformation.smsAuth;
+
+                return Json(response, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 1;
+                response.responseMsg = ex.Message;
+                return Json(new { response }, JsonRequestBehavior.AllowGet);
             }
-            return View(model);
         }
         public ActionResult DeleteSupplyOrder(int supplyOrderId)
         {
@@ -900,4 +923,5 @@ namespace MinervaSystem.Web.Controllers
         }
         #endregion
     }
+
 }
