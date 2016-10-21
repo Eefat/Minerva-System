@@ -29,6 +29,9 @@ namespace MinervaSystem.Base.Models
         public DbSet<SupplyInformation> SupplyInformation { get; set; }
         public DbSet<SupplyOrder> SupplyOrder { get; set; }
         public DbSet<SugerMill> SugerMill { get; set; }
+        public DbSet<State> State { get; set; }
+        public DbSet<District> District { get; set; }
+        public DbSet<Upazila> Upazila { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

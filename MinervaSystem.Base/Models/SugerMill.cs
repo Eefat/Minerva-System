@@ -87,6 +87,41 @@ namespace MinervaSystem.Base.Models
         public string Note { get; set; }
         public virtual SupplyInformation SupplyInformation { get; set; }
     }
+    public class State : BaseEntity
+    {
+        public State() { }
+        public Int64 Id { get; set; }
+        public Int64 CountryId { get; set; }
+        public string Name { get; set; }
+        public string BnName { get; set; }
+        public Decimal ? Latitude { get; set; }
+        public Decimal ? Longitude { get; set; }
+        public string website { get; set; }
+        public virtual ICollection<District> Districts { get; set; }
+    }
+    public class District : BaseEntity
+    {
+        public District() { }
+        public Int64 Id { get; set; }
+        public Int64 StateId { get; set; }
+        public string Name { get; set; }
+        public string BnName { get; set; }
+        public Decimal? Latitude { get; set; }
+        public Decimal? Longitude { get; set; }
+        public string website { get; set; }
+        public virtual ICollection<Upazila> Upazilas { get; set; }
+    }
+    public class Upazila : BaseEntity
+    {
+        public Upazila() { }
+        public Int64 Id { get; set; }
+        public Int64 DistrictId { get; set; }
+        public string Name { get; set; }
+        public string BnName { get; set; }
+        public Decimal? Latitude { get; set; }
+        public Decimal? Longitude { get; set; }
+        public string website { get; set; }
+    }
     public class SupplyInformationSearch
     {
         public string MemberKey { get; set; }

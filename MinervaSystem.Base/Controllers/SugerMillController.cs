@@ -922,6 +922,42 @@ namespace MinervaSystem.Web.Controllers
             }
         }
         #endregion
+
+        #region  Country/State/District/Upazilla
+        [HttpPost]
+        public JsonResult GetAllState(Int64 countryId)
+        {
+            var supplyInformations = ContextPerRequest.CurrentContext.State.Where(a => a.CountryId == countryId).OrderBy(a => a.Name)
+                    .Select(a => new
+                    {
+                        a.Id,
+                        a.Name
+                    }).ToList();
+            return Json(new { aaData = supplyInformations }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult GetAllDistrict(Int64 stateId)
+        {
+            var supplyInformations = ContextPerRequest.CurrentContext.District.Where(a => a.StateId == stateId).OrderBy(a => a.Name)
+                    .Select(a => new
+                    {
+                        a.Id,
+                        a.Name
+                    }).ToList();
+            return Json(new { aaData = supplyInformations }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult GetAllUpazilla(Int64 districtId)
+        {
+            var supplyInformations = ContextPerRequest.CurrentContext.Upazila.Where(a => a.DistrictId == districtId).OrderBy(a => a.Name)
+                    .Select(a => new
+                    {
+                        a.Id,
+                        a.Name
+                    }).ToList();
+            return Json(new { aaData = supplyInformations }, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
     }
 
 }
