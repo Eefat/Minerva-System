@@ -32,7 +32,8 @@
             <div class="box">            
                 <div class="box-header">
                     <div>
-                       <p>Todays Date</p>
+                       <label>Date: </label><label id="pTodaysDate" style="padding-left:10px"></label>
+                        <button type="button" class="btn btn-primary" onclick="supplyorder.sentBulkSmsNotification();">Sent Notification</button>
                     </div>
                 </div>
                 <div class="box-body">
@@ -148,6 +149,11 @@
         $(document).ready(function () {
             SetupSupplyOrdersDataTable();
             SetupPopupBoxes();
+            var fullDate = new Date();
+            var twoDigitMonth = fullDate.getMonth() + ""; if (twoDigitMonth.length == 1) twoDigitMonth = "0" + twoDigitMonth;
+            var twoDigitDate = fullDate.getDate() + ""; if (twoDigitDate.length == 1) twoDigitDate = "0" + twoDigitDate;
+            var currentDate = twoDigitDate + "/" + twoDigitMonth + "/" + fullDate.getFullYear(); console.log(currentDate);
+            $('#pTodaysDate').html(currentDate);
         });
         function SetupSupplyOrdersDataTable() {
             if (datatable != null) {
@@ -266,7 +272,7 @@
                     $.ajax({
                         url: '@Url.Action("UpdateSupplyOrder", "SugerMill")',
                         type: "Post",
-                        dataType: 'json',
+                        //dataType: 'json',
                         data: supplyOrderObj,
                         success: function (response) {
                             winViewItem.close();
@@ -284,6 +290,7 @@
             },
             getSupplyOrderData: function (supplyOrderData) {
                 var supplyOrderObj = new Object();
+                supplyOrderObj.Id = supplyOrderData.Id;
                 supplyOrderObj.SugerMillId = supplyOrderData.SugerMillId;
                 supplyOrderObj.SupplyInformationId = supplyOrderData.Id;
                 supplyOrderObj.MobileNo = supplyOrderData.MobileNo;
@@ -345,6 +352,9 @@
                         }, error: function () { return false; }
                     });
                 }
+            },
+            sentBulkSmsNotification: function () {
+
             }
         }
     </script>

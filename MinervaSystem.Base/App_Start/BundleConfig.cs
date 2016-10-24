@@ -55,6 +55,8 @@ namespace MinervaSystem.Base
                 "~/Scripts/DataTables/vfs_fonts.js",
                 "~/Scripts/DataTables/buttons.print.min.js",
                 "~/Scripts/DataTables/buttons.html5.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/Common").Include(
+                "~/Scripts/Common/utility.js"));
 
             //------------------------ Style Bundle ----------------------------
             bundles.Add(new StyleBundle("~/Content/css").Include(   //Default load

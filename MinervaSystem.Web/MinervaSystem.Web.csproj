@@ -177,7 +177,9 @@
   <ItemGroup>
     <Content Include="Content\Admin\AdminLTE.css" />
     <Content Include="Content\Admin\AdminLTE.min.css" />
+    <Content Include="Content\Admin\img\backGround.jpg" />
     <Content Include="Content\Admin\skin-purple.css" />
+    <Content Include="Content\Admin\skins\blue.css" />
     <Content Include="Content\Admin\skins\skin-black-light.css" />
     <Content Include="Content\Admin\skins\skin-black-light.min.css" />
     <Content Include="Content\Admin\skins\skin-black.css" />
@@ -452,7 +454,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\site.css" />
-    <Content Include="Images\backGround.jpg" />
     <Content Include="Images\Icons\ajax-loader.gif" />
     <Content Include="Images\Icons\bullet.jpg" />
     <Content Include="Images\Icons\details_close.png" />
@@ -489,6 +490,7 @@
     <Content Include="Scripts\chosen.jquery.min.js" />
     <Content Include="Scripts\chosen.proto.js" />
     <Content Include="Scripts\chosen.proto.min.js" />
+    <Content Include="Scripts\Common\utility.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
     <Content Include="Scripts\DataTables\autoFill.foundation.js" />

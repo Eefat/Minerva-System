@@ -53,10 +53,12 @@ namespace MinervaSystem.Web.Controllers
                     a.Email,
                     a.CellPhone,
                     a.Phone,
-                    a.Address,
-                    a.Division,
-                    a.District,
-                    a.Thana,
+                    a.StateId,
+                    StateName = a.State != null ? a.State.Name : null,
+                    a.DistrictId,
+                    DistrictName = a.District != null ? a.District.Name : null,
+                    a.UpazilaId,
+                    UpazilaName = a.Upazila != null ? a.Upazila.Name : null,
                     a.Village,
                     a.PostalCode,
                     a.Note
@@ -88,10 +90,12 @@ namespace MinervaSystem.Web.Controllers
                 sugerMill.Email,
                 sugerMill.CellPhone,
                 sugerMill.Phone,
-                sugerMill.Address,
-                sugerMill.Division,
-                sugerMill.District,
-                sugerMill.Thana,
+                sugerMill.StateId,
+                StateName = sugerMill.State != null ? sugerMill.State.Name : null,
+                sugerMill.DistrictId,
+                DistrictName = sugerMill.District != null ? sugerMill.District.Name : null,
+                sugerMill.UpazilaId,
+                UpazilaName = sugerMill.Upazila != null ? sugerMill.Upazila.Name : null,
                 sugerMill.Village,
                 sugerMill.PostalCode,
                 sugerMill.Note,
@@ -135,10 +139,9 @@ namespace MinervaSystem.Web.Controllers
                     sugerMill.Email = model.Email;
                     sugerMill.CellPhone = model.CellPhone;
                     sugerMill.Phone = model.Phone;
-                    sugerMill.Address = model.Address;
-                    sugerMill.Division = model.Division;
-                    sugerMill.District = model.District;
-                    sugerMill.Thana = model.Thana;
+                    sugerMill.StateId = model.StateId;
+                    sugerMill.DistrictId = model.DistrictId;
+                    sugerMill.UpazilaId = model.UpazilaId;
                     sugerMill.Village = model.Village;
                     sugerMill.PostalCode = model.PostalCode;
                     sugerMill.Note = model.Note;
@@ -167,10 +170,9 @@ namespace MinervaSystem.Web.Controllers
                 model.Email = sugerMill.Email;
                 model.CellPhone = sugerMill.CellPhone;
                 model.Phone = sugerMill.Phone;
-                model.Address = sugerMill.Address;
-                model.Division = sugerMill.Division;
-                model.District = sugerMill.District;
-                model.Thana = sugerMill.Thana;
+                model.StateId = sugerMill.StateId;
+                model.DistrictId = sugerMill.DistrictId;
+                model.UpazilaId = sugerMill.UpazilaId;
                 model.Village = sugerMill.Village;
                 model.PostalCode = sugerMill.PostalCode;
                 model.Note = sugerMill.Note;
@@ -193,10 +195,9 @@ namespace MinervaSystem.Web.Controllers
                 sugerMill.Email = model.Email;
                 sugerMill.CellPhone = model.CellPhone;
                 sugerMill.Phone = model.Phone;
-                sugerMill.Address = model.Address;
-                sugerMill.Division = model.Division;
-                sugerMill.District = model.District;
-                sugerMill.Thana = model.Thana;
+                sugerMill.StateId = model.StateId;
+                sugerMill.DistrictId = model.DistrictId;
+                sugerMill.UpazilaId = model.UpazilaId;
                 sugerMill.Village = model.Village;
                 sugerMill.PostalCode = model.PostalCode;
                 sugerMill.Note = model.Note;
@@ -244,11 +245,13 @@ namespace MinervaSystem.Web.Controllers
                     a.Email,
                     a.CellPhone,
                     a.Phone,
-                    a.Address,
                     a.NationalIdNo,
-                    a.Division,
-                    a.District,
-                    a.Thana,
+                    a.StateId,
+                    StateName = a.State != null ? a.State.Name : null,
+                    a.DistrictId,
+                    DistrictName = a.District != null ? a.District.Name : null,
+                    a.UpazilaId,
+                    UpazilaName = a.Upazila != null ? a.Upazila.Name : null,
                     a.Village,
                     a.PostalCode
                 }).ToList();
@@ -269,7 +272,6 @@ namespace MinervaSystem.Web.Controllers
                 if (farmerSearch.Name != null) farmers = farmers.Where(oh => oh.Name.Contains(farmerSearch.Name));
                 if (farmerSearch.NationalIdNo != null) farmers = farmers.Where(oh => oh.NationalIdNo.Contains(farmerSearch.NationalIdNo));
                 if (farmerSearch.MemberKey != null) farmers = farmers.Where(oh => oh.FarmerIdNo.Contains(farmerSearch.MemberKey));
-                if (farmerSearch.Address != null) farmers = farmers.Where(oh => oh.Address.Contains(farmerSearch.Address));
                 if (farmerSearch.MobileNumber != null) farmers = farmers.Where(oh => oh.CellPhone.Contains(farmerSearch.MobileNumber));
 
                 var list = farmers.OrderBy(a => a.Name)
@@ -283,11 +285,13 @@ namespace MinervaSystem.Web.Controllers
                     a.Email,
                     a.CellPhone,
                     a.Phone,
-                    a.Address,
                     a.NationalIdNo,
-                    a.Division,
-                    a.District,
-                    a.Thana,
+                    a.StateId,
+                    StateName = a.State != null ? a.State.Name : null,
+                    a.DistrictId,
+                    DistrictName = a.District != null ? a.District.Name : null,
+                    a.UpazilaId,
+                    UpazilaName = a.Upazila != null ? a.Upazila.Name : null,
                     a.Village,
                     a.PostalCode
                 }).ToList();
@@ -301,8 +305,7 @@ namespace MinervaSystem.Web.Controllers
             .Select(a => new
             {
                 a.Id,
-                a.Name,
-                a.Address
+                a.Name
             }).ToList();
             return Json(new { aaData = farmers }, JsonRequestBehavior.AllowGet);
         }
@@ -320,11 +323,13 @@ namespace MinervaSystem.Web.Controllers
                 farmer.Email,
                 farmer.CellPhone,
                 farmer.Phone,
-                farmer.Address,
                 farmer.NationalIdNo,
-                farmer.Division,
-                farmer.District,
-                farmer.Thana,
+                farmer.StateId,
+                StateName =  farmer.State != null ? farmer.State.Name : null,
+                farmer.DistrictId,
+                DistrictName = farmer.District !=null ? farmer.District.Name : null,
+                farmer.UpazilaId,
+                UpazilaName =  farmer.Upazila != null ? farmer.Upazila.Name : null,
                 farmer.Village,
                 farmer.PostalCode,
                 Author,
@@ -367,11 +372,10 @@ namespace MinervaSystem.Web.Controllers
                     farmer.Email = model.Email;
                     farmer.CellPhone = model.CellPhone;
                     farmer.Phone = model.Phone;
-                    farmer.Address = model.Address;
                     farmer.NationalIdNo = model.NationalIdNo;
-                    farmer.Division = model.Division;
-                    farmer.District = model.District;
-                    farmer.Thana = model.Thana;
+                    farmer.StateId = model.StateId;
+                    farmer.DistrictId = model.DistrictId;
+                    farmer.UpazilaId = model.UpazilaId;
                     farmer.Village = model.Village;
                     farmer.PostalCode = model.PostalCode;
                     farmer.EmergencyContact = model.EmergencyContact;
@@ -403,11 +407,10 @@ namespace MinervaSystem.Web.Controllers
                 model.Email = farmer.Email;
                 model.CellPhone = farmer.CellPhone;
                 model.Phone = farmer.Phone;
-                model.Address = farmer.Address;
                 model.NationalIdNo = farmer.NationalIdNo;
-                model.Division = farmer.Division;
-                model.District = farmer.District;
-                model.Thana = farmer.Thana;
+                model.StateId = farmer.StateId;
+                model.DistrictId = farmer.DistrictId;
+                model.UpazilaId = farmer.UpazilaId;
                 model.Village = farmer.Village;
                 model.PostalCode = farmer.PostalCode;
                 model.EmergencyContact = farmer.EmergencyContact;
@@ -432,11 +435,10 @@ namespace MinervaSystem.Web.Controllers
                 farmer.Email = model.Email;
                 farmer.CellPhone = model.CellPhone;
                 farmer.Phone = model.Phone;
-                farmer.Address = model.Address;
                 farmer.NationalIdNo = model.NationalIdNo;
-                farmer.Division = model.Division;
-                farmer.District = model.District;
-                farmer.Thana = model.Thana;
+                farmer.StateId = model.StateId;
+                farmer.DistrictId = model.DistrictId;
+                farmer.UpazilaId = model.UpazilaId;
                 farmer.Village = model.Village;
                 farmer.PostalCode = model.PostalCode;
                 farmer.EmergencyContact = model.EmergencyContact;
@@ -486,6 +488,9 @@ namespace MinervaSystem.Web.Controllers
                         a.Id,
                         a.FarmerId,
                         a.Farmer.Name,
+                        MobileNo = a.Farmer.CellPhone,
+                        MemberKey = a.Farmer.FarmerIdNo,
+                        SugerMillId = a.SugerMill.Id,
                         SugerMillName = a.SugerMill.Name,
                         CaneVariety = a.CaneVariety.ToString(),
                         PlantRatoon = a.PlantRatoon.ToString(),
@@ -493,8 +498,6 @@ namespace MinervaSystem.Web.Controllers
                         a.EstimatedAmount,
                         a.DateofPlanting,
                         a.SupplyDate
-                        //Author = ContextPerRequest.GetUserNameById(a.Author),
-                        //Editor = ContextPerRequest.GetUserNameById(a.Editor)
                     }).ToList();
             return Json(new { aaData = supplyInformations }, JsonRequestBehavior.AllowGet);
         }
@@ -503,7 +506,7 @@ namespace MinervaSystem.Web.Controllers
         {
             //DateTime dt1 = supplyInformationSearch.DateofPlanting ? supplyInformationSearch.DateofPlanting
             DateTime dateofPlanting = supplyInformationSearch.DateofPlanting != null ? DateTime.ParseExact(supplyInformationSearch.DateofPlanting, "d", null) : new DateTime();
-            DateTime supplyDate = supplyInformationSearch.SupplyDate != null ? DateTime.ParseExact(supplyInformationSearch.SupplyDate, "d", null) : new DateTime();
+            //DateTime supplyDate = supplyInformationSearch.SearchType != null ? DateTime.ParseExact(supplyInformationSearch.SupplyDate, "d", null) : new DateTime();
             //DateTime dateofPlanting = supplyInformationSearch.DateofPlanting !=null ? DateTime.ParseExact(supplyInformationSearch.DateofPlanting, "MM/dd/yyyy",
             //                           System.Globalization.CultureInfo.InvariantCulture):new DateTime();
             //DateTime supplyDate = supplyInformationSearch.SupplyDate != null ? DateTime.ParseExact(supplyInformationSearch.SupplyDate, "MM/dd/yyyy",
@@ -511,6 +514,11 @@ namespace MinervaSystem.Web.Controllers
 
             var supplyInformations = from s in ContextPerRequest.CurrentContext.SupplyInformation
                                      select s;
+            if(supplyInformationSearch.SearchType != null && supplyInformationSearch.SearchType.Equals('1'))
+                supplyInformations = supplyInformations.Where(oh => ((oh.PlantRatoon == (PlantRatoon)1 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) >= 12
+                                             && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) <= 14))
+                                             || (oh.PlantRatoon == (PlantRatoon)0 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) >= 12));
+
             if (supplyInformationSearch.MemberKey != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.FarmerIdNo.Contains(supplyInformationSearch.MemberKey));
             if (supplyInformationSearch.Name != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.Name.Contains(supplyInformationSearch.Name));
             if (supplyInformationSearch.EstimatedAmount != null) supplyInformations = supplyInformations.Where(oh => oh.EstimatedAmount == supplyInformationSearch.EstimatedAmount);
@@ -519,14 +527,16 @@ namespace MinervaSystem.Web.Controllers
             if (supplyInformationSearch.SugerMillId != null) supplyInformations = supplyInformations.Where(oh => oh.SugerMillId == supplyInformationSearch.SugerMillId);
             if (supplyInformationSearch.LandArea != null) supplyInformations = supplyInformations.Where(oh => oh.LandArea == supplyInformationSearch.LandArea);
             if (supplyInformationSearch.DateofPlanting != null) supplyInformations = supplyInformations.Where(oh => oh.DateofPlanting == dateofPlanting);
-            if (supplyInformationSearch.SupplyDate != null) supplyInformations = supplyInformations.Where(oh => oh.SupplyDate == supplyDate);
-
+            
             var list = supplyInformations.OrderBy(a => a.Farmer.Name)
             .Select(a => new
             {
                 a.Id,
                 a.FarmerId,
                 a.Farmer.Name,
+                MobileNo = a.Farmer.CellPhone,
+                MemberKey = a.Farmer.FarmerIdNo,
+                SugerMillId = a.SugerMill.Id,
                 SugerMillName = a.SugerMill.Name,
                 CaneVariety = a.CaneVariety.ToString(),
                 PlantRatoon = a.PlantRatoon.ToString(),
@@ -585,6 +595,11 @@ namespace MinervaSystem.Web.Controllers
                     supplyInformation.SupplyDate = model.SupplyDate;
                     ContextPerRequest.CurrentContext.SupplyInformation.Add(supplyInformation);
                     ContextPerRequest.CurrentContext.SaveChanges();
+
+                    var farmer = ContextPerRequest.CurrentContext.Farmer.Find(model.FarmerId);
+                    string responseMsg = "Prio " + farmer.Name + ", Apner member id " + farmer.FarmerIdNo + ". Apner chashkrito jomir poriman 5 bigha ebong shomvabbo fosholer poriman 3 ton. Apner tothho shothik vabe halnagad kora hoese. Akh shongroher poroborti tarikh apnake sms er maddhome janie dea hobe.";
+
+
                     return RedirectToAction("ManagSupplyInformation", "SugerMill");
                 }
             }
@@ -690,6 +705,7 @@ namespace MinervaSystem.Web.Controllers
                         a.Id,
                         a.FarmerId,
                         a.Farmer.Name,
+                        MemberKey = a.Farmer.FarmerIdNo,
                         SugerMillId = a.SugerMill.Id,
                         SugerMillName = a.SugerMill.Name,
                         CaneVariety = a.CaneVariety.ToString(),
@@ -731,6 +747,7 @@ namespace MinervaSystem.Web.Controllers
                 a.FarmerId,
                 a.Farmer.Name,
                 MobileNo = a.Farmer.CellPhone,
+                MemberKey = a.Farmer.FarmerIdNo,
                 SugerMillId = a.SugerMill.Id,
                 SugerMillName = a.SugerMill.Name,
                 CaneVariety = a.CaneVariety.ToString(),
@@ -759,7 +776,6 @@ namespace MinervaSystem.Web.Controllers
                         SugerMillName = a.SupplyInformation.SugerMill.Name,
                         FarmerName = a.SupplyInformation.Farmer.Name,
                         MobileNo = a.SupplyInformation.Farmer.CellPhone,
-                        Address = a.SupplyInformation.Farmer.Address,
                         PlantRatoon = a.SupplyInformation.PlantRatoon.ToString(),
                         LandArea = a.SupplyInformation.LandArea,
                         EstimatedAmount = a.SupplyInformation.EstimatedAmount,
@@ -794,7 +810,6 @@ namespace MinervaSystem.Web.Controllers
                 SugerMillName = a.SupplyInformation.SugerMill.Name,
                 FarmerName = a.SupplyInformation.Farmer.Name,
                 MobileNo = a.SupplyInformation.Farmer.CellPhone,
-                Address = a.SupplyInformation.Farmer.Address,
                 PlantRatoon = a.SupplyInformation.PlantRatoon.ToString(),
                 LandArea = a.SupplyInformation.LandArea,
                 EstimatedAmount = a.SupplyInformation.EstimatedAmount,
@@ -822,7 +837,6 @@ namespace MinervaSystem.Web.Controllers
                 MemberKey = SupplyOrder.SupplyInformation.Farmer.FarmerIdNo,
                 SugerMillName = SupplyOrder.SupplyInformation.SugerMill.Name,
                 FarmerName = SupplyOrder.SupplyInformation.Farmer.Name,
-                Address = SupplyOrder.SupplyInformation.Farmer.Address,
                 SupplyOrder.CollectionDate,
                 SupplyOrder.EstimatedAmount,
                 SupplyOrder.CollectedAmount,
@@ -872,7 +886,86 @@ namespace MinervaSystem.Web.Controllers
             return View(model);
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        public ActionResult CreateAllSupplyOrder(List<SupplyOrderRequest> listSupplyOrderRequest1)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    foreach (var model in listSupplyOrderRequest1)
+                    {
+                        DateTime dateofPlanting = DateTime.ParseExact(model.CollectionDate, "dd/MM/yyyy hh:mm tt", null);
+                        SupplyOrder supplyOrder = new SupplyOrder();
+                        supplyOrder.SugerMillId = model.SugerMillId;
+                        supplyOrder.SupplyInformationId = model.SupplyInformationId;
+                        supplyOrder.CollectionDate = dateofPlanting;
+                        supplyOrder.EstimatedAmount = model.EstimatedAmount;
+                        supplyOrder.Note = model.Note;
+                        ContextPerRequest.CurrentContext.SupplyOrder.Add(supplyOrder);
+                    }
+                    ContextPerRequest.CurrentContext.SaveChanges();
+                    SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                    response.status = 0;
+                    response.url = BasicInformation.SmsUrl;
+                    response.from = BasicInformation.From;
+                    response.responseMsg = "Prio " + listSupplyOrderRequest1[0].MemberName + ", Apner member id " + listSupplyOrderRequest1[0].MemberKey + ". Apner chashkrito jomir poriman 5 bigha ebong shomvabbo fosholer poriman 3 ton. Apner tothho shothik vabe halnagad kora hoese. Akh shongroher poroborti tarikh apnake sms er maddhome janie dea hobe.";
+                    response.mobileNo = BasicInformation.CountryCode + listSupplyOrderRequest1[0].MobileNo;
+                    response.authorization = BasicInformation.smsAuth;
+                    return Json(response, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 1;
+                response.responseMsg = ex.Message;
+                return Json(new { response }, JsonRequestBehavior.AllowGet);
+            }
+
+            return View(listSupplyOrderRequest1);
+        }
+        [HttpPost]
+        public ActionResult PassThings(List<SupplyOrderRequest> things)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    foreach (var model in things)
+                    {
+                        DateTime dateofPlanting = DateTime.ParseExact(model.CollectionDate, "dd/MM/yyyy hh:mm tt", null);
+                        SupplyOrder supplyOrder = new SupplyOrder();
+                        supplyOrder.SugerMillId = model.SugerMillId;
+                        supplyOrder.SupplyInformationId = model.SupplyInformationId;
+                        supplyOrder.CollectionDate = dateofPlanting;
+                        supplyOrder.EstimatedAmount = model.EstimatedAmount;
+                        supplyOrder.Note = model.Note;
+                        ContextPerRequest.CurrentContext.SupplyOrder.Add(supplyOrder);
+                    }
+                    ContextPerRequest.CurrentContext.SaveChanges();
+                    SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                    response.status = 0;
+                    response.url = BasicInformation.SmsUrl;
+                    response.from = BasicInformation.From;
+                    response.responseMsg = "Prio " + things[0].MemberName+ ", Apner member id " + things[0].MemberKey + ". Apner chashkrito jomir poriman 5 bigha ebong shomvabbo fosholer poriman 3 ton. Apner tothho shothik vabe halnagad kora hoese. Akh shongroher poroborti tarikh apnake sms er maddhome janie dea hobe.";
+                   // response.responseMsg = "Hi Sir, Your Collection Date:" + things[0].CollectionDate + ", Amount to Collect: " + things[0].EstimatedAmount.ToString();
+                    response.mobileNo = BasicInformation.CountryCode + things[0].MobileNo;
+                    response.authorization = BasicInformation.smsAuth;
+                    return Json(response, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 1;
+                response.responseMsg = ex.Message;
+                return Json(new { response }, JsonRequestBehavior.AllowGet);
+            }
+
+            return View(things);
+        }
+
+        [HttpPost]
         public ActionResult UpdateSupplyOrder(SupplyOrderRequest model)
         {
             try
@@ -925,37 +1018,40 @@ namespace MinervaSystem.Web.Controllers
 
         #region  Country/State/District/Upazilla
         [HttpPost]
-        public JsonResult GetAllState(Int64 countryId)
+        public JsonResult GetAllState(int countryId)
         {
-            var supplyInformations = ContextPerRequest.CurrentContext.State.Where(a => a.CountryId == countryId).OrderBy(a => a.Name)
+            var stateList = ContextPerRequest.CurrentContext.State.Where(a => a.CountryId == countryId).OrderBy(a => a.Name)
                     .Select(a => new
                     {
                         a.Id,
-                        a.Name
+                        a.Name,
+                        a.BnName
                     }).ToList();
-            return Json(new { aaData = supplyInformations }, JsonRequestBehavior.AllowGet);
+            return Json(new { aaData = stateList }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public JsonResult GetAllDistrict(Int64 stateId)
+        public JsonResult GetAllCity(int stateId)
         {
-            var supplyInformations = ContextPerRequest.CurrentContext.District.Where(a => a.StateId == stateId).OrderBy(a => a.Name)
+            var districtList = ContextPerRequest.CurrentContext.District.Where(a => a.StateId == stateId).OrderBy(a => a.Name)
                     .Select(a => new
                     {
                         a.Id,
-                        a.Name
+                        a.Name,
+                        a.BnName
                     }).ToList();
-            return Json(new { aaData = supplyInformations }, JsonRequestBehavior.AllowGet);
+            return Json(new { aaData = districtList }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public JsonResult GetAllUpazilla(Int64 districtId)
+        public JsonResult GetAllUpazilla(int cityId)
         {
-            var supplyInformations = ContextPerRequest.CurrentContext.Upazila.Where(a => a.DistrictId == districtId).OrderBy(a => a.Name)
+            var upazillaList = ContextPerRequest.CurrentContext.Upazila.Where(a => a.DistrictId == cityId).OrderBy(a => a.Name)
                     .Select(a => new
                     {
                         a.Id,
-                        a.Name
+                        a.Name,
+                        a.BnName
                     }).ToList();
-            return Json(new { aaData = supplyInformations }, JsonRequestBehavior.AllowGet);
+            return Json(new { aaData = upazillaList }, JsonRequestBehavior.AllowGet);
         }
         #endregion
     }

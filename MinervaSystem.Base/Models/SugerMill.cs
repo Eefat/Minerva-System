@@ -18,15 +18,20 @@ namespace MinervaSystem.Base.Models
         public byte[] Photo { get; set; }
         public string Email { get; set; }
         public string CellPhone { get; set; }
+        public string Street { get; set; }
         public string Phone { get; set; }
-        public string Address { get; set; }
-        public string Division { get; set; }
-        public string District { get; set; }
-        public string Thana { get; set; }
+        [ForeignKey("State")]
+        public int? StateId { get; set; }
+        [ForeignKey("District")]
+        public int? DistrictId { get; set; }
+        [ForeignKey("Upazila")]
+        public int? UpazilaId { get; set; }
         public string Village { get; set; }
         public string PostalCode { get; set; }
         public string Note { get; set; }
-        //public virtual ICollection<User> SupplyInformation { get; set; }
+        public virtual State State { get; set; }
+        public virtual District District { get; set; }
+        public virtual Upazila Upazila { get; set; }
         public virtual ICollection<SupplyInformation> SupplyInformation { get; set; }
     }
     public class Farmer : BaseEntity
@@ -41,16 +46,22 @@ namespace MinervaSystem.Base.Models
         public string Email { get; set; }
         public string CellPhone { get; set; }
         public string Phone { get; set; }
-        public string Address { get; set; }
         public string NationalIdNo { get; set; }
-        public string Division { get; set; }
-        public string District { get; set; }
-        public string Thana { get; set; }
+        [ForeignKey("State")]
+        public int? StateId { get; set; }
+        [ForeignKey("District")]
+        public int? DistrictId { get; set; }
+        [ForeignKey("Upazila")]
+        public int? UpazilaId { get; set; }
         public string Village { get; set; }
         public string PostalCode { get; set; }
+        public string Street { get; set; }
         public string EmergencyContact { get; set; }
         public string EmergencyContactPhone { get; set; }
         public string Note { get; set; }
+        public virtual State State { get; set; }
+        public virtual District District { get; set; }
+        public virtual Upazila Upazila { get; set; }
         public virtual ICollection<SupplyInformation> SupplyInformation { get; set; }
     }
     public class SupplyInformation : BaseEntity
@@ -90,8 +101,8 @@ namespace MinervaSystem.Base.Models
     public class State : BaseEntity
     {
         public State() { }
-        public Int64 Id { get; set; }
-        public Int64 CountryId { get; set; }
+        public int Id { get; set; }
+        public int CountryId { get; set; }
         public string Name { get; set; }
         public string BnName { get; set; }
         public Decimal ? Latitude { get; set; }
@@ -102,25 +113,27 @@ namespace MinervaSystem.Base.Models
     public class District : BaseEntity
     {
         public District() { }
-        public Int64 Id { get; set; }
-        public Int64 StateId { get; set; }
+        public int Id { get; set; }
+        public int StateId { get; set; }
         public string Name { get; set; }
         public string BnName { get; set; }
         public Decimal? Latitude { get; set; }
         public Decimal? Longitude { get; set; }
         public string website { get; set; }
+        //public virtual State State { get; set; }
         public virtual ICollection<Upazila> Upazilas { get; set; }
     }
     public class Upazila : BaseEntity
     {
         public Upazila() { }
-        public Int64 Id { get; set; }
-        public Int64 DistrictId { get; set; }
+        public int Id { get; set; }
+        public int DistrictId { get; set; }
         public string Name { get; set; }
         public string BnName { get; set; }
         public Decimal? Latitude { get; set; }
         public Decimal? Longitude { get; set; }
         public string website { get; set; }
+       // public virtual District District { get; set; }
     }
     public class SupplyInformationSearch
     {
@@ -132,7 +145,7 @@ namespace MinervaSystem.Base.Models
         public Decimal? LandArea { get; set; }
         public Decimal? EstimatedAmount { get; set;}
         public String DateofPlanting { get; set;}
-        public String SupplyDate { get; set;}
+        public String SearchType { get; set;}
     }
     public class FarmerSearch
     {

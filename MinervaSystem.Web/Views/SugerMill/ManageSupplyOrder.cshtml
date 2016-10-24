@@ -19,8 +19,16 @@
         background: #605ca8;
         color: #fff;
     }
+
     .form-control {
-        height:auto;
+        height: auto;
+    }
+
+    .kendo-datetimepicker {
+        width: auto;
+    }
+    .timePicker{
+        width: auto;
     }
     /*.k-header{background:#ccc;}*/
 </style>
@@ -124,48 +132,62 @@
 <div id="winViewItem" style="overflow:hidden;">
     <div style="margin:1px; overflow:hidden;">
         <div class="row">
-            <label class="col-xs-3 col-form-label">Name:</label>
-            <div class="col-sm-3">
+            <label class="col-xs-2 col-form-label">Name:</label>
+            <div class="col-sm-2">
                 <p id="soFarmerName" class=""></p>
             </div>
-        </div>
-        <div class="row">
-            <label class="col-xs-3 col-form-label">Suger Mill:</label>
-            <div class="col-sm-7">
+            <label class="col-xs-2 col-form-label">Suger Mill:</label>
+            <div class="col-sm-3">
                 <p id="soSugerMillName" class=""></p>
             </div>
         </div>
+        @*<div class="row">
+                <label class="col-xs-3 col-form-label">Suger Mill:</label>
+                <div class="col-sm-7">
+                    <p id="soSugerMillName" class=""></p>
+                </div>
+            </div>*@
         <div class="row">
-            <label class="col-xs-3 col-form-label">Plant/Ratoon:</label>
-            <div class="col-sm-7">
+            <label class="col-xs-2 col-form-label">Estimated Amount:</label>
+            <div class="col-sm-2">
+                <p id="soTotalEstimatedAmount" class=""></p>
+            </div>
+            <label class="col-xs-2 col-form-label">Plant/Ratoon:</label>
+            <div class="col-sm-3">
                 <p id="soPlantRatoon" class=""></p>
             </div>
+
         </div>
         <div class="row">
-            <label class="col-xs-3 col-form-label">Land Area:</label>
-            <div class="col-sm-7">
+            <label class="col-xs-2 col-form-label">Land Area:</label>
+            <div class="col-sm-2">
                 <p id="soLandArea" class=""></p>
             </div>
         </div>
-        <div class="row">
-            <label class="col-xs-3 col-form-label">Estimated Amount:</label>
-            <div class="col-sm-7">
-                <p id="soTotalEstimatedAmount" class=""></p>
+        <hr>
+        <div class="supplyOrder">
+            <div class="row">
+                <div class='col-sm-2'>
+                    <div class="form-group">
+                        <input type="text" class="form-control txtAmountoCollect" placeholder="Amount to Collect">
+
+                    </div>
+                </div>
+                <div class='col-sm-4' style="padding-right:5px">
+                    <div class="form-group">
+                        <input type="text" class="form-control kendo-datetimepicker txtCollectionDate"  placeholder="Collection Date">
+                    </div>
+
+                </div>
+                <div class='col-sm-3' style="padding-left:0px">
+                    <div class="form-group">
+                        <input type="text" class="form-control txtSoNote" placeholder="Note">
+                    </div>
+                </div>
+                <div class="col-xs-1" style="line-height: 2;cursor:pointer">
+                    <i class="fa fa-plus" aria-hidden="true" onclick="supplyorder.createSupplyOrderRow(this);"></i>
+                </div>
             </div>
-        </div>
-        <div class="form-group row">
-            <label for="txtAmountoCollect" class="col-xs-3 col-form-label">Amount to Collect:</label>
-            <div class="col-xs-3">
-                <input type="text" class="form-control" id="txtAmountoCollect" placeholder="Amount to Collect">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-xs-3 col-form-label">Collection Date:</label>
-            <div class="col-xs-7"><input type="text" class="form-control kendo-datetimepicker" id="txtCollectionDate" placeholder="Collection Date"></div>
-        </div>
-        <div class="form-group row">
-            <label class="col-xs-3 col-form-label">Note:</label>
-            <div class="col-xs-7"><textarea rows="4" cols="10" class="form-control" id="txtSoNote"></textarea></div>
         </div>
         <hr>
         <div class="modal-btn-toolbar" style="float:right;">
@@ -176,7 +198,29 @@
 </div>
 
 
+<div class="supplyOrderTemplate" style="display:none;">
+    <div class="row">
+        <div class='col-sm-2'>
+            <div class="form-group">
+                <input type="text" class="form-control txtAmountoCollect" placeholder="Amount to Collect">
+            </div>
+        </div>
+        <div class='col-sm-4' style="padding-right:5px">
+            <div class="form-group">
+                <input type="text" class="form-control timePicker txtCollectionDate" placeholder="Collection Date">
+            </div>
 
+        </div>
+        <div class='col-sm-3' style="padding-left:0px">
+            <div class="form-group">
+                <input type="text" class="form-control txtSoNote"  placeholder="Note">
+            </div>
+        </div>
+        <div class="col-xs-1" style="line-height: 2;cursor:pointer">
+            <i class="fa fa-plus" aria-hidden="true" onclick="supplyorder.createSupplyOrderRow(this);"></i>
+        </div>
+    </div>
+</div>
 
 
 @section Scripts
@@ -189,7 +233,7 @@
         var itemId = null;
 
         $(document).ready(function () {
-            $('#example').DataTable();
+            utility.addActiveLink('sOrderSideBarMenu');
             populateDropDown();
             SetupSupplyOrdersDataTable();
             SetupPopupBoxes();
@@ -294,13 +338,20 @@
                 minWidth: 600,
                 modal: true,
                 visible: false,
-                draggable: false,
+                draggable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"],
                 title: "Supply Order",
                 open: function (obj) {
                 },
                 close: function () {
                     itemId = null;
-                    $("#winViewItem div[id^='view-']").text("");
+                    $('.supplyOrder').html('');
+                    $('.supplyOrder').append($('.supplyOrderTemplate').html());
+                    $('.supplyOrder').find('.timePicker').last().kendoDateTimePicker({
+                        value: new Date(),
+                        format: "dd/MM/yyyy hh:mm tt",
+                        interval: 15
+                    });
                 }
             }).data("kendoWindow");
         }
@@ -348,6 +399,19 @@
                 });
                 winViewItem.center().open();
             },
+            createSupplyOrderRow: function (addRow) {
+                $('.supplyOrder').append($('.supplyOrderTemplate').html());
+                $(addRow).removeClass('fa-plus').addClass('fa-minus');
+                $(addRow).attr("onclick", "supplyorder.deleteSupplyOrderRow(this)");
+                $('.supplyOrder').find('.txtCollectionDate').last().kendoDateTimePicker({
+                    value: new Date(),
+                    format: "dd/MM/yyyy hh:mm tt",
+                    interval: 15
+                });
+            },
+            deleteSupplyOrderRow: function (addRow) {
+                if ($('.supplyOrder').children().length > 1) $(addRow).closest('.row').remove();
+            },
             loadSupplyOrderPopup: function (supplyOrderData) {
                 $("#soFarmerName").text(supplyOrderData.Name);
                 $("#soSugerMillName").text(supplyOrderData.SugerMillName);
@@ -356,50 +420,69 @@
                 $("#soTotalEstimatedAmount").text(supplyOrderData.EstimatedAmount);
             },
             createSupplyOrder: function (supplyOrderData) {
-                var supplyOrderObj = supplyorder.getSupplyOrderData(supplyOrderData);
-                if (supplyorder.validateSupplyOrder(supplyOrderObj)) {
+                var listSupplyOrderRequest = supplyorder.getSupplyOrderData(supplyOrderData);
+                var isError = supplyorder.validateSupplyOrder(listSupplyOrderRequest);
+                things = JSON.stringify({ 'things': listSupplyOrderRequest });
+                if (!isError) {
                     $.ajax({
-                        url: '@Url.Action("CreateSupplyOrder", "SugerMill")',
-                        type: "Post",
+                        contentType: 'application/json; charset=utf-8',
+                        url: '@Url.Action("PassThings", "SugerMill")',
+                        type: "POST",
                         dataType: 'json',
-                        data:JSON.stringify(supplyOrderObj),
+                        data: things,
                         success: function (response) {
-                            if (response.status == 0)
-                            {
+                            if (response.status == 0) {
                                 winViewItem.close();
                                 supplyorder.sendSMS(response);
                             } else {
                                 alert(response.responseMsg);
                             }
-                            
+
                         }, error: function (response) {
                             alert("Error occured!!! Contact to admonistrator!!!");
                         }
                     });
                 } else alert("Please Enter Required Information.");
             },
-            validateSupplyOrder: function (supplyOrderData) {
+            validateSupplyOrder: function (listSupplyOrderRequest) {
                 var msg = "";
-                if (!supplyOrderData.EstimatedAmount || !supplyOrderData.CollectionDate) return false;
-                else return true;
+                if (listSupplyOrderRequest.length > 0)
+                {
+                    $.each(listSupplyOrderRequest, function (i) {
+                        var supplyOrderData = listSupplyOrderRequest[i];
+                        if (!supplyOrderData.EstimatedAmount || !supplyOrderData.CollectionDate) {
+                            msg ="error";
+                        }
+                    });
+                    if (msg) return true;
+                    else false;
+                } else {
+                    return false;
+                }
+
             },
             getSupplyOrderData: function (supplyOrderData) {
-                var supplyOrderObj = new Object();
-                supplyOrderObj.SugerMillId = supplyOrderData.SugerMillId;
-                supplyOrderObj.SupplyInformationId = supplyOrderData.Id;
-                supplyOrderObj.MobileNo = supplyOrderData.MobileNo;
-                var CollectedAmount = parseFloat($('#txtAmountoCollect').val());
-                supplyOrderObj.EstimatedAmount = isNaN(CollectedAmount) ? null : CollectedAmount;
-                supplyOrderObj.CollectionDate = !$("#txtCollectionDate").val() ? null : $("#txtCollectionDate").val();
-                supplyOrderObj.Note = !$("#txtSoNote").val() ? null : $("#txtSoNote").val();
-                return supplyOrderObj;
+                var listSupplyOrderRequest = [];
+                $('.supplyOrder .row').each(function () {
+                    var SupplyOrderRequest = {};
+                    SupplyOrderRequest.SugerMillId = supplyOrderData.SugerMillId;
+                    SupplyOrderRequest.SupplyInformationId = supplyOrderData.Id;
+                    SupplyOrderRequest.MobileNo = supplyOrderData.MobileNo;
+                    SupplyOrderRequest.MemberKey = supplyOrderData.MemberKey;
+                    var CollectedAmount = parseFloat($(this).find('.txtAmountoCollect').val());
+                    SupplyOrderRequest.EstimatedAmount = isNaN(CollectedAmount) ? null : CollectedAmount;
+                    SupplyOrderRequest.CollectionDate = !$(this).find(".txtCollectionDate input[type=text]").val() ? null : $(this).find(".txtCollectionDate input[type=text]").val();
+                    SupplyOrderRequest.Note = !$(this).find(".txtSoNote").val() ? null : $(this).find(".txtSoNote").val();
+                    if (SupplyOrderRequest) listSupplyOrderRequest.push(SupplyOrderRequest);
+                });
+                return listSupplyOrderRequest;
             },
             sendSMS: function (response) {
                 var smsRequest = supplyorder.getSMSrequest(response);
                 $.ajax({
                     url: response.url,
                     type: "POST",
-                    data: smsRequest,
+                    data: JSON.stringify(smsRequest),
                     headers: { "Authorization": response.authorization },
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",

@@ -11,6 +11,9 @@ namespace MinervaSystem.Base.Models.ViewModels
     {
         public Int64 Id { get; set; }
         public string Code { get; set; }
+        public int? StateId { get; set; }
+        public int? DistrictId { get; set; }
+        public int? UpazilaId { get; set; }
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         [Display(Name = "Name")]
@@ -38,13 +41,13 @@ namespace MinervaSystem.Base.Models.ViewModels
         public string Address { get; set; }
 
         [Display(Name = "Division")]
-        public string Division { get; set; }
+        public string StateName { get; set; }
 
         [Display(Name = "District")]
-        public string District { get; set; }
+        public string DistrictName { get; set; }
 
-        [Display(Name = "Thana")]
-        public string Thana { get; set; }
+        [Display(Name = "Upazila")]
+        public string UpazilaName { get; set; }
 
         [Display(Name = "Village")]
         public string Village { get; set; }
@@ -53,10 +56,14 @@ namespace MinervaSystem.Base.Models.ViewModels
         public string PostalCode { get; set; }
         [Display(Name = "Note")]
         public string Note { get; set; }
+
     }
     public class FarmerViewModel
     {
         public Int64 Id { get; set; }
+        public int? StateId { get; set; }
+        public int? DistrictId { get; set; }
+        public int? UpazilaId { get; set; }
         public string FarmerIdNo { get; set; }
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
@@ -88,13 +95,13 @@ namespace MinervaSystem.Base.Models.ViewModels
         public string NationalIdNo { get; set; }
 
         [Display(Name = "Division")]
-        public string Division { get; set; }
+        public string StateName { get; set; }
 
         [Display(Name = "District")]
-        public string District { get; set; }
+        public string DistrictName { get; set; }
 
-        [Display(Name = "Thana")]
-        public string Thana { get; set; }
+        [Display(Name = "Upazila")]
+        public string UpazilaName { get; set; }
 
         [Display(Name = "Village")]
         public string Village { get; set; }
@@ -160,45 +167,18 @@ namespace MinervaSystem.Base.Models.ViewModels
         [Display(Name = "Estimated Amount")]
         public Decimal EstimatedAmount { get; set; }
         [Display(Name = "Plant Date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime DateofPlanting { get; set; }
         [Display(Name = "Supply Date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime SupplyDate { get; set; }
         [Display(Name = "Note")]
         public string Note { get; set; }
 
     }
-    public class StateViewModel
-    {
-        public Int64 Id { get; set; }
-        public Int64 CountryId { get; set; }
-        public string Name { get; set; }
-        public string BnName { get; set; }
-        public Decimal? Latitude { get; set; }
-        public Decimal? Longitude { get; set; }
-        public string website { get; set; }
-        public virtual ICollection<District> Districts { get; set; }
-    }
-    public class DistrictViewModel
-    {
-        public Int64 Id { get; set; }
-        public Int64 StateId { get; set; }
-        public string Name { get; set; }
-        public string BnName { get; set; }
-        public Decimal? Latitude { get; set; }
-        public Decimal? Longitude { get; set; }
-        public string website { get; set; }
-        public virtual ICollection<Upazila> Upazilas { get; set; }
-    }
-    public class UpazilaViewModel
-    {
-        public Int64 Id { get; set; }
-        public Int64 DistrictId { get; set; }
-        public string Name { get; set; }
-        public string BnName { get; set; }
-        public Decimal? Latitude { get; set; }
-        public Decimal? Longitude { get; set; }
-        public string website { get; set; }
-    }
+
 
     public class SupplyOrderRequest
     {
@@ -212,6 +192,8 @@ namespace MinervaSystem.Base.Models.ViewModels
         public string Code { get; set; }
         public Boolean? IsCollected { get; set; }
         public String CollectionDate { get; set; }
+        public String MemberKey { get; set; }
+        public String MemberName { get; set; }
         public string Note { get; set; }
         public string MobileNo { get; set; }
     }
@@ -245,6 +227,13 @@ namespace MinervaSystem.Base.Models.ViewModels
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
         #endregion
+    }
+
+
+    public class Thing
+    {
+        public int Id { get; set; }
+        public string Color { get; set; }
     }
 
 }

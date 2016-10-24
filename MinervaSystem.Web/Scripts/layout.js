@@ -9,7 +9,7 @@
 
         //-----> set spinner with ajax requests
         $(document).ajaxStart(function () {
-            $.blockUI({ message: "<div><img src='/Images/Icons/ajax-loader.gif'><div>" });
+            $.blockUI({ message: "<div><img src='../Images/Icons/ajax-loader.gif'><div>" });
         }).ajaxStop($.unblockUI);
 
         //-----> Scroll top control
