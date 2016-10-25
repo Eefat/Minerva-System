@@ -545,7 +545,19 @@ namespace MinervaSystem.Web.Controllers
                 a.DateofPlanting,
                 a.SupplyDate
             }).ToList();
-            return Json(new { aaData = list }, JsonRequestBehavior.AllowGet);
+
+            SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+            if (list.Count > 0)
+            {
+                response.status = 0;
+                response.url = BasicInformation.SmsUrl;
+                response.from = BasicInformation.From;
+                response.countryCode = BasicInformation.CountryCode;
+                response.authorization = BasicInformation.smsAuth;
+                //response.responseMsg = "Prio " + list[0].Name + ", Apner member id " + list[0].MemberKey + ". Apner chashkrito jomir poriman " + list[0].LandArea + " bigha ebong shomvabbo fosholer poriman " + list[0]. + "  ton. Apner tothho shothik vabe halnagad kora hoese. Akh shongroher poroborti tarikh apnake sms er maddhome janie dea hobe.";
+            }
+            var result = new { aaData = list, smsData = response };
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetSupplyInformationDetails(int supplyInformationId)
         {
@@ -787,6 +799,46 @@ namespace MinervaSystem.Web.Controllers
                     }).ToList();
             return Json(new { aaData = supplyInformations }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult GetAllSupplyOrderbySupplyInfoId(Int64 supplyInfoId)
+        {
+
+            var supplyOrders = ContextPerRequest.CurrentContext.SupplyOrder.Where(a => a.SupplyInformationId == supplyInfoId).OrderBy(a => a.CollectionDate)
+                    .Select(a => new
+                    {
+                        a.Id,
+                        a.SugerMillId,
+                        a.SupplyInformationId,
+                        a.ZoneId,
+                        a.ZoneManagerId,
+                        a.Code,
+                        MemberKey = a.SupplyInformation.Farmer.FarmerIdNo,
+                        SugerMillName = a.SupplyInformation.SugerMill.Name,
+                        FarmerName = a.SupplyInformation.Farmer.Name,
+                        MobileNo = a.SupplyInformation.Farmer.CellPhone,
+                        PlantRatoon = a.SupplyInformation.PlantRatoon.ToString(),
+                        LandArea = a.SupplyInformation.LandArea,
+                        EstimatedAmount = a.SupplyInformation.EstimatedAmount,
+                        AmounttoCollect = a.EstimatedAmount,
+                        a.CollectedAmount,
+                        a.CollectionDate,
+                        a.IsCollected,
+                        a.Note
+                    }).ToList();
+            SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+            if (supplyOrders.Count > 0)
+            {
+                response.status = 0;
+                response.url = BasicInformation.SmsUrl;
+                response.from = BasicInformation.From;
+                response.countryCode = BasicInformation.CountryCode;
+                response.authorization = BasicInformation.smsAuth;
+            }
+            var result = new { aaData = supplyOrders, smsData = response };
+            return Json(new { aaData = supplyOrders }, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public JsonResult GetAllCollectionInformations(SupplyInformationSearch supplyInformationSearch)
         {

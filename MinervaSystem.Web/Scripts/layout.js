@@ -31,7 +31,6 @@
                 { format: "dd/MM/yyyy" }
             );
             $(".kendo-datetimepicker").kendoDateTimePicker({
-                value: new Date(),
                 format: "dd/MM/yyyy hh:mm tt",
                 interval: 15
             });

@@ -9,6 +9,8 @@
 }
 @*<link href="~/Content/site.css" rel="stylesheet" />*@
 @Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
@@ -73,10 +75,16 @@
                         <div class="form-group">
                             @Html.LabelFor(m => m.SupplyDate, new { @class = "control-label col-md-3" })
                             <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.SupplyDate, "{0:dd/MM/yyyy}", new { @class = "form-control kendo-datepicker" })
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+                            @Html.LabelFor(m => m.SupplyDate, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.SupplyDate, new { @type = "date" })
                                
                             </div>
-                        </div>
+                        </div>*@
                         <div class="form-group">
                             @Html.LabelFor(m => m.Note, new { @class = "control-label col-md-3" })
                             <div class="col-md-9">
@@ -104,8 +112,18 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script type="text/javascript">
+        kendo.culture("de-DE");
         var winViewItem;
         $(document).ready(function () {
+            //$.validator.methods.date = function (value, element) {
+            //    $.culture = Globalize.culture("en-GB");
+            //    var date = Globalize.parseDate(value, "dd/MM/yyyy", "en-GB");
+            //    return this.optional(element) ||
+            //                   !/Invalid|NaN/.test(new Date(date).toString());
+            //};
+            $.validator.methods.date = function (value, element) {
+                return this.optional(element) || Globalize.parseDate(value, "dd-MM-yyyy", "en");
+            }
             $('#farmerPopup').off('click').on('click', function () {
                 winViewItem.center().open();
                 $('#myWindow').parent().find('.k-window-titlebar,.k-window-actions').css('backgroundColor', '#fe2712');

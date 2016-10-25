@@ -166,14 +166,22 @@ namespace MinervaSystem.Base.Models.ViewModels
         [Required]
         [Display(Name = "Estimated Amount")]
         public Decimal EstimatedAmount { get; set; }
+        [Required]
         [Display(Name = "Plant Date")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime DateofPlanting { get; set; }
         [Display(Name = "Supply Date")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy}")]
-        public DateTime SupplyDate { get; set; }
+
+        private DateTime _returnDate = DateTime.MinValue;
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        public DateTime SupplyDate
+        {
+            get
+            {
+                return (_returnDate == DateTime.MinValue) ? DateTime.Now : _returnDate;
+            }
+            set { _returnDate = value; }
+        }
         [Display(Name = "Note")]
         public string Note { get; set; }
 
@@ -205,6 +213,7 @@ namespace MinervaSystem.Base.Models.ViewModels
         public string url { get; set; }
         public string from { get; set; }
         public string authorization { get; set; }
+        public string countryCode { get; set; }
     }
     public static class BasicInformation
     {

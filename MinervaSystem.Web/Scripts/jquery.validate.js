@@ -1197,9 +1197,12 @@ $.extend( $.validator, {
 		},
 
 		// http://jqueryvalidation.org/date-method/
-		date: function( value, element ) {
-			return this.optional( element ) || !/Invalid|NaN/.test( new Date( value ).toString() );
-		},
+		date: function (value, element) {
+         $.culture = Globalize.culture("en-GB");
+         var date = Globalize.parseDate(value, "dd/MM/yyyy", "en-GB");
+         return this.optional(element) || 
+                        !/Invalid|NaN/.test(new Date(date).toString());
+     },
 
 		// http://jqueryvalidation.org/dateISO-method/
 		dateISO: function( value, element ) {
