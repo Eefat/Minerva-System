@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
-                <div id="placeHolder-main" class="col-md-6">
+                <div id="placeHolder-main" class="col-md-8">
                     @using (Html.BeginForm("UpdateFarmer", "SugerMill", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
                     {
                         @Html.AntiForgeryToken()
@@ -21,17 +21,17 @@
                         @Html.HiddenFor(m => m.Photo)
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.Name, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.Name, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            @Html.LabelFor(m => m.Photo, new { @class = "control-label col-md-3" })
+                        <div class="form-group" style="margin-left: 0%;">
+                            @Html.LabelFor(m => m.Photo, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @if (Model.Photo != null)
-                {
+                                {
                                     <img id="imgPhoto" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Photo)" height="125" width="125" class="img-thumbnail" />
                                 }
                                 else
@@ -43,62 +43,62 @@
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.BirthDate, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.BirthDate, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
-                                @Html.TextBoxFor(m => m.BirthDate, new { @Value = (Model.BirthDate.HasValue ? Model.BirthDate.Value.ToString("MM/dd/yyyy") : ""), @class = "form-control kendo-datepicker" })
+                                @Html.TextBoxFor(m => m.BirthDate, "{0:dd/MM/yyyy}", new { @class = "form-control kendo-datepicker" })
                             </div>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.Email, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.Email, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
                             </div>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.CellPhone, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.CellPhone, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.CellPhone, new { @class = "form-control" })
                             </div>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.Phone, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.Phone, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
                             </div>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.NationalIdNo, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.NationalIdNo, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.NationalIdNo, new { @class = "form-control" })
                             </div>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.Address, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.Address, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.StateName, new { @class = "col-md-3 control-label" })
+                            @Html.LabelFor(m => m.StateName, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @*<select id="ddlState"></select>*@
                                 @Html.DropDownListFor(m => m.StateId, new SelectList(Enumerable.Empty<SelectListItem>()), "Select", new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.DistrictName, new { @class = "col-md-3 control-label" })
+                            @Html.LabelFor(m => m.DistrictName, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @*<select id="ddlDistrict"></select>*@
                                 @Html.DropDownListFor(m => m.DistrictId, new SelectList(Enumerable.Empty<SelectListItem>()), "Select", new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.UpazilaName, new { @class = "col-md-3 control-label" })
+                            @Html.LabelFor(m => m.UpazilaName, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @*<select id="ddlUpazila"></select>*@
                                 @Html.DropDownListFor(m => m.UpazilaId, new SelectList(Enumerable.Empty<SelectListItem>()), "Select", new { @class = "form-control" })
@@ -106,28 +106,28 @@
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.PostalCode, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.PostalCode, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.PostalCode, new { @class = "form-control" })
                             </div>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.EmergencyContact, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.EmergencyContact, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.EmergencyContact, new { @class = "form-control" })
                             </div>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.EmergencyContactPhone, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.EmergencyContactPhone, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.EmergencyContactPhone, new { @class = "form-control" })
                             </div>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.Note, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.Note, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.Note, new { @class = "form-control" })
                             </div>
@@ -145,14 +145,27 @@
     </div>
 </section>
 @section Scripts {
-    @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/cldr")
+    @Scripts.Render("~/bundles/globalize")
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/kendo")
     <script type="text/javascript">
         $(document).ready(function () {
             farmer.init();
         });
         var farmer = {
             init: function () {
+                $.validator.addMethod(
+                     "date",
+                     function (value, element) {
+                         var bits = value.match(/([0-9]+)/gi), str;
+                         if (!bits)
+                             return this.optional(element) || false;
+                         str = bits[1] + '/' + bits[0] + '/' + bits[2];
+                         return this.optional(element) || !/Invalid|NaN/.test(new Date(str));
+                     },
+                     "Please enter a date in the format dd/mm/yyyy"
+                 );
                 $('#StateId').off('change').change(function () {
                     utility.RemoveAllOptions('#DistrictId', "Select");
                     utility.RemoveAllOptions('#UpazilaId', "Select");

@@ -13,8 +13,20 @@ namespace MinervaSystem.Base
                 "~/Scripts/jquery.blockUI.js",
                 "~/Scripts/GlobalFunctions.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/cldr").Include(
+                "~/Scripts/cldr.js",
+                "~/Scripts/cldr/event.js",
+                "~/Scripts/cldr/supplemental.js"));
+
+
+            bundles.Add(new ScriptBundle("~/bundles/globalize").Include(
+                "~/Scripts/globalize.js",
+                "~/Scripts/globalize/date.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                "~/Scripts/jquery.validate*"));
+                "~/Scripts/jquery.validate.js",
+                "~/Scripts/jquery.validate.globalize.js",
+                "~/Scripts/jquery.validate.unobtrusive.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
                 "~/Scripts/jquery-ui-{version}.js",

@@ -20,6 +20,7 @@ namespace MinervaSystem.Base.Models.ViewModels
         public string Name { get; set; }
 
         [Display(Name = "Establish Date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? EstablishDate { get; set; }
 
         [Display(Name = "Photo")]
@@ -69,8 +70,9 @@ namespace MinervaSystem.Base.Models.ViewModels
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         [Display(Name = "User Name")]
         public string Name { get; set; }
-
+        [Required]
         [Display(Name = "Birth Date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? BirthDate { get; set; }
 
         [Display(Name = "Photo")]
@@ -106,7 +108,7 @@ namespace MinervaSystem.Base.Models.ViewModels
         [Display(Name = "Village")]
         public string Village { get; set; }
 
-        [Display(Name = "PostalCode")]
+        [Display(Name = "Postal Code")]
         public string PostalCode { get; set; }
         [Display(Name = "Emergency Contact")]
         public string EmergencyContact { get; set; }
@@ -133,6 +135,7 @@ namespace MinervaSystem.Base.Models.ViewModels
         [Display(Name = "Code")]
         public string Code { get; set; }
         [Display(Name = "Collection Date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? CollectionDate { get; set; }
         [Display(Name = "Estimated Amount")]
         public Decimal? EstimatedAmount { get; set; }
@@ -146,15 +149,17 @@ namespace MinervaSystem.Base.Models.ViewModels
     public class SupplyInformationViewModel
     {
         public Int64 Id { get; set; }
+        [Required]
         public Int64 FarmerId { get; set; }
         [Display(Name = "Suger Mill Name")]
+        [Required]
         public Int64 SugerMillId { get; set; }
         public IEnumerable<System.Web.Mvc.SelectListItem> AllSugerMills { get; set; }
+        [Required]
         [Display(Name = "Farmer Id")]
         public string FarmerKey { get; set; }
         [Display(Name = "Farmer Name")]
         public string FarmerName { get; set; }
-        [Required]
         [Display(Name = "Cane Variety")]
         public CaneVariety? CaneVariety { get; set; }
         [Required]
@@ -163,16 +168,23 @@ namespace MinervaSystem.Base.Models.ViewModels
         [Required]
         [Display(Name = "Land Area")]
         public Decimal LandArea { get; set; }
-        [Required]
         [Display(Name = "Estimated Amount")]
         public Decimal EstimatedAmount { get; set; }
+
+        private DateTime _returnDate = DateTime.MinValue;
         [Required]
         [Display(Name = "Plant Date")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime DateofPlanting { get; set; }
+        public DateTime DateofPlanting
+        {
+            get
+            {
+                return (_returnDate == DateTime.MinValue) ? DateTime.Now : _returnDate;
+            }
+            set { _returnDate = value; }
+        }
+        [Required]
         [Display(Name = "Supply Date")]
-
-        private DateTime _returnDate = DateTime.MinValue;
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime SupplyDate
         {
@@ -217,12 +229,12 @@ namespace MinervaSystem.Base.Models.ViewModels
     }
     public static class BasicInformation
     {
-       public static string SmsUrl = "https://api.infobip.com/sms/1/text/single";
-       public static string CountryCode = "88";
-       public static string UserId = "itel786";
-       public static string Password = "01818856792SMS";
-       public static string smsAuth = "Basic "+Base64Encode(UserId + ":"+ Password);
-       public static string From = "InfoSMS";
+        public static string SmsUrl = "https://api.infobip.com/sms/1/text/single";
+        public static string CountryCode = "88";
+        public static string UserId = "itel786";
+        public static string Password = "01818856792SMS";
+        public static string smsAuth = "Basic " + Base64Encode(UserId + ":" + Password);
+        public static string From = "InfoSMS";
 
         #region----- Utility-----
         public static string Base64Encode(string plainText)

@@ -7,13 +7,15 @@
     ViewBag.ReturnUrl = "/SugerMill";
     ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Update Supply Information", new BreadcrumbModel("Update Supply Information"));
 }
-
 @Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
+<style>
+  .memberPopUp{width:84%;float:left;}
+</style>
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
-                <div id="placeHolder-main" class="col-md-6">
+                <div id="placeHolder-main" class="col-md-8">
                     @using (Html.BeginForm("UpdateSupplyInformation", "SugerMill", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
                     {
                         @Html.AntiForgeryToken()
@@ -21,26 +23,26 @@
                         @Html.HiddenFor(m => m.FarmerId)
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.FarmerName, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.FarmerName, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.FarmerName, new { @class = "form-control" })
                             </div>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.FarmerKey, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.FarmerKey, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.FarmerKey, new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.SugerMillId, new { @class = "col-md-3 control-label" })
+                            @Html.LabelFor(m => m.SugerMillId, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.DropDownListFor(m => m.SugerMillId, Model.AllSugerMills, "Please Select ...", new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.CaneVariety, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.CaneVariety, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.EnumDropDownListFor(m => m.CaneVariety, htmlAttributes: new { @class = "form-control" })
                                 @Html.ValidationMessageFor(m => m.CaneVariety, "", new { @class = "text-danger" })
@@ -48,7 +50,7 @@
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.PlantRatoon, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.PlantRatoon, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.EnumDropDownListFor(m => m.PlantRatoon, htmlAttributes: new { @class = "form-control" })
                                 @Html.ValidationMessageFor(m => m.PlantRatoon, "", new { @class = "text-danger" })
@@ -56,34 +58,37 @@
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.LandArea, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.LandArea, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.LandArea, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.LandArea, "", new { @class = "text-danger" })
                             </div>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.EstimatedAmount, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.EstimatedAmount, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.EstimatedAmount, new { @class = "form-control" })
                             </div>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.DateofPlanting, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.DateofPlanting, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
-                                @Html.TextBoxFor(m => m.DateofPlanting, new { @class = "form-control kendo-datepicker" })
+                                @Html.TextBoxFor(m => m.DateofPlanting, "{0:dd/MM/yyyy}", new { @class = "form-control kendo-datepicker" })
+                                @Html.ValidationMessageFor(m => m.DateofPlanting, "", new { @class = "text-danger" })
                             </div>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.SupplyDate, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.SupplyDate, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
-                                @Html.TextBoxFor(m => m.SupplyDate, new { @class = "form-control kendo-datepicker" })
+                                @Html.TextBoxFor(m => m.SupplyDate, "{0:dd/MM/yyyy}", new { @class = "form-control kendo-datepicker" })
+                                @Html.ValidationMessageFor(m => m.SupplyDate, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.Note, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.Note, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextAreaFor(m => m.Note, new { @id = "txtNote", @class = "form-control" })
                             </div>

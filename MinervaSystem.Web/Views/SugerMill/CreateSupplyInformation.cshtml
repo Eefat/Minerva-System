@@ -9,84 +9,83 @@
 }
 @*<link href="~/Content/site.css" rel="stylesheet" />*@
 @Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
-<script src="~/Scripts/jquery.validate.js"></script>
-<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<style>
+    .memberPopUp{width:84%;float:left;}
+</style>
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
-                <div id="placeHolder-main" class="col-md-6">
-                  @using (Html.BeginForm("CreateSupplyInformation", "SugerMill", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
-                  {
+                <div id="placeHolder-main" class="col-md-8">
+                    @using (Html.BeginForm("CreateSupplyInformation", "SugerMill", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+                    {
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary("", new { @class = "text-danger" })
                         @Html.HiddenFor(m => m.FarmerId, new { @id = "txtFarmerId", @class = "form-control" })
-                        <div class="form-group">
-                            @Html.LabelFor(m => m.FarmerName, new { @class = "control-label col-md-3" })
+                        <div class="form-group row">
+                            @Html.LabelFor(m => m.FarmerName, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
-                                @Html.TextBoxFor(m => m.FarmerName, new { @id = "txtFarmerName", @class = "form-control" })
-                                <input type="button" id="farmerPopup" value="Farmer">
+                                @Html.TextBoxFor(m => m.FarmerName, new { @readonly = "readonly", @id = "txtFarmerName", @class = "form-control memberPopUp" })
+                                <input type="button" id="farmerPopup" value="Farmer" style="float:right;vertical-align:middle;">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(m => m.FarmerKey, new { @class = "col-xs-3 col-form-label" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.FarmerKey, new { @readonly = "readonly", @id = "txtFarmerKey", @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.FarmerKey, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.FarmerKey, new { @class = "control-label col-md-3" })
-                            <div class="col-md-9">
-                                @Html.TextBoxFor(m => m.FarmerKey, new { @id = "txtFarmerKey", @class = "form-control" })
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            @Html.LabelFor(m => m.SugerMillId, new { @class = "col-md-3 control-label" })
+                            @Html.LabelFor(m => m.SugerMillId, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.DropDownListFor(m => m.SugerMillId, Model.AllSugerMills, "Please Select ...", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.SugerMillId, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.CaneVariety, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.CaneVariety, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.EnumDropDownListFor(m => m.CaneVariety, htmlAttributes: new { @class = "form-control" })
-                                @Html.ValidationMessageFor(m => m.CaneVariety, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.PlantRatoon, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.PlantRatoon, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.EnumDropDownListFor(m => m.PlantRatoon, htmlAttributes: new { @class = "form-control" })
                                 @Html.ValidationMessageFor(m => m.PlantRatoon, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.LandArea, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.LandArea, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.LandArea, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.DateofPlanting, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.EstimatedAmount, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.EstimatedAmount, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.EstimatedAmount, new { @class = "form-control" })
+                                @*@Html.ValidationMessageFor(m => m.EstimatedAmount, "", new { @class = "text-danger" })*@
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.DateofPlanting, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.DateofPlanting, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
-                                @Html.TextBoxFor(m => m.DateofPlanting,"{0:dd/MM/yyyy}", new { @type = "date" })
+                                @Html.TextBoxFor(m => m.DateofPlanting, "{0:dd/MM/yyyy}", new { @class = "form-control kendo-datepicker" })
+                                @Html.ValidationMessageFor(m => m.DateofPlanting, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(m => m.SupplyDate, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.SupplyDate, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextBoxFor(m => m.SupplyDate, "{0:dd/MM/yyyy}", new { @class = "form-control kendo-datepicker" })
+                                @Html.ValidationMessageFor(m => m.SupplyDate, "", new { @class = "text-danger" })
                             </div>
                         </div>
-                        @*<div class="form-group">
-                            @Html.LabelFor(m => m.SupplyDate, new { @class = "control-label col-md-3" })
-                            <div class="col-md-9">
-                                @Html.TextBoxFor(m => m.SupplyDate, new { @type = "date" })
-                               
-                            </div>
-                        </div>*@
                         <div class="form-group">
-                            @Html.LabelFor(m => m.Note, new { @class = "control-label col-md-3" })
+                            @Html.LabelFor(m => m.Note, new { @class = "col-xs-3 col-form-label" })
                             <div class="col-md-9">
                                 @Html.TextAreaFor(m => m.Note, new { @id = "txtNote", @class = "form-control" })
                             </div>
@@ -107,23 +106,40 @@
 </section>
 
 @section Scripts {
+
+    @*<!--cldr scripts-->
+    <script src="~/Scripts/cldr.js"></script>
+    <script src="~/Scripts/cldr/event.js"></script>
+    <script src="~/Scripts/cldr/supplemental.js"></script>
+    <!-- Globalize -->
+    <script src="~/Scripts/globalize.js"></script>
+    <script src="~/Scripts/globalize/date.js"></script>
+    <!-- $ validate -->
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.globalize.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>*@
+
+    @Scripts.Render("~/bundles/cldr")
+    @Scripts.Render("~/bundles/globalize")
+    @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/datatables")
     @Scripts.Render("~/bundles/kendo")
-    @Scripts.Render("~/bundles/jqueryval")
+    @*@Scripts.Render("~/bundles/jqueryval")*@
 
     <script type="text/javascript">
-        kendo.culture("de-DE");
         var winViewItem;
         $(document).ready(function () {
-            //$.validator.methods.date = function (value, element) {
-            //    $.culture = Globalize.culture("en-GB");
-            //    var date = Globalize.parseDate(value, "dd/MM/yyyy", "en-GB");
-            //    return this.optional(element) ||
-            //                   !/Invalid|NaN/.test(new Date(date).toString());
-            //};
-            $.validator.methods.date = function (value, element) {
-                return this.optional(element) || Globalize.parseDate(value, "dd-MM-yyyy", "en");
-            }
+            $.validator.addMethod(
+                "date",
+                function (value, element) {
+                    var bits = value.match(/([0-9]+)/gi), str;
+                    if (!bits)
+                        return this.optional(element) || false;
+                    str = bits[1] + '/' + bits[0] + '/' + bits[2];
+                    return this.optional(element) || !/Invalid|NaN/.test(new Date(str));
+                },
+                "Please enter a date in the format dd/mm/yyyy"
+            );
             $('#farmerPopup').off('click').on('click', function () {
                 winViewItem.center().open();
                 $('#myWindow').parent().find('.k-window-titlebar,.k-window-actions').css('backgroundColor', '#fe2712');
