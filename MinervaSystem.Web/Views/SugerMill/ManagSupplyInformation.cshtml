@@ -1,5 +1,6 @@
 ﻿@using MinervaSystem.Base.Models
 @{
+    ViewBag.Title = "Supply Order";
     @Styles.Render("~/Content/kendo.office365")
     ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Supply Information",
         new BreadcrumbModel("Supply Information", new List<LinkModel>() { new LinkModel("/SupplyInformation", "Site Action") }));
@@ -19,7 +20,7 @@
         color: #fff;
     }
     .child> thead > tr > th {
-        background: #ffffff;
+        background: #cedecf;
         color: #333;
     }
     .form-control {
@@ -70,7 +71,7 @@
                             </div>
                             <div class='col-sm-3'>
                                 <div class="form-group">
-                                    <label for="txtEstimatedAmount">Estimated Amount</label>
+                                    <label for="txtEstimatedAmount">Estimated Yield (Ton)</label>
                                     <input type="text" class="form-control" id="txtEstimatedAmount" placeholder="Estimated Amount">
                                 </div>
                             </div>
@@ -90,7 +91,7 @@
                                 </div>*@
                             <div class='col-sm-3'>
                                 <div class="form-group">
-                                    <label for="ddlPlantRatoon">Plant Ratoon</label>
+                                    <label for="ddlPlantRatoon">Plant/Ratoon</label>
                                     <select class="form-control" id="ddlPlantRatoon"></select>
                                 </div>
                             </div>
@@ -100,12 +101,12 @@
                                     <input type="text" class="form-control kendo-datepicker" id="txtDateofPlanting" placeholder="Date of Planting">
                                 </div>
                             </div>
-                            <div class='col-sm-3'>
+                            @*<div class='col-sm-3'>
                                 <div class="form-group">
                                     <label for="txtSupplyDate">Search Type</label>
                                     <select class="form-control" id="ddlSearchType"></select>
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                         @*<div class="row">
                                 <div class='col-sm-3'>
@@ -120,6 +121,7 @@
                     <div class="box-footer">
                         <button type="button" class="btn btn-primary" onclick="clearSupplyInformation();">Reset</button>
                         <button type="button" class="btn btn-primary" onclick="searchSupplyInformations();">Search</button>
+                        <button type="button" class="btn btn-primary" id="btnTodaysOrder">Todays Order</button>
                     </div>
                     <hr style="margin:0" />
                 </form>
@@ -132,13 +134,13 @@
                                 <th width="20%">Farmer Name</th>
                                 <th width="10%">Mobile No</th>
                                 <th width="10%">Plant/Ratoon</th>
-                                <th width="10%">Land Area</th>
-                                <th width="20%">Estimated Amount</th>
-                                <th width="20%">Date of Planting</th>
-                                <th width="5%">Total Month</th>
-                                <th>&nbsp;</th>
-                                <th>&nbsp;</th>
-                                <th>&nbsp;</th>
+                                <th width="10%">Land (Acres)</th>
+                                <th width="10%">Estimated Yield (Ton)</th>
+                                <th width="10%">Date of Planting</th>
+                                <th width="8%">Cane Age (Month</th>
+                                <th width="5%">Schedule</th>
+                                <th width="5%">Edit</th>
+                                <th width="5%">Delete</th>
                             </tr>
                         </thead>
                     </table>
@@ -147,6 +149,31 @@
         </div>
     </div>
 </section>
+
+
+@*<div id="todaysOrderPopup">
+    @Html.Partial("~/Views/SugerMill/FarmersListPopup.cshtml")
+</div>*@
+<div id="todaysOrderPopup">
+    <div style="margin:0">
+        <table id="tableSupplyOrder1" class=" table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="98%">
+            <thead>
+                <tr>
+                    <th width="2%"><input type="checkbox" name="select_all" value="1" id="cbTSOSelectAll"></th>
+                    <th width="5%">Code</th>
+                    <th width="10%">Farmer</th>
+                    <th width="8%">Mobile</th>
+                    <th width="10%">Suger Mill</th>
+                    <th width="8%">Amount to Collect</th>
+                    <th width="8%">Actually Collected</th>
+                    <th width="8%">Collection Date</th>
+                    <th width="3%">is collected</th>
+                    <th width="15%">note</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
 
 <div id="winViewItem" style="overflow:hidden;">
     <div style="margin:1px; overflow:hidden;">
@@ -161,7 +188,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-xs-2 col-form-label">Estimated Amount:</label>
+            <label class="col-xs-2 col-form-label">Estimated Yield (Ton):</label>
             <div class="col-sm-2">
                 <p id="soTotalEstimatedAmount" class=""></p>
             </div>
@@ -172,7 +199,7 @@
 
         </div>
         <div class="row">
-            <label class="col-xs-2 col-form-label">Land Area:</label>
+            <label class="col-xs-2 col-form-label">Land Area (Acres):</label>
             <div class="col-sm-2">
                 <p id="soLandArea" class=""></p>
             </div>
@@ -182,7 +209,7 @@
             <div class="row">
                 <div class='col-sm-2'>
                     <div class="form-group">
-                        <input type="text" class="form-control txtAmountoCollect" placeholder="Amount to Collect">
+                        <input type="text" class="form-control txtAmountoCollect" placeholder="Yield to Collect">
 
                     </div>
                 </div>
@@ -234,8 +261,8 @@
 </div>
 <div id="winDeleteItem">
     <p>
-        The supply information will be permanently deleted and cannot be recovered.<br />
-        Are you sure you want to delete the item?
+        The supply information will get deleted permanently and can not be recovered.<br />
+        Are you sure that you want to delete the item?
     </p>
     <div class="modal-btn-toolbar">
         <button onclick="DeleteSupplyInfo()" class="btn btn-default"><i class="fa fa-close btn-delete"></i> Delete</button>
@@ -243,7 +270,7 @@
     </div>
 </div>
 
-    <table id="tableSupplyOrder" class="table table-striped table-bordered dt-responsive nowrap child" cellspacing="0" style="display:none;">
+<table id="tableSupplyOrder" class="table table-striped table-bordered dt-responsive nowrap child" cellspacing="0" style="display:none;">
         <thead>
             <tr>
                 <th><input type="checkbox" name="select_all" value="1" id="cbSoSelectAll"></th>
@@ -267,7 +294,7 @@
     <script type="text/javascript" language="javascript">
         var datatable;
         var datatable1;
-        var winAddItem, winEditItem, winViewItem, winDeleteItem;
+        var winAddItem, winEditItem, winViewItem, winDeleteItem, winTodaysOrder;
         var itemId = null;
 
         $(document).ready(function () {
@@ -275,17 +302,25 @@
             populateDropDown();
             SetupSupplyInformationsDataTable();
             SetupPopupBoxes();
+            $('#btnTodaysOrder').off('click').on('click', function () {
+                winTodaysOrder.center().open();
+                //$('#myWindow').parent().find('.k-window-titlebar,.k-window-actions').css('backgroundColor', '#fe2712');
+            });
         });
         function populateDropDown() {
             getAllSugerMills();
             var optionsCaneVariety = $("#ddlCaneVariety");
             optionsCaneVariety.append($("<option />").val('').text('Select'));
-            optionsCaneVariety.append($("<option />").val('0').text('A'));
-            optionsCaneVariety.append($("<option />").val('1').text('B'));
-            optionsCaneVariety.append($("<option />").val('2').text('C'));
-            optionsCaneVariety.append($("<option />").val('3').text('D'));
-            optionsCaneVariety.append($("<option />").val('4').text('E'));
-            optionsCaneVariety.append($("<option />").val('5').text('F'));
+            optionsCaneVariety.append($("<option />").val('0').text('ISD 1/53'));
+            optionsCaneVariety.append($("<option />").val('1').text('ISD 1/54'));
+            optionsCaneVariety.append($("<option />").val('2').text('ISD 16'));
+            optionsCaneVariety.append($("<option />").val('3').text('ISD 17'));
+            optionsCaneVariety.append($("<option />").val('4').text('ISD 18'));
+            optionsCaneVariety.append($("<option />").val('5').text('ISD 19'));
+            optionsCaneVariety.append($("<option />").val('6').text('ISD 20'));
+            optionsCaneVariety.append($("<option />").val('7').text('ISD 25'));
+            optionsCaneVariety.append($("<option />").val('8').text('ISD 28'));
+            optionsCaneVariety.append($("<option />").val('9').text('LJC'));
 
             var optionsPlantRatoon = $("#ddlPlantRatoon");
             optionsPlantRatoon.append($("<option />").val('').text('Select'));
@@ -315,12 +350,27 @@
             if (datatable != null) {
                 $('#tableSupplyInformation').empty();
             }
+            jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+                "date-uk-pre": function (a) {
+                    var ukDatea = a.split('/');
+                    return (ukDatea[2] + ukDatea[1] + ukDatea[0]) * 1;
+                },
+
+                "date-uk-asc": function (a, b) {
+                    return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+                },
+
+                "date-uk-desc": function (a, b) {
+                    return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+                }
+            });
             datatable = $("#tableSupplyInformation").DataTable({
                 scrollX: true,
                 bDestroy: true,
                 initComplete: function (settings, json) {
                     supplyOrder1.smsData = json.smsData;
                     supplyOrder1.initSupplyInformationCheckBox(datatable);
+                    datatable.order( [ 7, 'dsc' ] ).draw();
                 },
                 ajax: {
 
@@ -347,15 +397,15 @@
                     { targets: 3, data: "PlantRatoon", orderable: false },
                     { targets: 4, data: "LandArea", orderable: false },
                     { targets: 5, data: "EstimatedAmount", orderable: false },
-                    { targets: 6, data: "DateofPlanting", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "dd-MM-yyyy" }) } },
+                    { targets: 6, data: "DateofPlanting", sType: "date-uk", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "dd-MM-yyyy" }) } },
                     {
                         targets: 7, render: function (data, type, row) {
                             var totalmonth = 0;
                             if (row.DateofPlanting)
                             {
                                 FormatDateValue(ParseJsonDate(row.DateofPlanting), { "format": "dd-MM-yyyy" });
-                                var from = FormatDateValue(ParseJsonDate(row.DateofPlanting)).split("-");
-                                var f = new Date(from[2], from[1] - 1, from[0]);
+                                var from = FormatDateValue(ParseJsonDate(row.DateofPlanting)).split("/");
+                                var f = new Date(from[2], from[0] - 1, from[1]);
                                 totalmonth = supplyorder.monthDiff(f, new Date());
                             }
                             return totalmonth;
@@ -366,9 +416,9 @@
                         render: function (data, type, row) {
                             var totalmonth = 0;
                             if (row.DateofPlanting) {
-                                FormatDateValue(ParseJsonDate(row.DateofPlanting));
+                                //FormatDateValue(ParseJsonDate(row.DateofPlanting));
                                 var from = FormatDateValue(ParseJsonDate(row.DateofPlanting)).split("/");
-                                var f = new Date(from[2], from[1] - 1, from[0]);
+                                var f = new Date(from[2], from[0] - 1, from[1]);
                                 totalmonth = supplyorder.monthDiff(f, new Date());
                             }
                             if ((row.PlantRatoon == 'Plant' && totalmonth >= 12) || (row.PlantRatoon == 'Ratoon' && totalmonth >= 12 && totalmonth <= 14)) {
@@ -487,7 +537,7 @@
                                 { targets: 4, data: "CollectionDate", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "dd-MM-yyyy" }) } },
                                 { targets: 5, data: "Note", orderable: false },
                                 { targets: 6, data: "IsCollected", orderable: false },
-                                { targets: 7, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='supplyorder.initSupplyOrder(this);'><i id='addHide' class='fa fa-bars'></i></a> <a href='@Url.Action("UpdateSupplyOrder", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a><a onclick='itemId=" + row.Id + ";winDeleteItem.center().open();'><i class='fa fa-remove'></i></a>"; } },
+                                { targets: 7, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='#'><i id='addHide' class='fa fa-bars'></i></a> <a href='@Url.Action("UpdateSupplyOrder", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a><a onclick='#'><i class='fa fa-remove'></i></a>"; } },
                                 @*{ targets: 8, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateSupplyOrder", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },
                                 { targets: 9, data: null, orderable: false, class: "text-center delete-control", render: function (data, type, row) { return "<a onclick='itemId=" + row.Id + ";winDeleteItem.center().open();'><i class='fa fa-remove'></i></a>"; } }*@
                             ],
@@ -532,6 +582,24 @@
                 draggable: false,
                 title: "Delete Announcement",
                 close: function () { itemId = null; }
+            }).data("kendoWindow");
+
+            winTodaysOrder = $("#todaysOrderPopup").kendoWindow({
+                minWidth: 700,
+                modal: true,
+                visible: false,
+                draggable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"],
+                title: "Todays Order",
+                open: function () {
+                    //$("#tableSupplyOrder").DataTable();
+                    //supplyorder.loadTodaysSupplyOrder();
+                    SetupAnnouncementsDataTable();
+                },
+                close: function () {
+                    itemId = null;
+                    $("#winViewItem div[id^='view-']").text("");
+                }
             }).data("kendoWindow");
         }
 
@@ -710,10 +778,132 @@
             monthDiff:function (d1, d2) {
                 var months;
                 months = (d2.getFullYear() - d1.getFullYear()) * 12;
-                months -= d1.getMonth() + 1;
-                months += d2.getMonth();
+                //months -= d1.getMonth() + 1;
+                //months += d2.getMonth();
                 return months <= 0 ? 0 : months;
             },
+
+            loadTodaysSupplyOrder: function () {
+                if (supplyDatatable != null) {
+                    $('#tableSupplyOrder').empty();
+                }
+                supplyDatatable = $("#tableSupplyOrder").DataTable({
+                    bDestroy: true,
+                    ajax: {
+                        url: '@Url.Action("GetTodaysCollectionOrders", "SugerMill")',
+                        type: "GET",
+                    },
+                    columnDefs: [
+                        {
+                            data: null,
+                            targets: 0,
+                            searchable: false,
+                            orderable: false,
+
+                            
+                            render: function (data, type, full, meta) {
+                                return '<input type="checkbox" class="siTSOCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+                            }
+                        },
+                        { targets: 1, data: "Code" },
+                        { targets: 2, data: "FarmerName", orderable: true },
+                        { targets: 3, data: "MobileNo", orderable: false },
+                        { targets: 4, data: "SugerMillName", orderable: false },
+                        { targets: 5, data: "AmounttoCollect", orderable: false },
+                        { targets: 6, data: "CollectedAmount", orderable: false },
+                        { targets: 7, data: "CollectionDate", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "dd-MM-yyyy" }) } },
+                        { targets: 8, data: "IsCollected", orderable: false },
+                        { targets: 9, data: "Note", orderable: false }
+                    ],
+                    order: [[1, "asc"]],
+                    lengthChange: true,
+                    lengthMenu: [[5, 10, 25, -1], [10, 10, 25, "All"]]
+                });
+            }
+        }
+
+        function SetupAnnouncementsDataTable() {
+
+            var datatable2;
+            if (datatable2 != null) {
+                datatable.fnDestroy();
+                $('#tableSupplyOrder1').empty();
+            }
+            datatable2 = $("#tableSupplyOrder1").DataTable({
+                bDestroy: true,
+                bFilter: false,
+                initComplete: function (settings, json) {
+                    supplyOrder1.initTodaysSupplyOrderCheckBox(datatable2);
+                },
+                ajax: {
+                        url: '@Url.Action("GetTodaysCollectionOrders", "SugerMill")',
+                        type: "GET",
+                    },
+                columnDefs: [
+                    {
+                        targets: 0, data: null, render: function (data, type, full, meta) {
+                            return '<input type="checkbox" class="childCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+                        }
+                    },
+                    { targets: 1, data: "Code" },
+                    { targets: 2, data: "FarmerName", orderable: true },
+                    { targets: 3, data: "MobileNo", orderable: false },
+                    { targets: 4, data: "SugerMillName", orderable: false },
+                    { targets: 5, data: "AmounttoCollect", orderable: false },
+                    { targets: 6, data: "CollectedAmount", orderable: false },
+                    {
+                        targets: 7, data: "CollectionDate", render: function (data, type, row) {
+                            return FormatDateValue(ParseJsonDate(data), { "format": "dd-MM-yyyy" })
+                        }
+                    },
+                    { targets: 8, data: "IsCollected", orderable: false },
+                    { targets: 9, data: "Note", orderable: false }
+                ],
+                order: [[1, "asc"]],
+                lengthChange: true,
+                lengthMenu: [[5, 10, 25, -1], [10, 10, 25, "All"]]
+            });
+            new $.fn.dataTable.Buttons(datatable2, [
+                                                 {
+                                                     text: 'Send Sms',
+                                                     action: function (e, dt, node, config) {
+                                                         supplyOrder1.sendBulkSMSsO(datatable2);
+                                                     }
+                                                 },
+                                               {
+                                                   extend: 'excel',
+                                                   text: '<span class="fa fa-file-excel-o"></span> Excel',
+                                                   exportOptions: {
+                                                       modifier: {
+                                                           search: 'applied',
+                                                           order: 'applied'
+                                                       }
+                                                   }
+                                               },
+                                               {
+                                                   extend: 'pdf',
+                                                   text: '<span class="fa fa-file-pdf-o"></span> PDF',
+                                                   exportOptions: {
+                                                       modifier: {
+                                                           search: 'applied',
+                                                           order: 'applied'
+                                                       }
+                                                   }
+                                               },
+                                                  {
+                                                      extend: 'print',
+                                                      text: '<span class="fa fa-print"></span> Print',
+                                                      exportOptions: {
+                                                          modifier: {
+                                                              search: 'applied',
+                                                              order: 'applied'
+                                                          }
+                                                      }
+                                                  }
+            ]);
+
+            datatable2.buttons().container().appendTo($('.col-sm-6:eq(0)', datatable2.table().container()));
+            datatable2.buttons().container().appendTo('#tableSupplyOrder1_filter');
         }
     </script>
 }

@@ -128,6 +128,20 @@ var supplyOrder1 = {
             }
         });
     },
+    initTodaysSupplyOrderCheckBox: function (datatable) {
+        $('#cbTSOSelectAll').on('click', function () {
+            var rows = datatable.rows({ 'search': 'applied' }).nodes();
+            $('input[type="checkbox"]', rows).prop('checked', this.checked);
+        });
+        $('#cbTSOSelectAll tbody').on('change', 'input[type="checkbox"]', function () {
+            if (!this.checked) {
+                var el = $('#cbTSOSelectAll').get(0);
+                if (el && el.checked && ('indeterminate' in el)) {
+                    el.indeterminate = true;
+                }
+            }
+        });
+    },
     sendBulkSMSsi: function (datatable) {
         datatable.$('input[type="checkbox"].siCB').each(function () {
                 if (this.checked) {

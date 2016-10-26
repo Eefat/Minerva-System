@@ -18,7 +18,8 @@
     @RenderSection("scripts", required: false)
 </head>
 
-<body class="skin-purple sidebar-mini wysihtml5-supported layout-boxed">
+@*<body class="skin-purple sidebar-mini wysihtml5-supported layout-boxed">*@
+<body class="skin-purple sidebar-mini wysihtml5-supported">
     @if (Request.IsAuthenticated)
     {
         <div class="wrapper">
@@ -141,45 +142,45 @@
                             <li class="dropdown user user-menu">
                                 <!-- Menu Toggle Button -->
                                 @*<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <!-- The user image in the navbar-->
-                                    <img src="/content/admin/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                                    <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                                    <span class="hidden-xs">Alexander Pierce</span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <!-- The user image in the menu -->
-                                    <li class="user-header">
-                                        <img src="/content/admin/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-                                        <p>
-                                            Alexander Pierce - Web Developer
-                                            <small>Member since Nov. 2012</small>
-                                        </p>
-                                    </li>
-                                    <!-- Menu Body -->
-                                    <li class="user-body">
-                                        <div class="row">
-                                            <div class="col-xs-4 text-center">
-                                                <a href="#">Followers</a>
+                                        <!-- The user image in the navbar-->
+                                        <img src="/content/admin/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                                        <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                        <span class="hidden-xs">Alexander Pierce</span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <!-- The user image in the menu -->
+                                        <li class="user-header">
+                                            <img src="/content/admin/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                            <p>
+                                                Alexander Pierce - Web Developer
+                                                <small>Member since Nov. 2012</small>
+                                            </p>
+                                        </li>
+                                        <!-- Menu Body -->
+                                        <li class="user-body">
+                                            <div class="row">
+                                                <div class="col-xs-4 text-center">
+                                                    <a href="#">Followers</a>
+                                                </div>
+                                                <div class="col-xs-4 text-center">
+                                                    <a href="#">Sales</a>
+                                                </div>
+                                                <div class="col-xs-4 text-center">
+                                                    <a href="#">Friends</a>
+                                                </div>
                                             </div>
-                                            <div class="col-xs-4 text-center">
-                                                <a href="#">Sales</a>
+                                            <!-- /.row -->
+                                        </li>
+                                        <!-- Menu Footer-->
+                                        <li class="user-footer">
+                                            <div class="pull-left">
+                                                <a href="#" class="btn btn-default btn-flat">Profile</a>
                                             </div>
-                                            <div class="col-xs-4 text-center">
-                                                <a href="#">Friends</a>
+                                            <div class="pull-right">
+                                                <a href="#" class="btn btn-default btn-flat">Sign out</a>
                                             </div>
-                                        </div>
-                                        <!-- /.row -->
-                                    </li>
-                                    <!-- Menu Footer-->
-                                    <li class="user-footer">
-                                        <div class="pull-left">
-                                            <a href="#" class="btn btn-default btn-flat">Profile</a>
-                                        </div>
-                                        <div class="pull-right">
-                                            <a href="#" class="btn btn-default btn-flat">Sign out</a>
-                                        </div>
-                                    </li>
-                                </ul>*@
+                                        </li>
+                                    </ul>*@
 
                                 @Html.Partial("_LoginPartial")
                             </li>
@@ -223,12 +224,12 @@
 
                     <ul class="sidebar-menu" id="mainSidebarMenu">
                         @*<li class="header">HEADER</li>*@
-                        <!-- Optionally, you can add icons to the links --> 
+                        <!-- Optionally, you can add icons to the links -->
                         <li class="active" id="homeSideBarMenu"><a href="~/"><i class="fa fa-dashboard"></i> <span>Home</span></a></li>
                         <li id="farmerSideBarMenu"><a href="~/SugerMill/ManageFarmers"><i class="fa fa-user"></i> <span>Farmer Information</span></a></li>
                         <li id="sOrderSideBarMenu"><a href="~/SugerMill/ManagSupplyInformation"><i class="fa fa-th"></i> <span>Supply Order</span></a></li>
                         @*<li><a href="~/SugerMill/ManageSupplyOrder"><i class="fa fa-th"></i> <span>Supply Order</span></a></li>*@
-                        @*<li><a href="~/SugerMill/ManageCollectionInformation"><i class="fa fa-th"></i> <span>Collection Information</span></a></li>*@
+                        <li><a href="~/SugerMill/ManageCollectionInformation"><i class="fa fa-th"></i> <span>Collection Information</span></a></li>
                         <li id="sugerMillSideBarMenu"><a href="~/SugerMill/ManageSugerMill"><i class="fa fa-industry"></i> <span>Suger Mill Information</span></a></li>
                         <li class="treeview">
                             <a href="#">
@@ -359,7 +360,7 @@
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><i class="fa fa-bars btn-save"></i></button>
-                    @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                    @Html.ActionLink("বাংলাদেশ চিনি ও খাদ্য শিল্প করপোরেশন", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
                 </div>
                 <div class="navbar-collapse collapse">
                     @Html.Partial("_LoginPartial")

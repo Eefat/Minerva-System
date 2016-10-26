@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using MinervaSystem.Base;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace MinervaSystem.Base.Models.ViewModels
 {
@@ -248,6 +250,46 @@ namespace MinervaSystem.Base.Models.ViewModels
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
         #endregion
+
+        public static T StringToEnum<T>(string name)
+        {
+            return (T)Enum.Parse(typeof(T), name);
+        }
+
+        public static string ToDescriptionString(this Enum value)
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+
+            DescriptionAttribute[] attributes =
+                (DescriptionAttribute[])fi.GetCustomAttributes(
+                typeof(DescriptionAttribute),
+                false);
+
+            if (attributes != null &&
+                attributes.Length > 0)
+                return attributes[0].Description;
+            else
+                return value.ToString();
+        }
+        public static IEnumerable<T> EnumToList<T>()
+        {
+            Type enumType = typeof(T);
+
+            // Can't use generic type constraints on value types,
+            // so have to do check like this
+            if (enumType.BaseType != typeof(Enum))
+                throw new ArgumentException("T must be of type System.Enum");
+
+            Array enumValArray = Enum.GetValues(enumType);
+            List<T> enumValList = new List<T>(enumValArray.Length);
+
+            foreach (int val in enumValArray)
+            {
+                enumValList.Add((T)Enum.Parse(enumType, val.ToString()));
+            }
+
+            return enumValList;
+        }
     }
 
 

@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MinervaSystem.Base
 {
     public static class SiteConfig
     {
-        public const string SiteTitle = "Application Name";
+        public const string SiteTitle = "Home";
     }
 
     #region ----- Base Enums -----
@@ -58,7 +59,26 @@ namespace MinervaSystem.Base
     }
     public enum CaneVariety
     {
-        A, B, C, D, E, F
+        [Display(Name = "ISD 1/53")]
+        ISD153,
+        [Display(Name = "ISD 1/54")]
+        ISD154,
+        [Display(Name = "ISD 16")]
+        ISD16,
+        [Display(Name = "ISD 17")]
+        ISD17,
+        [Display(Name = "ISD 18")]
+        ISD18,
+        [Display(Name = "ISD 19")]
+        ISD19,
+        [Display(Name = "ISD 20")]
+        ISD20,
+        [Display(Name = "ISD 25")]
+        ISD25,
+        [Display(Name = "ISD 28")]
+        ISD28,
+        [Display(Name = "LJC")]
+        LJC
     }
     public enum PlantRatoon
     {

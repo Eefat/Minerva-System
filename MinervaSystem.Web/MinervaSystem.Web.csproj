@@ -458,6 +458,7 @@
     <Content Include="Images\Icons\bullet.jpg" />
     <Content Include="Images\Icons\details_close.png" />
     <Content Include="Images\Icons\details_open.png" />
+    <Content Include="Images\logo.png" />
     <Content Include="Images\nophoto.png" />
     <Content Include="Images\SiteLogo.png" />
     <Content Include="Images\Slides\Slide1.jpg" />
@@ -689,6 +690,7 @@
     <Content Include="Views\SugerMill\ComposeMail.cshtml" />
     <Content Include="Views\SugerMill\ManageCollectionInformation.cshtml" />
     <Content Include="Views\SugerMill\ManageSupplyOrder.cshtml" />
+    <Content Include="Views\SugerMill\TodaysOrderPopup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\telerik\images\" />

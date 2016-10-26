@@ -528,7 +528,7 @@ namespace MinervaSystem.Web.Controllers
             if (supplyInformationSearch.LandArea != null) supplyInformations = supplyInformations.Where(oh => oh.LandArea == supplyInformationSearch.LandArea);
             if (supplyInformationSearch.DateofPlanting != null) supplyInformations = supplyInformations.Where(oh => oh.DateofPlanting == dateofPlanting);
             
-            var list = supplyInformations.OrderBy(a => a.Farmer.Name)
+            var list = supplyInformations.OrderByDescending(a => a.DateofPlanting)
             .Select(a => new
             {
                 a.Id,
@@ -772,7 +772,32 @@ namespace MinervaSystem.Web.Controllers
             return Json(new { aaData = list }, JsonRequestBehavior.AllowGet);
         }
 
-   
+        public JsonResult GetTodaysCollectionOrders()
+        {
+            var supplyInformations = ContextPerRequest.CurrentContext.SupplyOrder.Where(a => (a.CollectionDate.HasValue && EntityFunctions.TruncateTime(a.CollectionDate.Value) == EntityFunctions.TruncateTime(DateTime.Today))).OrderBy(a => a.CollectionDate)
+                    .Select(a => new
+                    {
+                        a.Id,
+                        a.SugerMillId,
+                        a.SupplyInformationId,
+                        a.ZoneId,
+                        a.ZoneManagerId,
+                        a.Code,
+                        MemberKey = a.SupplyInformation.Farmer.FarmerIdNo,
+                        SugerMillName = a.SupplyInformation.SugerMill.Name,
+                        FarmerName = a.SupplyInformation.Farmer.Name,
+                        MobileNo = a.SupplyInformation.Farmer.CellPhone,
+                        PlantRatoon = a.SupplyInformation.PlantRatoon.ToString(),
+                        LandArea = a.SupplyInformation.LandArea,
+                        EstimatedAmount = a.SupplyInformation.EstimatedAmount,
+                        AmounttoCollect = a.EstimatedAmount,
+                        a.CollectedAmount,
+                        a.CollectionDate,
+                        a.IsCollected,
+                        a.Note
+                    }).ToList();
+            return Json(new { aaData = supplyInformations }, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult GetAllCollectionInformations()
         {
             var supplyInformations = ContextPerRequest.CurrentContext.SupplyOrder.OrderBy(a => a.CollectionDate)
