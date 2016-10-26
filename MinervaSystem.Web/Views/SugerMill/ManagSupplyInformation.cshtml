@@ -291,6 +291,9 @@
 {
     @Scripts.Render("~/bundles/DataTables/Allbuttons")
     @Scripts.Render("~/bundles/kendo")
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+<script src="~/Scripts/DataTables/moment-with-locales.min.js"></script>
+<script src="//cdn.datatables.net/plug-ins/3cfcc339e89/sorting/datetime-moment.js"></script>
     <script type="text/javascript" language="javascript">
         var datatable;
         var datatable1;
@@ -302,6 +305,7 @@
             populateDropDown();
             SetupSupplyInformationsDataTable();
             SetupPopupBoxes();
+            utility.loadDateSorting();
             $('#btnTodaysOrder').off('click').on('click', function () {
                 winTodaysOrder.center().open();
                 //$('#myWindow').parent().find('.k-window-titlebar,.k-window-actions').css('backgroundColor', '#fe2712');
@@ -350,20 +354,7 @@
             if (datatable != null) {
                 $('#tableSupplyInformation').empty();
             }
-            jQuery.extend(jQuery.fn.dataTableExt.oSort, {
-                "date-uk-pre": function (a) {
-                    var ukDatea = a.split('/');
-                    return (ukDatea[2] + ukDatea[1] + ukDatea[0]) * 1;
-                },
 
-                "date-uk-asc": function (a, b) {
-                    return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-                },
-
-                "date-uk-desc": function (a, b) {
-                    return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-                }
-            });
             datatable = $("#tableSupplyInformation").DataTable({
                 scrollX: true,
                 bDestroy: true,
@@ -379,6 +370,7 @@
                     //dataType: 'json',
                     data: supplyInformationSearchObj
                 },
+                aoColumns: [null, null, null, null, null, null, { "sType": "date-uk" }, null, null, null],
                 columnDefs: [
                     {
                         data: null,
@@ -397,13 +389,17 @@
                     { targets: 3, data: "PlantRatoon", orderable: false },
                     { targets: 4, data: "LandArea", orderable: false },
                     { targets: 5, data: "EstimatedAmount", orderable: false },
-                    { targets: 6, data: "DateofPlanting", sType: "date-uk", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "dd-MM-yyyy" }) } },
+                    {
+                        targets: 6, data: "DateofPlanting", render: function (data, type, row) {
+
+                            return FormatDateValue(ParseJsonDate(data), { "format": "dd/MM/yyyy" });
+                        }
+                    },
                     {
                         targets: 7, render: function (data, type, row) {
                             var totalmonth = 0;
                             if (row.DateofPlanting)
                             {
-                                FormatDateValue(ParseJsonDate(row.DateofPlanting), { "format": "dd-MM-yyyy" });
                                 var from = FormatDateValue(ParseJsonDate(row.DateofPlanting)).split("/");
                                 var f = new Date(from[2], from[0] - 1, from[1]);
                                 totalmonth = supplyorder.monthDiff(f, new Date());

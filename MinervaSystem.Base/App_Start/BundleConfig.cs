@@ -56,6 +56,8 @@ namespace MinervaSystem.Base
                 "~/Scripts/DataTables/jquery.dataTables.min.js",
                 "~/Scripts/DataTables/dataTables.bootstrap.min.js",
                 "~/Scripts/DataTables/dataTables.responsive.min.js",
+                "~/Scripts/DataTables/moment.js",
+                "~/Scripts/DataTables/datetime-moment.js",
                 "~/Scripts/DataTables/responsive.bootstrap.min.js",
                 "~/Scripts/Admin/app.js"));
 
