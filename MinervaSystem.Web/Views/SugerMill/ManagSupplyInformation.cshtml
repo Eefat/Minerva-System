@@ -97,7 +97,7 @@
                             </div>
                             <div class='col-sm-3'>
                                 <div class="form-group">
-                                    <label for="txtDateofPlanting">Date of Planting</label>
+                                    <label for="txtDateofPlanting" style="width:100%">Date of Planting</label>
                                     <input type="text" class="form-control kendo-datepicker" id="txtDateofPlanting" placeholder="Date of Planting">
                                 </div>
                             </div>
@@ -280,9 +280,7 @@
                 <th width="8%">Collection Date</th>
                 <th width="10%">Note</th>
                 <th width="8%">Is Collected</th>
-                <th><a class="btn btn-default" tabindex="0" aria-controls="tableSupplyOrder" id="btnChildSMS"><span>Send Sms</span></a></th>
-                @*<th>&nbsp;</th>
-                <th>&nbsp;</th>*@
+                <th>&nbsp;</th>
             </tr>
         </thead>
     </table>
@@ -350,6 +348,7 @@
                 }, error: function () { }
             });
         }
+        var test;
         function SetupSupplyInformationsDataTable(supplyInformationSearchObj) {
             if (datatable != null) {
                 $('#tableSupplyInformation').empty();
@@ -499,18 +498,16 @@
                         $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
                         var table = $('<table id="childTable" class="table table-striped table-bordered dt-responsive nowrap child"></table>');
                         table.html($('#tableSupplyOrder').html());
-                        var test= table.DataTable({
+                        test = table.DataTable({
                             bDestroy: true,
                             paging: false,
-                            //pagingType: "full_numbers",
                             initComplete: function (settings, json) {
-                                $('#childTable').DataTable({ paging: true, });
                                 row.child(table).show();
                                 tr.addClass("shown");
                                 supplyOrder1.initSupplyOrderCheckBox(test);
-                                $('#btnChildSMS').off('click').click(function () {
-                                    supplyOrder1.sendBulkSMSsO(test);
-                                });
+                                test.buttons().container().insertBefore($('.col-sm-6:eq(0)', test.table().container()));
+                                test.buttons().container().insertBefore('#childTable');
+
                             },
                             ajax: {
                                 url: '@Url.Action("GetAllSupplyOrderbySupplyInfoId", "SugerMill")',
@@ -533,14 +530,62 @@
                                 { targets: 4, data: "CollectionDate", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "dd-MM-yyyy" }) } },
                                 { targets: 5, data: "Note", orderable: false },
                                 { targets: 6, data: "IsCollected", orderable: false },
-                                { targets: 7, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='#'><i id='addHide' class='fa fa-bars'></i></a> <a href='@Url.Action("UpdateSupplyOrder", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a><a onclick='#'><i class='fa fa-remove'></i></a>"; } },
-                                @*{ targets: 8, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateSupplyOrder", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },
-                                { targets: 9, data: null, orderable: false, class: "text-center delete-control", render: function (data, type, row) { return "<a onclick='itemId=" + row.Id + ";winDeleteItem.center().open();'><i class='fa fa-remove'></i></a>"; } }*@
+                                { targets: 7, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='#'><i id='addHide' class='fa fa-bars'></i></a> <a href='@Url.Action("UpdateSupplyOrder", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },
+
+
                             ],
                             order: [[1, "asc"]],
                             //lengthChange: true,
                             //lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
                         });
+                        new $.fn.dataTable.Buttons(test, [
+
+                                                {
+                                                    text: 'Send Sms',
+                                                    action: function (e, dt, node, config) {
+                                                        supplyOrder1.sendBulkSMSsO(test);
+                                                    }
+                                                },
+                                                {
+                                                    text: 'Delete',
+                                                    action: function (e, dt, node, config) {
+                                                        supplyOrder1.deleteBulkSO(test, '@Url.Action("DeleteSupplyOrder", "SugerMill")', tr);
+                                                    }
+                                                },
+
+                                               {
+                                                   extend: 'excel',
+                                                   text: '<span class="fa fa-file-excel-o"></span> Excel',
+                                                   exportOptions: {
+                                                       modifier: {
+                                                           search: 'applied',
+                                                           order: 'applied'
+                                                       }
+                                                   }
+                                               },
+                                               {
+                                                   extend: 'pdf',
+                                                   text: '<span class="fa fa-file-pdf-o"></span> PDF',
+                                                   exportOptions: {
+                                                       modifier: {
+                                                           search: 'applied',
+                                                           order: 'applied'
+                                                       }
+                                                   }
+                                               },
+                                                  {
+                                                      extend: 'print',
+                                                      text: '<span class="fa fa-print"></span> Print',
+                                                      exportOptions: {
+                                                          modifier: {
+                                                              search: 'applied',
+                                                              order: 'applied'
+                                                          }
+                                                      }
+                                                  }
+                        ]);
+                        //test.buttons().container().appendTo($('.col-sm-6:eq(0)', test.table().container()));
+                        //test.buttons().container().appendTo('#childTable_filter');
 
 
                     }
@@ -602,7 +647,7 @@
         function DeleteSupplyInfo() {
             if (itemId != null) {
                 $.ajax({
-                    url: '@Url.Action("GetFarmerDetails", "DeleteFarmer")', type: "Post",
+                    url: '@Url.Action("GetFarmerDetails", "SugerMill")', type: "Post",
                     data: { farmerId: itemId },
                     async: false, cache: false,
                     success: function (response) {
@@ -796,7 +841,7 @@
                             searchable: false,
                             orderable: false,
 
-                            
+
                             render: function (data, type, full, meta) {
                                 return '<input type="checkbox" class="siTSOCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
                             }
@@ -822,7 +867,7 @@
 
             var datatable2;
             if (datatable2 != null) {
-                datatable.fnDestroy();
+                datatable2.fnDestroy();
                 $('#tableSupplyOrder1').empty();
             }
             datatable2 = $("#tableSupplyOrder1").DataTable({

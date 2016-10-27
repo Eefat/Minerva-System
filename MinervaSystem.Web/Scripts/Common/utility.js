@@ -135,9 +135,9 @@ var supplyOrder1 = {
     initSupplyOrderCheckBox: function (datatable) {
         $('#cbSoSelectAll').on('click', function () {
             var rows = datatable.rows({ 'search': 'applied' }).nodes();
-            $('input[type="checkbox"]', rows).prop('checked', this.checked);
+            $('input[type="checkbox"].childCB', rows).prop('checked', this.checked);
         });
-        $('#cbSoSelectAll tbody').on('change', 'input[type="checkbox"]', function () {
+        $('#cbSoSelectAll tbody').on('change', 'input[type="checkbox"].childCB', function () {
             if (!this.checked) {
                 var el = $('#cbSoSelectAll').get(0);
                 if (el && el.checked && ('indeterminate' in el)) {
@@ -157,6 +157,36 @@ var supplyOrder1 = {
                 if (el && el.checked && ('indeterminate' in el)) {
                     el.indeterminate = true;
                 }
+            }
+        });
+    },
+    deleteBulkSO: function (datatable, url, parentTr) {
+        var listIds = [];
+        datatable.$('input[type="checkbox"].childCB').each(function () {
+            if (this.checked) {
+                var tr = $(this).closest("tr");
+                var row = datatable.row(tr);
+                listIds.push(row.data().Id);
+            }
+        });
+        things = JSON.stringify({ 'schedulerIds': listIds });
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            url: url,
+            type: "POST",
+            //dataType: 'json',
+            data: things,
+            success: function (response) {
+                if (response.status == 0) {
+                    winViewItem.close();
+                    $(parentTr).find("i.details-control").click();
+                    $(parentTr).find("i.details-control").click();
+                } else {
+                    alert(response.responseMsg);
+                }
+
+            }, error: function (response) {
+                alert("Error occured!!! Contact to admonistrator!!!");
             }
         });
     },

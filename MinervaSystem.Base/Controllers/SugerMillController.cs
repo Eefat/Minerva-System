@@ -1091,6 +1091,29 @@ namespace MinervaSystem.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.Conflict, ex.Message);
             }
         }
+        [HttpPost]
+        public ActionResult DeleteSupplyOrder(IEnumerable<Int64> schedulerIds)
+        {
+            try
+            {
+                var supplyOrderList = ContextPerRequest.CurrentContext.SupplyOrder.Where(x => schedulerIds.Contains(x.Id)).ToList();
+                foreach (var supplyOrder in supplyOrderList)
+                {
+                    ContextPerRequest.CurrentContext.SupplyOrder.Remove(supplyOrder);
+                    ContextPerRequest.CurrentContext.SaveChanges();
+                }
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 0;
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 1;
+                response.responseMsg = ex.Message;
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+        }
         #endregion
 
         #region  Country/State/District/Upazilla
