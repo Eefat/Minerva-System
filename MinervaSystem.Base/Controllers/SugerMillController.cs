@@ -682,6 +682,30 @@ namespace MinervaSystem.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.Conflict, ex.Message);
             }
         }
+        [HttpPost]
+        public ActionResult DeleteSupplyInformation(IEnumerable<Int64> supplyIds)
+        {
+            try
+            {
+                var supplyInfoList = ContextPerRequest.CurrentContext.SupplyInformation.Where(x => supplyIds.Contains(x.Id)).ToList();
+                foreach (var supplyInfo in supplyInfoList)
+                {
+                    ContextPerRequest.CurrentContext.SupplyInformation.Remove(supplyInfo);
+                    ContextPerRequest.CurrentContext.SaveChanges();
+                }
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 0;
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 1;
+                response.responseMsg = ex.Message;
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
 
 
@@ -699,10 +723,6 @@ namespace MinervaSystem.Web.Controllers
                 new BreadcrumbModel("Collection Information", new List<LinkModel>() { new LinkModel("/SugerMill", "Site Actions") }));
             return View();
         }
-        //public PartialViewResult FarmerListPopup()
-        //{
-        //    return PartialView("FarmerListPopup.cshtml");
-        //}
 
         public JsonResult GetAllSupplyOrders()
         {

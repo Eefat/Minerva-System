@@ -19,10 +19,12 @@
         background: #605ca8;
         color: #fff;
     }
-    .child> thead > tr > th {
+
+    .child > thead > tr > th {
         background: #cedecf;
         color: #333;
     }
+
     .form-control {
         height: auto;
     }
@@ -102,11 +104,11 @@
                                 </div>
                             </div>
                             @*<div class='col-sm-3'>
-                                <div class="form-group">
-                                    <label for="txtSupplyDate">Search Type</label>
-                                    <select class="form-control" id="ddlSearchType"></select>
-                                </div>
-                            </div>*@
+                                    <div class="form-group">
+                                        <label for="txtSupplyDate">Search Type</label>
+                                        <select class="form-control" id="ddlSearchType"></select>
+                                    </div>
+                                </div>*@
                         </div>
                         @*<div class="row">
                                 <div class='col-sm-3'>
@@ -152,8 +154,8 @@
 
 
 @*<div id="todaysOrderPopup">
-    @Html.Partial("~/Views/SugerMill/FarmersListPopup.cshtml")
-</div>*@
+        @Html.Partial("~/Views/SugerMill/FarmersListPopup.cshtml")
+    </div>*@
 <div id="todaysOrderPopup">
     <div style="margin:0">
         <table id="tableSupplyOrder1" class=" table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="98%">
@@ -271,27 +273,27 @@
 </div>
 
 <table id="tableSupplyOrder" class="table table-striped table-bordered dt-responsive nowrap child" cellspacing="0" style="display:none;">
-        <thead>
-            <tr>
-                <th><input type="checkbox" name="select_all" value="1" id="cbSoSelectAll"></th>
-                <th width="5%">Code</th>
-                <th width="8%">Amount to Collect</th>
-                <th width="8%">Collected Amount</th>
-                <th width="8%">Collection Date</th>
-                <th width="10%">Note</th>
-                <th width="8%">Is Collected</th>
-                <th>&nbsp;</th>
-            </tr>
-        </thead>
-    </table>
+    <thead>
+        <tr>
+            <th><input type="checkbox" name="select_all" value="1" id="cbSoSelectAll"></th>
+            <th width="5%">Code</th>
+            <th width="8%">Amount to Collect</th>
+            <th width="8%">Collected Amount</th>
+            <th width="8%">Collection Date</th>
+            <th width="10%">Note</th>
+            <th width="8%">Is Collected</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+</table>
 
 @section Scripts
 {
     @Scripts.Render("~/bundles/DataTables/Allbuttons")
     @Scripts.Render("~/bundles/kendo")
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
-<script src="~/Scripts/DataTables/moment-with-locales.min.js"></script>
-<script src="//cdn.datatables.net/plug-ins/3cfcc339e89/sorting/datetime-moment.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+    <script src="~/Scripts/DataTables/moment-with-locales.min.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/3cfcc339e89/sorting/datetime-moment.js"></script>
     <script type="text/javascript" language="javascript">
         var datatable;
         var datatable1;
@@ -360,7 +362,7 @@
                 initComplete: function (settings, json) {
                     supplyOrder1.smsData = json.smsData;
                     supplyOrder1.initSupplyInformationCheckBox(datatable);
-                    datatable.order( [ 7, 'dsc' ] ).draw();
+                    datatable.order([7, 'dsc']).draw();
                 },
                 ajax: {
 
@@ -374,7 +376,7 @@
                     {
                         data: null,
                         targets: 0,
-                        searchable:false,
+                        searchable: false,
                         orderabl: false,
 
                         className: 'dt-body-center',
@@ -397,15 +399,14 @@
                     {
                         targets: 7, render: function (data, type, row) {
                             var totalmonth = 0;
-                            if (row.DateofPlanting)
-                            {
+                            if (row.DateofPlanting) {
                                 var from = FormatDateValue(ParseJsonDate(row.DateofPlanting)).split("/");
                                 var f = new Date(from[2], from[0] - 1, from[1]);
                                 totalmonth = supplyorder.monthDiff(f, new Date());
                             }
                             return totalmonth;
-                         }
-                     },
+                        }
+                    },
                     {
                         targets: 8, data: null, orderable: false, class: "text-center view-control",
                         render: function (data, type, row) {
@@ -418,7 +419,7 @@
                             }
                             if ((row.PlantRatoon == 'Plant' && totalmonth >= 12) || (row.PlantRatoon == 'Ratoon' && totalmonth >= 12 && totalmonth <= 14)) {
                                 return "<a onclick='supplyorder.initSupplyOrder(this);'><i id='addHide' class='fa fa-bars'></i></a>";
-                            }else return "<i id='addHide' class='fa fa-bars'></i>";
+                            } else return "<i id='addHide' class='fa fa-bars'></i>";
 
                         }
                     },
@@ -432,11 +433,16 @@
 
                                                 {
                                                     text: 'Send Sms',
-                                                    action: function ( e, dt, node, config ) {
+                                                    action: function (e, dt, node, config) {
                                                         supplyOrder1.sendBulkSMSsi(datatable);
                                                     }
                                                 },
-
+                                                 {
+                                                     text: 'Delete',
+                                                     action: function (e, dt, node, config) {
+                                                         supplyOrder1.deleteBulkSI(test, '@Url.Action("DeleteSupplyInformation", "SugerMill")');
+                                                     }
+                                                 },
                                                {
                                                    extend: 'excel',
                                                    text: '<span class="fa fa-file-excel-o"></span> Excel',
@@ -517,10 +523,10 @@
                             columnDefs: [
                                 {
                                     targets: 0,
-                                    searchable:false,
-                                    orderable:false,
+                                    searchable: false,
+                                    orderable: false,
                                     className: 'dt-body-center',
-                                    render: function (data, type, full, meta){
+                                    render: function (data, type, full, meta) {
                                         return '<input type="checkbox" class="childCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
                                     }
                                 },
@@ -584,10 +590,6 @@
                                                       }
                                                   }
                         ]);
-                        //test.buttons().container().appendTo($('.col-sm-6:eq(0)', test.table().container()));
-                        //test.buttons().container().appendTo('#childTable_filter');
-
-
                     }
 
                 }
@@ -782,7 +784,7 @@
             },
             sendSMS: function (response) {
                 var smsRequest = supplyorder.getSMSrequest(response);
-                window.location.href = "https://rest.nexmo.com/sms/xml?api_key=a04d07fb&api_secret=83bfa18e&from=Admin&to=" + response.mobileNo + "&text="+response.responseMsg;
+                window.location.href = "https://rest.nexmo.com/sms/xml?api_key=a04d07fb&api_secret=83bfa18e&from=Admin&to=" + response.mobileNo + "&text=" + response.responseMsg;
 
                 $.ajax({
                     url: response.url,
@@ -816,7 +818,7 @@
                 $("#txtCollectionDate").val('');
                 $("#txtSoNote").val('');
             },
-            monthDiff:function (d1, d2) {
+            monthDiff: function (d1, d2) {
                 var months;
                 months = (d2.getFullYear() - d1.getFullYear()) * 12;
                 //months -= d1.getMonth() + 1;
@@ -877,9 +879,9 @@
                     supplyOrder1.initTodaysSupplyOrderCheckBox(datatable2);
                 },
                 ajax: {
-                        url: '@Url.Action("GetTodaysCollectionOrders", "SugerMill")',
-                        type: "GET",
-                    },
+                    url: '@Url.Action("GetTodaysCollectionOrders", "SugerMill")',
+                    type: "GET",
+                },
                 columnDefs: [
                     {
                         targets: 0, data: null, render: function (data, type, full, meta) {

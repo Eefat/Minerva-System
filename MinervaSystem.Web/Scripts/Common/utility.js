@@ -132,6 +132,34 @@ var supplyOrder1 = {
             }
         });
     },
+    deleteBulkSI: function (datatable, url) {
+        var listIds = [];
+        datatable.$('input[type="checkbox"].siCB').each(function () {
+            if (this.checked) {
+                var tr = $(this).closest("tr");
+                var row = datatable.row(tr);
+                listIds.push(row.data().Id);
+            }
+        });
+        things = JSON.stringify({ 'supplyIds': listIds });
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            url: url,
+            type: "POST",
+            //dataType: 'json',
+            data: things,
+            success: function (response) {
+                if (response.status == 0) {
+                    searchSupplyInformations();
+                } else {
+                    alert(response.responseMsg);
+                }
+
+            }, error: function (response) {
+                alert("Error occured!!! Contact to admonistrator!!!");
+            }
+        });
+    },
     initSupplyOrderCheckBox: function (datatable) {
         $('#cbSoSelectAll').on('click', function () {
             var rows = datatable.rows({ 'search': 'applied' }).nodes();
