@@ -101,13 +101,13 @@
                             <div class='col-sm-3'>
                                 <div class="form-group">
                                     <label for="txtName">Amount to Collect</label>
-                                    <input type="text" class="form-control" id="txtAmounttoCollect" placeholder="Amount to Collect">
+                                    <input type="text" class="form-control" id="txtSearchAmounttoCollect" placeholder="Amount to Collect">
                                 </div>
                             </div>
                             <div class='col-sm-3'>
                                 <div class="form-group">
                                     <label for="txtMemberKey">Actually Collected</label>
-                                    <input type="text" class="form-control" id="txtActuallyCollected" placeholder="Actually Collected">
+                                    <input type="text" class="form-control" id="txtSearchActuallyCollected" placeholder="Actually Collected">
                                 </div>
                             </div>
 
@@ -115,7 +115,7 @@
                                 <div class="form-group">
                                     <label for="" style="visibility:hidden;width:100%;">Actually Collected</label>
                                     <label for="txtLandArea">Is Collected</label>
-                                    <input type="checkbox" class="form-check-input" id="cbIsCollected" value="">
+                                    <input type="checkbox" class="form-check-input" id="cbSearchIsCollected" value="">
                                 </div>
                             </div>
                         </div>
@@ -533,9 +533,9 @@
             $("#txtDateofPlanting").val('');
 
             $("#txtSupplyDate").val('');
-            $("#txtAmounttoCollect").val('');
-            $("#txtActuallyCollected").val('');
-            $("#cbIsCollected").prop('checked',false);
+            $("#txtSearchAmounttoCollect").val('');
+            $("#txtSearchActuallyCollected").val('');
+            $("#cbSearchIsCollected").prop('checked', false);
             
         }
         function searchCollectionInformations() {
@@ -555,11 +555,11 @@
             supplyInformationSearchObj.DateofPlanting = !$("#txtDateofPlanting").val() ? null : $("#txtDateofPlanting").val();
             supplyInformationSearchObj.CollectionDate = !$("#txtSupplyDate").val() ? null : $("#txtSupplyDate").val();
 
-            var amounttoCollect = parseFloat($('#txtAmounttoCollect').val());
+            var amounttoCollect = parseFloat($('#txtSearchAmounttoCollect').val());
             supplyInformationSearchObj.AmounttoCollect = isNaN(amounttoCollect) ? null : amounttoCollect;
-            var collectedAmount = parseFloat($('#txtActuallyCollected').val());
+            var collectedAmount = parseFloat($('#txtSearchActuallyCollected').val());
             supplyInformationSearchObj.CollectedAmount = isNaN(collectedAmount) ? null : collectedAmount;
-            supplyInformationSearchObj.IsCollected = $('#cbIsCollected').prop('checked');
+            supplyInformationSearchObj.IsCollected = $('#cbSearchIsCollected').prop('checked');
             if (supplyInformationSearchObj) {
                 SetupSupplyOrdersDataTable(supplyInformationSearchObj);
             }
