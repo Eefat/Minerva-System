@@ -39,6 +39,7 @@ namespace MinervaSystem.Base.Models
         public Farmer() { }
         public Int64 Id { get; set; }
         public string FarmerIdNo { get; set; }
+        public Zone? ZoneId { get; set; }
         [Required]
         public string Name { get; set; }
         public DateTime? BirthDate { get; set; }
@@ -88,8 +89,6 @@ namespace MinervaSystem.Base.Models
         public Int64 Id { get; set; }
         public Int64 SugerMillId { get; set; }
         public Int64 SupplyInformationId { get; set; }
-        public Int64? ZoneId { get; set; }
-        public Int64? ZoneManagerId { get; set; }
         public string Code { get; set; }
         public DateTime? CollectionDate { get; set; }
         public Decimal? EstimatedAmount { get; set; }

@@ -454,6 +454,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\site.css" />
+    <Content Include="Images\BSFIC-logo.jpg" />
     <Content Include="Images\Icons\ajax-loader.gif" />
     <Content Include="Images\Icons\bullet.jpg" />
     <Content Include="Images\Icons\details_close.png" />

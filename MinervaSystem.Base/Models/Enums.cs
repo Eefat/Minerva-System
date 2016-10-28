@@ -84,5 +84,16 @@ namespace MinervaSystem.Base
     {
         Plant, Ratoon
     }
+    public enum Zone
+    {
+        [Display(Name = "Zone 1")]
+        Zone1,
+        [Display(Name = "Zone 2")]
+        Zone2 ,
+        [Display(Name = "Zone 3")]
+        Zone3,
+        [Display(Name = "Zone 4")]
+        Zone4
+    }
     #endregion
 }

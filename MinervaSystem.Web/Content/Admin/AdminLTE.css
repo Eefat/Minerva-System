@@ -520,7 +520,7 @@ a:focus {
 }
 .sidebar-menu > li {
   position: relative;
-  margin: 0;
+  margin: 2px 0 0 0;
   padding: 0;
 }
 .sidebar-menu > li > a {

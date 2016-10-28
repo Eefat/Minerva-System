@@ -103,12 +103,12 @@
                                     <input type="text" class="form-control kendo-datepicker" id="txtDateofPlanting" placeholder="Date of Planting">
                                 </div>
                             </div>
-                            @*<div class='col-sm-3'>
+                            <div class='col-sm-3'>
                                     <div class="form-group">
                                         <label for="txtSupplyDate">Search Type</label>
                                         <select class="form-control" id="ddlSearchType"></select>
                                     </div>
-                                </div>*@
+                                </div>
                         </div>
                         @*<div class="row">
                                 <div class='col-sm-3'>
@@ -133,8 +133,9 @@
                         <thead>
                             <tr>
                                 <th><input type="checkbox" name="select_all" value="1" id="cbSiSelectAll"></th>
-                                <th width="20%">Farmer Name</th>
+                                <th width="12%">Farmer Name</th>
                                 <th width="10%">Mobile No</th>
+                                <th width="5%">Zone</th>
                                 <th width="10%">Plant/Ratoon</th>
                                 <th width="10%">Land (Acres)</th>
                                 <th width="10%">Estimated Yield (Ton)</th>
@@ -142,7 +143,6 @@
                                 <th width="8%">Cane Age (Month</th>
                                 <th width="5%">Schedule</th>
                                 <th width="5%">Edit</th>
-                                <th width="5%">Delete</th>
                             </tr>
                         </thead>
                     </table>
@@ -272,6 +272,70 @@
     </div>
 </div>
 
+<div id="winViewItemSo" style="overflow:hidden;">
+    <div style="margin:1px; overflow:hidden;">
+        <div class="row">
+            <label class="col-xs-3 col-form-label">Name:</label>
+            <div class="col-sm-3">
+                <p id="soeFarmerName" class=""></p>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-xs-3 col-form-label">Suger Mill:</label>
+            <div class="col-sm-7">
+                <p id="soeSugerMillName" class=""></p>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-xs-3 col-form-label">Plant/Ratoon:</label>
+            <div class="col-sm-7">
+                <p id="soePlantRatoon" class=""></p>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-xs-3 col-form-label">Land Area:</label>
+            <div class="col-sm-7">
+                <p id="soeLandArea" class=""></p>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-xs-3 col-form-label">Estimated Amount:</label>
+            <div class="col-sm-7">
+                <p id="soeTotalEstimatedAmount" class=""></p>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="txtAmountoCollect" class="col-xs-3 col-form-label">Amount to Collect:</label>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" id="txtAmountoCollect" placeholder="Amount to Collect">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="txtActuallyCollected" class="col-xs-3 col-form-label">Actually Collected:</label>
+            <div class="col-xs-3">
+                <input type="text" class="form-control" id="txtActuallyCollected" placeholder="Actually Collected">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-xs-3 col-form-label">Collection Date:</label>
+            <div class="col-xs-7"><input type="text" class="form-control kendo-datetimepicker" id="txtCollectionDate" placeholder="Collection Date"></div>
+        </div>
+        <div class="form-group row">
+            <label class="col-xs-3 col-form-label">Note:</label>
+            <div class="col-xs-7"><textarea rows="4" cols="10" class="form-control" id="txtSoNote"></textarea></div>
+        </div>
+        <div class="form-group row">
+            <label class="col-xs-3 col-form-label">Is Collected:</label>
+            <div class="col-xs-7"><input type="checkbox" id="cbIsCollected" name="isCollected" value="IsCollected"></div>
+        </div>
+        <hr>
+        <div class="modal-btn-toolbar" style="float:right;">
+            <button type="button" id="btnSupplyOrderEdit" value="Submit" class="btn btn-default" style="float:right"><i class="fa fa-check-square-o btn-save"></i> Submit</button>
+            <button onclick="winViewItemSo.close()" class="btn btn-default" style="float:right"><i class="fa fa-ban btn-cancel"></i> Close</button>
+        </div>
+    </div>
+</div>
+
 <table id="tableSupplyOrder" class="table table-striped table-bordered dt-responsive nowrap child" cellspacing="0" style="display:none;">
     <thead>
         <tr>
@@ -297,7 +361,7 @@
     <script type="text/javascript" language="javascript">
         var datatable;
         var datatable1;
-        var winAddItem, winEditItem, winViewItem, winDeleteItem, winTodaysOrder;
+        var winAddItem, winEditItem, winViewItem, winDeleteItem, winTodaysOrder, winViewItemSo;
         var itemId = null;
 
         $(document).ready(function () {
@@ -362,7 +426,7 @@
                 initComplete: function (settings, json) {
                     supplyOrder1.smsData = json.smsData;
                     supplyOrder1.initSupplyInformationCheckBox(datatable);
-                    datatable.order([7, 'dsc']).draw();
+                    //datatable.order([7, 'dsc']).draw();
                 },
                 ajax: {
 
@@ -371,7 +435,7 @@
                     //dataType: 'json',
                     data: supplyInformationSearchObj
                 },
-                aoColumns: [null, null, null, null, null, null, { "sType": "date-uk" }, null, null, null],
+                aoColumns: [null, null, null, null, null, null,null, { "sType": "date-uk" }, null, null, null],
                 columnDefs: [
                     {
                         data: null,
@@ -384,20 +448,20 @@
                             return '<i class="fa fa-plus-circle details-control"></i><input type="checkbox" class="siCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
                         }
                     },
-                    //{ targets: 1, data: null, orderable: false, class: "details-control", defaultContent: "" },
                     { targets: 1, data: "Name" },
                     { targets: 2, data: "MobileNo", orderable: false },
-                    { targets: 3, data: "PlantRatoon", orderable: false },
-                    { targets: 4, data: "LandArea", orderable: false },
-                    { targets: 5, data: "EstimatedAmount", orderable: false },
+                    { targets: 3, data: "Zone", orderable: false },
+                    { targets: 4, data: "PlantRatoon", orderable: false },
+                    { targets: 5, data: "LandArea", orderable: false },
+                    { targets: 6, data: "EstimatedAmount", orderable: false },
                     {
-                        targets: 6, data: "DateofPlanting", render: function (data, type, row) {
+                        targets: 7, data: "DateofPlanting", render: function (data, type, row) {
 
                             return FormatDateValue(ParseJsonDate(data), { "format": "dd/MM/yyyy" });
                         }
                     },
                     {
-                        targets: 7, render: function (data, type, row) {
+                        targets: 8, render: function (data, type, row) {
                             var totalmonth = 0;
                             if (row.DateofPlanting) {
                                 var from = FormatDateValue(ParseJsonDate(row.DateofPlanting)).split("/");
@@ -408,7 +472,7 @@
                         }
                     },
                     {
-                        targets: 8, data: null, orderable: false, class: "text-center view-control",
+                        targets: 9, data: null, orderable: false, class: "text-center view-control",
                         render: function (data, type, row) {
                             var totalmonth = 0;
                             if (row.DateofPlanting) {
@@ -423,9 +487,8 @@
 
                         }
                     },
-                    { targets: 9, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateSupplyInformation", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },
-                    { targets: 10, data: null, orderable: false, class: "text-center delete-control", render: function (data, type, row) { return "<a onclick='itemId=" + row.Id + ";winDeleteItem.center().open();'><i class='fa fa-remove'></i></a>"; } }],
-                order: [[1, "asc"]],
+                    { targets: 10, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateSupplyInformation", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },],
+                order: [[7, "asc"]],
                 lengthChange: true,
                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
             });
@@ -440,7 +503,7 @@
                                                  {
                                                      text: 'Delete',
                                                      action: function (e, dt, node, config) {
-                                                         supplyOrder1.deleteBulkSI(test, '@Url.Action("DeleteSupplyInformation", "SugerMill")');
+                                                         supplyOrder1.deleteBulkSI(datatable, '@Url.Action("DeleteSupplyInformation", "SugerMill")');
                                                      }
                                                  },
                                                {
@@ -533,10 +596,11 @@
                                 { targets: 1, data: "Code" },
                                 { targets: 2, data: "AmounttoCollect", orderable: true },
                                 { targets: 3, data: "CollectedAmount", orderable: false },
-                                { targets: 4, data: "CollectionDate", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "dd-MM-yyyy" }) } },
+                                { targets: 4, data: "CollectionDate", render: function (data, type, row) {
+                                    return FormatDateValue(ParseJsonDate(data), { "format": "dd/MM/yyyy hh:mm tt" }) } },
                                 { targets: 5, data: "Note", orderable: false },
                                 { targets: 6, data: "IsCollected", orderable: false },
-                                { targets: 7, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='#'><i id='addHide' class='fa fa-bars'></i></a> <a href='@Url.Action("UpdateSupplyOrder", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },
+                                { targets: 7, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<i class='fa fa-edit' onclick='supplyorder.initEditSupplyOrder(this);'></i>"; } },
 
 
                             ],
@@ -644,6 +708,19 @@
                     $("#winViewItem div[id^='view-']").text("");
                 }
             }).data("kendoWindow");
+            winViewItemSo = $("#winViewItemSo").kendoWindow({
+                minWidth: 600,
+                modal: true,
+                visible: false,
+                draggable: false,
+                title: "Supply Order",
+                open: function (obj) {
+                },
+                close: function () {
+                    itemId = null;
+                    $("#winViewItem div[id^='view-']").text("");
+                }
+            }).data("kendoWindow");
         }
 
         function DeleteSupplyInfo() {
@@ -702,7 +779,19 @@
                 $('#btnSupplyOrderSubmit').off('click').click(function () {
                     supplyorder.createSupplyOrder(supplyOrderData);
                 });
+               
                 winViewItem.center().open();
+            },
+            initEditSupplyOrder: function (obj) {
+                var tr = $(obj).closest("tr");
+                var parentTr = $("#childTable").closest("tr").prev("tr");
+                var supplyOrderData = test.row(tr).data();
+                supplyorder.clearSupplyOrderData();
+                supplyorder.loadSupplyOrderPopupEdit(supplyOrderData);
+                $('#btnSupplyOrderEdit').off('click').click(function () {
+                    supplyorder.editSupplyOrder(supplyOrderData, parentTr);
+                });
+                winViewItemSo.center().open();
             },
             createSupplyOrderRow: function (addRow) {
                 $('.supplyOrder').append($('.supplyOrderTemplate').html());
@@ -716,6 +805,16 @@
             },
             deleteSupplyOrderRow: function (addRow) {
                 if ($('.supplyOrder').children().length > 1) $(addRow).closest('.row').remove();
+            },
+            loadSupplyOrderPopupEdit: function (supplyOrderData) {
+                $("#soeFarmerName").text(supplyOrderData.Name);
+                $("#soeSugerMillName").text(supplyOrderData.SugerMillName);
+                $("#soePlantRatoon").text(supplyOrderData.PlantRatoon);
+                $("#soeLandArea").text(supplyOrderData.LandArea);
+                $("#soeTotalEstimatedAmount").text(supplyOrderData.EstimatedAmount);
+                $("#txtAmountoCollect").val(supplyOrderData.AmounttoCollect);
+                $("#txtSoNote").val(supplyOrderData.Note);
+                $("#txtCollectionDate").val(FormatDateValue(ParseJsonDate(supplyOrderData.CollectionDate), { "format": "dd/MM/yyyy hh:mm tt" }));
             },
             loadSupplyOrderPopup: function (supplyOrderData) {
                 $("#soFarmerName").text(supplyOrderData.Name);
@@ -749,6 +848,29 @@
                     });
                 } else alert("Please Enter Required Information.");
             },
+            editSupplyOrder: function (supplyOrderData, parentTr) {
+                var supplyOrderObj = supplyorder.getSupplyOrderDataSingle(supplyOrderData);
+                if (supplyorder.validateSupplyOrderSingle(supplyOrderObj)) {
+                    $.ajax({
+                        url: '@Url.Action("UpdateSupplyOrder", "SugerMill")',
+                        type: "Post",
+                        dataType: 'json',
+                        data: supplyOrderObj,
+                        success: function (response) {
+                            winViewItemSo.close();
+                            $(parentTr).find("i.details-control").click();
+                            $(parentTr).find("i.details-control").click();
+                        }, error: function (response) {
+
+                        }
+                    });
+                } else alert("Please Enter Required Information.");
+            },
+            validateSupplyOrderSingle: function (supplyOrderData) {
+                var msg = "";
+                if (!supplyOrderData.EstimatedAmount || !supplyOrderData.CollectionDate) return false;
+                else return true;
+            },
             validateSupplyOrder: function (listSupplyOrderRequest) {
                 var msg = "";
                 if (listSupplyOrderRequest.length > 0) {
@@ -764,6 +886,21 @@
                     return false;
                 }
 
+            },
+            getSupplyOrderDataSingle: function (supplyOrderData) {
+                var supplyOrderObj = new Object();
+                supplyOrderObj.Id = supplyOrderData.Id;
+                supplyOrderObj.SugerMillId = supplyOrderData.SugerMillId;
+                supplyOrderObj.SupplyInformationId = supplyOrderData.Id;
+                supplyOrderObj.MobileNo = supplyOrderData.MobileNo;
+                var collectedAmount = parseFloat($('#txtAmountoCollect').val());
+                supplyOrderObj.EstimatedAmount = isNaN(collectedAmount) ? null : collectedAmount;
+                var actuallyCollected = parseFloat($('#txtActuallyCollected').val());
+                supplyOrderObj.CollectedAmount = isNaN(actuallyCollected) ? null : actuallyCollected;
+                supplyOrderObj.CollectionDate = !$("#txtCollectionDate").val() ? null : $("#txtCollectionDate").val();
+                supplyOrderObj.Note = !$("#txtSoNote").val() ? null : $("#txtSoNote").val();
+                supplyOrderObj.IsCollected = $('#cbIsCollected').prop('checked');
+                return supplyOrderObj;
             },
             getSupplyOrderData: function (supplyOrderData) {
                 var listSupplyOrderRequest = [];
@@ -817,6 +954,12 @@
                 $("#txtAmountoCollect").val('');
                 $("#txtCollectionDate").val('');
                 $("#txtSoNote").val('');
+
+                $("#soeFarmerName").text('');
+                $("#soeSugerMillName").text('');
+                $("#soePlantRatoon").text('');
+                $("#soeLandArea").text('');
+                $("#soeTotalEstimatedAmount").text('');
             },
             monthDiff: function (d1, d2) {
                 var months;
@@ -854,7 +997,7 @@
                         { targets: 4, data: "SugerMillName", orderable: false },
                         { targets: 5, data: "AmounttoCollect", orderable: false },
                         { targets: 6, data: "CollectedAmount", orderable: false },
-                        { targets: 7, data: "CollectionDate", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "dd-MM-yyyy" }) } },
+                        { targets: 7, data: "CollectionDate", render: function (data, type, row) { return data ? utility.dtConvFromJSON(data) : '' } },
                         { targets: 8, data: "IsCollected", orderable: false },
                         { targets: 9, data: "Note", orderable: false }
                     ],
@@ -896,7 +1039,7 @@
                     { targets: 6, data: "CollectedAmount", orderable: false },
                     {
                         targets: 7, data: "CollectionDate", render: function (data, type, row) {
-                            return FormatDateValue(ParseJsonDate(data), { "format": "dd-MM-yyyy" })
+                            return FormatDateValue(ParseJsonDate(data), { "format": "dd/MM/yyyy hh:mm tt" });
                         }
                     },
                     { targets: 8, data: "IsCollected", orderable: false },

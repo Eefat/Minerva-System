@@ -1,5 +1,6 @@
 ﻿@using MinervaSystem.Base.Models
 @{
+    ViewBag.Title = "Supply Schedule";
     @Styles.Render("~/Content/kendo.office365")
     ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Supply Order",
         new BreadcrumbModel("Supply Order", new List<LinkModel>() { new LinkModel("/SupplyOrder", "Site Action") }));
@@ -141,12 +142,6 @@
                 <p id="soSugerMillName" class=""></p>
             </div>
         </div>
-        @*<div class="row">
-                <label class="col-xs-3 col-form-label">Suger Mill:</label>
-                <div class="col-sm-7">
-                    <p id="soSugerMillName" class=""></p>
-                </div>
-            </div>*@
         <div class="row">
             <label class="col-xs-2 col-form-label">Estimated Amount:</label>
             <div class="col-sm-2">

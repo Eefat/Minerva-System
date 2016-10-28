@@ -238,6 +238,7 @@ namespace MinervaSystem.Web.Controllers
                 .Select(a => new
                 {
                     a.Id,
+                    Zone = a.ZoneId.ToString(),
                     a.FarmerIdNo,
                     a.Name,
                     a.BirthDate,
@@ -278,6 +279,7 @@ namespace MinervaSystem.Web.Controllers
                 .Select(a => new
                 {
                     a.Id,
+                    Zone = a.ZoneId.ToString(),
                     a.FarmerIdNo,
                     a.Name,
                     a.BirthDate,
@@ -317,6 +319,7 @@ namespace MinervaSystem.Web.Controllers
             var json = new
             {
                 farmer.Id,
+                farmer.ZoneId,
                 farmer.Name,
                 farmer.BirthDate,
                 farmer.Photo,
@@ -366,6 +369,7 @@ namespace MinervaSystem.Web.Controllers
                 {
                     Farmer farmer = new Farmer();
                     farmer.Name = model.Name;
+                    farmer.ZoneId = model.ZoneId;
                     farmer.BirthDate = model.BirthDate;
                     farmer.Photo = (model.PhotoFile == null) ?
                         model.Photo : new WebImage(model.PhotoFile.InputStream).Resize(125, 125).GetBytes();
@@ -401,6 +405,7 @@ namespace MinervaSystem.Web.Controllers
             if (farmer != null)
             {
                 model.FarmerIdNo = farmer.FarmerIdNo;
+                model.ZoneId = farmer.ZoneId;
                 model.Name = farmer.Name;
                 model.BirthDate = farmer.BirthDate;
                 model.Photo = farmer.Photo;
@@ -427,6 +432,7 @@ namespace MinervaSystem.Web.Controllers
             try
             {
                 var farmer = ContextPerRequest.CurrentContext.Farmer.Find(model.Id);
+                farmer.ZoneId = model.ZoneId;
                 if (string.IsNullOrEmpty(farmer.FarmerIdNo)) model.FarmerIdNo = farmer.Id.ToString().PadLeft(8, '0');
                 farmer.Name = model.Name;
                 farmer.BirthDate = model.BirthDate;
@@ -492,6 +498,7 @@ namespace MinervaSystem.Web.Controllers
                         MemberKey = a.Farmer.FarmerIdNo,
                         SugerMillId = a.SugerMill.Id,
                         SugerMillName = a.SugerMill.Name,
+                        Zone=a.Farmer.ZoneId.ToString(),
                         CaneVariety = a.CaneVariety.ToString(),
                         PlantRatoon = a.PlantRatoon.ToString(),
                         a.LandArea,
@@ -504,20 +511,23 @@ namespace MinervaSystem.Web.Controllers
         [HttpPost]
         public JsonResult GetAllSupplyInformations(SupplyInformationSearch supplyInformationSearch)
         {
-            //DateTime dt1 = supplyInformationSearch.DateofPlanting ? supplyInformationSearch.DateofPlanting
-            DateTime dateofPlanting = supplyInformationSearch.DateofPlanting != null ? DateTime.ParseExact(supplyInformationSearch.DateofPlanting, "d", null) : new DateTime();
-            //DateTime supplyDate = supplyInformationSearch.SearchType != null ? DateTime.ParseExact(supplyInformationSearch.SupplyDate, "d", null) : new DateTime();
-            //DateTime dateofPlanting = supplyInformationSearch.DateofPlanting !=null ? DateTime.ParseExact(supplyInformationSearch.DateofPlanting, "MM/dd/yyyy",
-            //                           System.Globalization.CultureInfo.InvariantCulture):new DateTime();
-            //DateTime supplyDate = supplyInformationSearch.SupplyDate != null ? DateTime.ParseExact(supplyInformationSearch.SupplyDate, "MM/dd/yyyy",
-            //                           System.Globalization.CultureInfo.InvariantCulture) : new DateTime();
+            DateTime dateofPlanting = supplyInformationSearch.DateofPlanting != null ? DateTime.ParseExact(supplyInformationSearch.DateofPlanting, "d", null) : System.DateTime.Now;
+
 
             var supplyInformations = from s in ContextPerRequest.CurrentContext.SupplyInformation
                                      select s;
-            if(supplyInformationSearch.SearchType != null && supplyInformationSearch.SearchType.Equals('1'))
-                supplyInformations = supplyInformations.Where(oh => ((oh.PlantRatoon == (PlantRatoon)1 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) >= 12
+            if (supplyInformationSearch.SearchType != null && supplyInformationSearch.SearchType == "1")
+                supplyInformations = supplyInformations.Where(oh => (oh.PlantRatoon == (PlantRatoon)1 && (EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) >= 12
                                              && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) <= 14))
-                                             || (oh.PlantRatoon == (PlantRatoon)0 && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) >= 12));
+                                             || (oh.PlantRatoon == (PlantRatoon)0 && (EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) >= 10 &&
+                                             EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) < 13)));
+
+
+            //if (supplyInformationSearch.SearchType != null && supplyInformationSearch.SearchType == "1")
+            //{
+            //    supplyInformations = supplyInformations.Where(oh => (EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) < 20));
+            //    //supplyInformations = supplyInformations.Where(oh => (EntityFunctions.DiffMonths(dateofPlanting, oh.DateofPlanting) < 20));
+            //}
 
             if (supplyInformationSearch.MemberKey != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.FarmerIdNo.Contains(supplyInformationSearch.MemberKey));
             if (supplyInformationSearch.Name != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.Name.Contains(supplyInformationSearch.Name));
@@ -538,6 +548,7 @@ namespace MinervaSystem.Web.Controllers
                 MemberKey = a.Farmer.FarmerIdNo,
                 SugerMillId = a.SugerMill.Id,
                 SugerMillName = a.SugerMill.Name,
+                Zone = a.Farmer.ZoneId.ToString(),
                 CaneVariety = a.CaneVariety.ToString(),
                 PlantRatoon = a.PlantRatoon.ToString(),
                 a.LandArea,
@@ -690,8 +701,12 @@ namespace MinervaSystem.Web.Controllers
                 var supplyInfoList = ContextPerRequest.CurrentContext.SupplyInformation.Where(x => supplyIds.Contains(x.Id)).ToList();
                 foreach (var supplyInfo in supplyInfoList)
                 {
-                    ContextPerRequest.CurrentContext.SupplyInformation.Remove(supplyInfo);
-                    ContextPerRequest.CurrentContext.SaveChanges();
+                    var supplyOrderList = ContextPerRequest.CurrentContext.SupplyOrder.Where(x => x.SupplyInformationId==supplyInfo.Id).Take(1);
+                    if (supplyOrderList.Count() == 0)
+                    {
+                        ContextPerRequest.CurrentContext.SupplyInformation.Remove(supplyInfo);
+                        ContextPerRequest.CurrentContext.SaveChanges();
+                    }
                 }
                 SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
                 response.status = 0;
@@ -740,6 +755,7 @@ namespace MinervaSystem.Web.Controllers
                         MemberKey = a.Farmer.FarmerIdNo,
                         SugerMillId = a.SugerMill.Id,
                         SugerMillName = a.SugerMill.Name,
+                        Zone = a.Farmer.ZoneId.ToString(),
                         CaneVariety = a.CaneVariety.ToString(),
                         PlantRatoon = a.PlantRatoon.ToString(),
                         a.LandArea,
@@ -781,6 +797,7 @@ namespace MinervaSystem.Web.Controllers
                 MobileNo = a.Farmer.CellPhone,
                 MemberKey = a.Farmer.FarmerIdNo,
                 SugerMillId = a.SugerMill.Id,
+                Zone = a.Farmer.ZoneId.ToString(),
                 SugerMillName = a.SugerMill.Name,
                 CaneVariety = a.CaneVariety.ToString(),
                 PlantRatoon = a.PlantRatoon.ToString(),
@@ -800,12 +817,11 @@ namespace MinervaSystem.Web.Controllers
                         a.Id,
                         a.SugerMillId,
                         a.SupplyInformationId,
-                        a.ZoneId,
-                        a.ZoneManagerId,
                         a.Code,
                         MemberKey = a.SupplyInformation.Farmer.FarmerIdNo,
                         SugerMillName = a.SupplyInformation.SugerMill.Name,
                         FarmerName = a.SupplyInformation.Farmer.Name,
+                        Zone = a.SupplyInformation.Farmer.ZoneId.ToString(),
                         MobileNo = a.SupplyInformation.Farmer.CellPhone,
                         PlantRatoon = a.SupplyInformation.PlantRatoon.ToString(),
                         LandArea = a.SupplyInformation.LandArea,
@@ -826,12 +842,11 @@ namespace MinervaSystem.Web.Controllers
                         a.Id,
                         a.SugerMillId,
                         a.SupplyInformationId,
-                        a.ZoneId,
-                        a.ZoneManagerId,
                         a.Code,
                         MemberKey = a.SupplyInformation.Farmer.FarmerIdNo,
                         SugerMillName = a.SupplyInformation.SugerMill.Name,
                         FarmerName = a.SupplyInformation.Farmer.Name,
+                        Zone = a.SupplyInformation.Farmer.ZoneId.ToString(),
                         MobileNo = a.SupplyInformation.Farmer.CellPhone,
                         PlantRatoon = a.SupplyInformation.PlantRatoon.ToString(),
                         LandArea = a.SupplyInformation.LandArea,
@@ -855,12 +870,11 @@ namespace MinervaSystem.Web.Controllers
                         a.Id,
                         a.SugerMillId,
                         a.SupplyInformationId,
-                        a.ZoneId,
-                        a.ZoneManagerId,
                         a.Code,
                         MemberKey = a.SupplyInformation.Farmer.FarmerIdNo,
                         SugerMillName = a.SupplyInformation.SugerMill.Name,
                         FarmerName = a.SupplyInformation.Farmer.Name,
+                        Zone = a.SupplyInformation.Farmer.ZoneId.ToString(),
                         MobileNo = a.SupplyInformation.Farmer.CellPhone,
                         PlantRatoon = a.SupplyInformation.PlantRatoon.ToString(),
                         LandArea = a.SupplyInformation.LandArea,
@@ -900,12 +914,11 @@ namespace MinervaSystem.Web.Controllers
                 a.Id,
                 a.SugerMillId,
                 a.SupplyInformationId,
-                a.ZoneId,
-                a.ZoneManagerId,
                 a.Code,
                 MemberKey = a.SupplyInformation.Farmer.FarmerIdNo,
                 SugerMillName = a.SupplyInformation.SugerMill.Name,
                 FarmerName = a.SupplyInformation.Farmer.Name,
+                Zone = a.SupplyInformation.Farmer.ZoneId.ToString(),
                 MobileNo = a.SupplyInformation.Farmer.CellPhone,
                 PlantRatoon = a.SupplyInformation.PlantRatoon.ToString(),
                 LandArea = a.SupplyInformation.LandArea,
@@ -928,12 +941,11 @@ namespace MinervaSystem.Web.Controllers
                 SupplyOrder.Id,
                 SupplyOrder.SugerMillId,
                 SupplyOrder.SupplyInformationId,
-                SupplyOrder.ZoneId,
-                SupplyOrder.ZoneManagerId,
                 SupplyOrder.Code,
                 MemberKey = SupplyOrder.SupplyInformation.Farmer.FarmerIdNo,
                 SugerMillName = SupplyOrder.SupplyInformation.SugerMill.Name,
                 FarmerName = SupplyOrder.SupplyInformation.Farmer.Name,
+                Zone = SupplyOrder.SupplyInformation.Farmer.ZoneId.ToString(),
                 SupplyOrder.CollectionDate,
                 SupplyOrder.EstimatedAmount,
                 SupplyOrder.CollectedAmount,
@@ -1071,8 +1083,6 @@ namespace MinervaSystem.Web.Controllers
                 var supplyOrder = ContextPerRequest.CurrentContext.SupplyOrder.Find(model.Id);
                 supplyOrder.SugerMillId = model.SugerMillId;
                 supplyOrder.SupplyInformationId = model.SupplyInformationId;
-                //supplyOrder.ZoneId = model.ZoneId;
-                //supplyOrder.ZoneManagerId = model.ZoneManagerId;
                 supplyOrder.CollectionDate = dateofPlanting;
                 supplyOrder.EstimatedAmount = model.EstimatedAmount;
                 supplyOrder.CollectedAmount = model.CollectedAmount;
@@ -1083,7 +1093,7 @@ namespace MinervaSystem.Web.Controllers
                 response.status = 0;
                 response.url = BasicInformation.SmsUrl;
                 response.from = BasicInformation.From;
-                response.responseMsg = "Hi Sir, Your Collection Date:" + model.CollectionDate + ", Amount to Collect: " + model.EstimatedAmount.ToString();
+                //response.responseMsg = "Hi Sir, Your Collection Date:" + model.CollectionDate + ", Amount to Collect: " + model.EstimatedAmount.ToString();
                 response.mobileNo = BasicInformation.CountryCode + model.MobileNo;
                 response.authorization = BasicInformation.smsAuth;
 

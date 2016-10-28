@@ -67,6 +67,8 @@ namespace MinervaSystem.Base.Models.ViewModels
         public int? StateId { get; set; }
         public int? DistrictId { get; set; }
         public int? UpazilaId { get; set; }
+        [Display(Name = "Zone")]
+        public Zone? ZoneId { get; set; }
         public string FarmerIdNo { get; set; }
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
@@ -124,8 +126,6 @@ namespace MinervaSystem.Base.Models.ViewModels
         public Int64 Id { get; set; }
         public Int64 SugerMillId { get; set; }
         public Int64 SupplyInformationId { get; set; }
-        public Int64? ZoneId { get; set; }
-        public Int64? ZoneManagerId { get; set; }
         [Display(Name = "Suger Mill")]
         public string SugerMillName { get; set; }
         [Display(Name = "Farmer")]
@@ -137,7 +137,7 @@ namespace MinervaSystem.Base.Models.ViewModels
         [Display(Name = "Code")]
         public string Code { get; set; }
         [Display(Name = "Collection Date")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm tt}")]
         public DateTime? CollectionDate { get; set; }
         [Display(Name = "Estimated Amount")]
         public Decimal? EstimatedAmount { get; set; }
@@ -177,26 +177,28 @@ namespace MinervaSystem.Base.Models.ViewModels
         [Required]
         [Display(Name = "Plant Date")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime DateofPlanting
-        {
-            get
-            {
-                return (_returnDate == DateTime.MinValue) ? DateTime.Now : _returnDate;
-            }
-            set { _returnDate = value; }
-        }
+        public DateTime DateofPlanting { get; set; }
+        //public DateTime DateofPlanting
+        //{
+        //    get
+        //    {
+        //        return (_returnDate == DateTime.MinValue) ? DateTime.Now : _returnDate;
+        //    }
+        //    set { _returnDate = value; }
+        //}
         [Required]
         [Display(Name = "Supply Date")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime SupplyDate
-        {
-            get
-            {
-                return (_returnDate == DateTime.MinValue) ? DateTime.Now : _returnDate;
-            }
-            set { _returnDate = value; }
-        }
-        [Display(Name = "Note")]
+        public DateTime SupplyDate { get; set; }
+        //public DateTime SupplyDate
+        //{
+        //    get
+        //    {
+        //        return (_returnDate == DateTime.MinValue) ? DateTime.Now : _returnDate;
+        //    }
+        //    set { _returnDate = value; }
+        //}
+        //[Display(Name = "Note")]
         public string Note { get; set; }
 
     }
@@ -207,8 +209,6 @@ namespace MinervaSystem.Base.Models.ViewModels
         public Int64 Id { get; set; }
         public Int64 SugerMillId { get; set; }
         public Int64 SupplyInformationId { get; set; }
-        public Int64? ZoneId { get; set; }
-        public Int64? ZoneManagerId { get; set; }
         public Decimal? CollectedAmount { get; set; }
         public Decimal? EstimatedAmount { get; set; }
         public string Code { get; set; }

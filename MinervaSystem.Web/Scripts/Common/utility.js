@@ -17,11 +17,11 @@ var utility = {
             }
         });
     },
-    
+
     getCountry: function () {
 
     },
-    getState: function (countryId,url, callback) {
+    getState: function (countryId, url, callback) {
         $.ajax({
             url: url,
             type: "POST",
@@ -36,7 +36,7 @@ var utility = {
             }
         });
     },
-    getCity: function (stateId,url, callback) {
+    getCity: function (stateId, url, callback) {
         $.ajax({
             url: url,
             type: "POST",
@@ -66,7 +66,7 @@ var utility = {
             }
         });
     },
-    populateCountryCityUpazillaDropDown: function (dropDownControlId, responseList, defaultvalue,isBangla) {
+    populateCountryCityUpazillaDropDown: function (dropDownControlId, responseList, defaultvalue, isBangla) {
         utility.RemoveAllOptions(dropDownControlId, "Select");
         for (i = 0; i < responseList.length; i++) {
             var isselected = defaultvalue ? defaultvalue : null;
@@ -91,11 +91,10 @@ var utility = {
         var text = defaulttext ? defaulttext : 'Select';
         $(dropDownControlId).append('<option Value="">' + text + '</option>');
     },
-
     addActiveLink: function (link) {
         utility.removeActiveLink();
-       
-        if ($('#' +link).parent().parent().hasClass('treeview')) {
+
+        if ($('#' + link).parent().parent().hasClass('treeview')) {
             $('#lnkInbox').parent().parent().addClass('active');
             $('#lnkInbox').parent().parent().addClass('menu-open');
         }
@@ -114,10 +113,31 @@ var utility = {
         $('#lnkInbox').removeClass('active');
         $('#lnkCompose').removeClass('active');
     },
+    dtConvFromJSON: function (data) {
+        if (data == null) return '1/1/1950';
+        var r = /\/Date\(([0-9]+)\)\//gi
+        var matches = data.match(r);
+        if (matches == null) return '1/1/1950';
+        var result = matches.toString().substring(6, 19);
+        var epochMilliseconds = result.replace(
+        /^\/Date\(([0-9]+)([+-][0-9]{4})?\)\/$/,
+        '$1');
+        var b = new Date(parseInt(epochMilliseconds));
+        var c = new Date(b.toString());
+        var curr_date = c.getDate();
+        var curr_month = c.getMonth() + 1;
+        var curr_year = c.getFullYear();
+        var curr_h = c.getHours();
+        var curr_m = c.getMinutes();
+        var curr_s = c.getSeconds();
+        var curr_offset = c.getTimezoneOffset() / 60
+        var d = curr_date + '/' + curr_month.toString() + '/' + curr_year + " " + curr_h + ':' + curr_m + ':' + curr_s;
+        return d;
+    },
 }
 
 var supplyOrder1 = {
-    smsData:"",
+    smsData: "",
     initSupplyInformationCheckBox: function (datatable) {
         $('#cbSiSelectAll').on('click', function () {
             var rows = datatable.rows({ 'search': 'applied' }).nodes();
@@ -220,20 +240,20 @@ var supplyOrder1 = {
     },
     sendBulkSMSsi: function (datatable) {
         datatable.$('input[type="checkbox"].siCB').each(function () {
-                if (this.checked) {
-                    var tr = $(this).closest("tr");
-                    var row = datatable.row(tr);
-                    //alert(row.data());
+            if (this.checked) {
+                var tr = $(this).closest("tr");
+                var row = datatable.row(tr);
+                //alert(row.data());
 
-                    var smsRequest = new Object();
-                    smsRequest.responseMsg = "Prio " + row.data().FarmerName + ", Apner member id " + row.data().MemberKey + "."
-                                             + "Apner chashkrito jomir poriman " + row.data().LandArea + " bigha "
-                                             + "ebong shomvabbo fosholer poriman " + row.data().EstimatedAmount + " ton. Apner tothho shothik vabe halnagad kora hoese."
-                                             +"Akh shongroher poroborti tarikh apnake sms er maddhome janie dea hobe."
-                                             + " Eita supply order create korar shathe shathei jabe";
-                    smsRequest.mobileNo = supplyOrder1.smsData.countryCode + row.data().MobileNo;
-                    supplyOrder1.sendSMS(smsRequest);
-                }
+                var smsRequest = new Object();
+                smsRequest.responseMsg = "Prio " + row.data().FarmerName + ", Apner member id " + row.data().MemberKey + "."
+                                         + "Apner chashkrito jomir poriman " + row.data().LandArea + " bigha "
+                                         + "ebong shomvabbo fosholer poriman " + row.data().EstimatedAmount + " ton. Apner tothho shothik vabe halnagad kora hoese."
+                                         + "Akh shongroher poroborti tarikh apnake sms er maddhome janie dea hobe."
+                                         + " Eita supply order create korar shathe shathei jabe";
+                smsRequest.mobileNo = supplyOrder1.smsData.countryCode + row.data().MobileNo;
+                supplyOrder1.sendSMS(smsRequest);
+            }
         });
     },
     sendBulkSMSsO: function (datatable) {
@@ -241,7 +261,7 @@ var supplyOrder1 = {
             if (this.checked) {
                 var tr = $(this).closest("tr");
                 var row = datatable.row(tr);
-               // alert(row.data());
+                // alert(row.data());
 
                 var smsRequest = new Object();
                 smsRequest.responseMsg = "Prio " + row.data().FarmerName + ", " + row.data().SugerMillName + " kotipokkho agami "
@@ -264,3 +284,5 @@ var supplyOrder1 = {
         return smsRequest;
     },
 }
+
+
