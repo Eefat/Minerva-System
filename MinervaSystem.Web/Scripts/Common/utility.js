@@ -17,7 +17,6 @@ var utility = {
             }
         });
     },
-
     getCountry: function () {
 
     },
@@ -133,6 +132,14 @@ var utility = {
         var curr_offset = c.getTimezoneOffset() / 60
         var d = curr_date + '/' + curr_month.toString() + '/' + curr_year + " " + curr_h + ':' + curr_m + ':' + curr_s;
         return d;
+    },
+    monthDiff: function (d1, d2) {
+        d2.setDate(d2.getDate() - d1.getDate());
+        var months;
+        months = (d2.getFullYear() - d1.getFullYear()) * 12;
+        months -= d1.getMonth() + 1;
+        months += d2.getMonth();
+        return months <= 0 ? 0 : months + 2;
     },
 }
 

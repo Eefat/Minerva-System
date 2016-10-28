@@ -9,6 +9,7 @@ using MinervaSystem.Base;
 using MinervaSystem.Base.Models;
 using MinervaSystem.Base.Models.ViewModels;
 using System.Data.Entity.Core.Objects;
+using System.Globalization;
 
 namespace MinervaSystem.Web.Controllers
 {
@@ -521,13 +522,6 @@ namespace MinervaSystem.Web.Controllers
                                              && EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) <= 14))
                                              || (oh.PlantRatoon == (PlantRatoon)0 && (EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) >= 10 &&
                                              EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) < 13)));
-
-
-            //if (supplyInformationSearch.SearchType != null && supplyInformationSearch.SearchType == "1")
-            //{
-            //    supplyInformations = supplyInformations.Where(oh => (EntityFunctions.DiffMonths(oh.DateofPlanting, dateofPlanting) < 20));
-            //    //supplyInformations = supplyInformations.Where(oh => (EntityFunctions.DiffMonths(dateofPlanting, oh.DateofPlanting) < 20));
-            //}
 
             if (supplyInformationSearch.MemberKey != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.FarmerIdNo.Contains(supplyInformationSearch.MemberKey));
             if (supplyInformationSearch.Name != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.Name.Contains(supplyInformationSearch.Name));
@@ -1079,7 +1073,7 @@ namespace MinervaSystem.Web.Controllers
         {
             try
             {
-                DateTime dateofPlanting = DateTime.ParseExact(model.CollectionDate, "dd/MM/yyyy hh:mm tt", null);
+                DateTime dateofPlanting = DateTime.ParseExact(model.CollectionDate, "dd/MM/yyyy h:mm tt", CultureInfo.InvariantCulture);
                 var supplyOrder = ContextPerRequest.CurrentContext.SupplyOrder.Find(model.Id);
                 supplyOrder.SugerMillId = model.SugerMillId;
                 supplyOrder.SupplyInformationId = model.SupplyInformationId;
