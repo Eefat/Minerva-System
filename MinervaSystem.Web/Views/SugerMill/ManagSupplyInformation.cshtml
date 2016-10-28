@@ -74,10 +74,16 @@
                             </div>
                             <div class='col-sm-3'>
                                 <div class="form-group">
+                                    <label for="ddlZone">Zone</label>
+                                    <select class="form-control" id="ddlZone"></select>
+                                </div>
+                            </div>
+                            @*<div class='col-sm-3'>
+                                <div class="form-group">
                                     <label for="txtEstimatedAmount">Estimated Yield (Ton)</label>
                                     <input type="text" class="form-control" id="txtEstimatedAmount" placeholder="Estimated Amount">
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                         <div class="row">
                             <div class='col-sm-3'>
@@ -134,17 +140,19 @@
                         <thead>
                             <tr>
                                 <th width="2%"></th>
-                                <th width="12%">Farmer Name</th>
-                                <th width="10%">Mobile No</th>
+                                <th width="10%">Farmer Name</th>
+                                @*<th width="10%">Mobile No</th>*@
                                 <th width="5%">Zone</th>
                                 <th width="10%">Plant/Ratoon</th>
                                 <th width="10%">Land (Acres)</th>
                                 <th width="10%">Estimated Yield (Ton)</th>
                                 <th width="10%">Date of Planting</th>
-                                <th width="8%">Cane Age (Month</th>
+                                <th width="8%">Cane Age (Month)</th>
                                 <th width="5%">Schedule</th>
                                 <th width="5%">Edit</th>
-                                <th width="2%><input type="checkbox" name="select_all" value="1" id="cbSiSelectAll"></th>
+                                <th>
+                                    <input type="checkbox" name="select_all" value="1" id="cbSiSelectAll">
+                                </th>
                             </tr>
                         </thead>
                     </table>
@@ -172,7 +180,7 @@
                     <th width="8%">Collection Date</th>
                     <th width="3%">is collected</th>
                     <th width="15%">note</th>
-                    <th width="2%"><input type="checkbox" name="select_all" value="1" id="cbTSOSelectAll"></th>
+                    <th width="5%"><input type="checkbox" name="select_all" value="1" id="cbTSOSelectAll"></th>
                 </tr>
             </thead>
         </table>
@@ -401,6 +409,13 @@
             optionsPlantRatoon.append($("<option />").val('').text('All'));
             optionsPlantRatoon.append($("<option />").val('1').text('Supply Order'));
 
+            var optionsZone = $("#ddlZone");
+            optionsZone.append($("<option />").val('').text('Select'));
+            optionsZone.append($("<option />").val('0').text('Zone 1'));
+            optionsZone.append($("<option />").val('1').text('Zone 2'));
+            optionsZone.append($("<option />").val('1').text('Zone 3'));
+            optionsZone.append($("<option />").val('1').text('Zone 4'));
+
         }
         function getAllSugerMills() {
             $.ajax({
@@ -428,6 +443,8 @@
                 initComplete: function (settings, json) {
                     supplyOrder1.smsData = json.smsData;
                     supplyOrder1.initSupplyInformationCheckBox(datatable);
+                    $('#tableSupplyInformation_length').parent().removeClass('col-sm-6').addClass('col-sm-2');
+                    $('#tableSupplyInformation_filter').parent().removeClass('col-sm-6').addClass('col-sm-8').css('float','right');
                     //datatable.order([7, 'dsc']).draw();
                 },
                 ajax: {
@@ -437,33 +454,32 @@
                     //dataType: 'json',
                     data: supplyInformationSearchObj
                 },
-                aoColumns: [null, null, null, null, null, null,null, { "sType": "date-uk" }, null, null, null],
+                aoColumns: [null, null, null, null, null, null, { "sType": "date-uk" }, null, null, null],
                 columnDefs: [
                     {
                         data: null,
                         targets: 0,
                         searchable: false,
-                        orderabl: false,
-
+                        orderable: false,
                         className: 'dt-body-center',
                         render: function (data, type, full, meta) {
                             return '<i class="fa fa-plus-circle details-control"></i>';
                         }
                     },
                     { targets: 1, data: "Name" },
-                    { targets: 2, data: "MobileNo", orderable: false },
-                    { targets: 3, data: "Zone", orderable: false },
-                    { targets: 4, data: "PlantRatoon", orderable: false },
-                    { targets: 5, data: "LandArea", orderable: false },
-                    { targets: 6, data: "EstimatedAmount", orderable: false },
+                    //{ targets: 2, data: "MobileNo", orderable: false },
+                    { targets: 2, data: "Zone", orderable: false },
+                    { targets: 3, data: "PlantRatoon", orderable: false },
+                    { targets: 4, data: "LandArea", orderable: false },
+                    { targets: 5, data: "EstimatedAmount", orderable: false },
                     {
-                        targets: 7, data: "DateofPlanting", render: function (data, type, row) {
+                        targets: 6, data: "DateofPlanting", render: function (data, type, row) {
 
                             return FormatDateValue(ParseJsonDate(data), { "format": "dd/MM/yyyy" });
                         }
                     },
                     {
-                        targets: 8, render: function (data, type, row) {
+                        targets: 7, render: function (data, type, row) {
                             var totalmonth = 0;
                             if (row.DateofPlanting) {
                                 var from = FormatDateValue(ParseJsonDate(row.DateofPlanting)).split("/");
@@ -474,7 +490,7 @@
                         }
                     },
                     {
-                        targets: 9, data: null, orderable: false, class: "text-center view-control",
+                        targets: 8, data: null, orderable: false, class: "text-center view-control",
                         render: function (data, type, row) {
                             var totalmonth = 0;
                             if (row.DateofPlanting) {
@@ -488,12 +504,12 @@
 
                         }
                     },
-                    { targets: 10, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateSupplyInformation", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },
+                    { targets: 9, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateSupplyInformation", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },
                     {
                         data: null,
-                        targets: 11,
+                        targets: 10,
                         searchable: false,
-                        orderabl: false,
+                        orderable: false,
                         className: 'dt-body-center',
                         render: function (data, type, full, meta) {
                             return '<input type="checkbox" class="siCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
@@ -761,6 +777,8 @@
             var caneVariety = parseInt($("#ddlCaneVariety").val());
             supplyInformationSearchObj.CaneVariety = isNaN(caneVariety) ? null : caneVariety;
             var plantRatoon = parseInt($("#ddlPlantRatoon").val());
+            var zone = parseInt($("#ddlZone").val());
+            supplyInformationSearchObj.Zone = isNaN(zone) ? null : zone;
             supplyInformationSearchObj.PlantRatoon = isNaN(plantRatoon) ? null : plantRatoon;
             supplyInformationSearchObj.DateofPlanting = !$("#txtDateofPlanting").val() ? null : $("#txtDateofPlanting").val();
             supplyInformationSearchObj.SearchType = !$("#ddlSearchType").val() ? null : $("#ddlSearchType").val();
@@ -779,6 +797,7 @@
             $("#ddlPlantRatoon").val('');
             $("#ddlSearchType").val('');
             $("#txtDateofPlanting").val('');
+            $("#ddlZone").val('');
         }
 
         var supplyorder = {
@@ -788,7 +807,7 @@
                 supplyorder.clearSupplyOrderData();
                 supplyorder.loadSupplyOrderPopup(supplyOrderData);
                 $('#btnSupplyOrderSubmit').off('click').click(function () {
-                    supplyorder.createSupplyOrder(supplyOrderData);
+                    supplyorder.createSupplyOrder(supplyOrderData, tr);
                 });
 
                 winViewItem.center().open();
@@ -834,7 +853,7 @@
                 $("#soLandArea").text(supplyOrderData.LandArea);
                 $("#soTotalEstimatedAmount").text(supplyOrderData.EstimatedAmount);
             },
-            createSupplyOrder: function (supplyOrderData) {
+            createSupplyOrder: function (supplyOrderData,tr) {
                 var listSupplyOrderRequest = supplyorder.getSupplyOrderData(supplyOrderData);
                 var isError = supplyorder.validateSupplyOrder(listSupplyOrderRequest);
                 things = JSON.stringify({ 'things': listSupplyOrderRequest });
@@ -848,7 +867,11 @@
                         success: function (response) {
                             if (response.status == 0) {
                                 winViewItem.close();
-                                //supplyorder.sendSMS(response);
+                                if ($(tr).find("i.details-control").hasClass('fa-plus-circle')) $(tr).find("i.details-control").click();
+                                else {
+                                    $(tr).find("i.details-control").click();
+                                    $(tr).find("i.details-control").click();
+                                }
                             } else {
                                 alert(response.responseMsg);
                             }
@@ -902,7 +925,7 @@
                 var supplyOrderObj = new Object();
                 supplyOrderObj.Id = supplyOrderData.Id;
                 supplyOrderObj.SugerMillId = supplyOrderData.SugerMillId;
-                supplyOrderObj.SupplyInformationId = supplyOrderData.SupplyInformationId;
+                supplyOrderObj.SupplyInformationId = supplyOrderData.Id;
                 supplyOrderObj.MobileNo = supplyOrderData.MobileNo;
                 var collectedAmount = parseFloat($('#txtAmountoCollect').val());
                 supplyOrderObj.EstimatedAmount = isNaN(collectedAmount) ? null : collectedAmount;
@@ -918,7 +941,7 @@
                 $('.supplyOrder .row').each(function () {
                     var SupplyOrderRequest = {};
                     SupplyOrderRequest.SugerMillId = supplyOrderData.SugerMillId;
-                    SupplyOrderRequest.SupplyInformationId = supplyOrderData.SupplyInformationId;
+                    SupplyOrderRequest.SupplyInformationId = supplyOrderData.Id;
                     SupplyOrderRequest.MobileNo = supplyOrderData.MobileNo;
                     SupplyOrderRequest.MemberKey = supplyOrderData.MemberKey;
                     SupplyOrderRequest.MemberName = supplyOrderData.Name;

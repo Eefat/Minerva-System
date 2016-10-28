@@ -95,7 +95,7 @@
                         </div>
                         <div class="btn-toolbar" style="float: right;">
                             <button type="submit" value="Submit" class="btn btn-default"><i class="fa fa-check-square-o btn-save"></i> Submit</button>
-                            <a href="~/SugerMill/ManagSupplyInformation" class="btn btn-default "><i class="fa fa-ban btn-cancel"></i> Cancel</a>
+                            <a href="@Url.Action("ManagSupplyInformation", "SugerMill")" class="btn btn-default "><i class="fa fa-ban btn-cancel"></i> Cancel</a>
                         </div>
                     }
                 </div>
@@ -111,7 +111,7 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script type="text/javascript">
         $(document).ready(function () {
-
+            utility.addActiveLink('sOrderSideBarMenu');
             $("#txtPhoto").kendoUpload({
                 multiple: false,
                 select: function (e) {

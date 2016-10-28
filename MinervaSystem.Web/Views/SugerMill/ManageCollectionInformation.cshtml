@@ -24,18 +24,19 @@
     .form-control {
         height: auto;
     }
+    .kendo-datetimepicker{width:auto;}
     /*.k-header{background:#ccc;}*/
 </style>
 
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
-            <div class="box">            
+            <div class="box">
                 @*<div class="box-header">
-                    <div>
-                       <label>Date: </label><label id="pTodaysDate" style="padding-left:10px"></label>
-                    </div>
-                </div>*@
+                        <div>
+                           <label>Date: </label><label id="pTodaysDate" style="padding-left:10px"></label>
+                        </div>
+                    </div>*@
                 <form role="form">
                     <div class="box-body">
                         <div class="row">
@@ -73,11 +74,11 @@
                                 </div>
                             </div>
                             @*<div class='col-sm-3'>
-                        <div class="form-group">
-                            <label for="ddlCaneVariety">Cane Variety</label>
-                            <select class="form-control" id="ddlCaneVariety"></select>
-                        </div>
-                    </div>*@
+                                    <div class="form-group">
+                                        <label for="ddlCaneVariety">Cane Variety</label>
+                                        <select class="form-control" id="ddlCaneVariety"></select>
+                                    </div>
+                                </div>*@
                             <div class='col-sm-3'>
                                 <div class="form-group">
                                     <label for="ddlPlantRatoon">Plant/Ratoon</label>
@@ -110,7 +111,12 @@
                                     <input type="text" class="form-control" id="txtSearchActuallyCollected" placeholder="Actually Collected">
                                 </div>
                             </div>
-
+                            <div class='col-sm-3'>
+                                <div class="form-group">
+                                    <label for="ddlZone">Zone</label>
+                                    <select class="form-control" id="ddlZone"></select>
+                                </div>
+                            </div>
                             <div class='col-sm-3'>
                                 <div class="form-group">
                                     <label for="" style="visibility:hidden;width:100%;">Actually Collected</label>
@@ -119,15 +125,15 @@
                                 </div>
                             </div>
                         </div>
-            
-         
-                
+
+
+
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <button type="button" class="btn btn-primary" onclick="clearSupplyInformation();">Reset</button>
                         <button type="button" class="btn btn-primary" onclick="searchCollectionInformations();">Search</button>
-                        <button type="button" class="btn btn-primary" id="btnTodaysOrder">Todays Order</button>
+                        @*<button type="button" class="btn btn-primary" id="btnTodaysOrder">Todays Order</button>*@
                     </div>
                     <hr style="margin:0" />
                 </form>
@@ -245,14 +251,11 @@
         $(document).ready(function () {
             utility.addActiveLink('sCollectionSideBarMenu');
             populateDropDown();
-            searchCollectionInformations();
             SetupPopupBoxes();
             utility.loadDateSorting();
-            var fullDate = new Date();
-            var twoDigitMonth = fullDate.getMonth() + ""; if (twoDigitMonth.length == 1) twoDigitMonth = "0" + twoDigitMonth;
-            var twoDigitDate = fullDate.getDate() + ""; if (twoDigitDate.length == 1) twoDigitDate = "0" + twoDigitDate;
-            var currentDate = twoDigitDate + "/" + twoDigitMonth + "/" + fullDate.getFullYear(); console.log(currentDate);
-            $('#pTodaysDate').html(currentDate);
+            var todayDate = kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy');
+            $("#txtSupplyDate").data("kendoDatePicker").value(todayDate);
+            searchCollectionInformations();
         });
         function populateDropDown() {
             getAllSugerMills();
@@ -273,6 +276,13 @@
             optionsPlantRatoon.append($("<option />").val('').text('Select'));
             optionsPlantRatoon.append($("<option />").val('0').text('Plant'));
             optionsPlantRatoon.append($("<option />").val('1').text('Ratoon'));
+
+            var optionsZone = $("#ddlZone");
+            optionsZone.append($("<option />").val('').text('Select'));
+            optionsZone.append($("<option />").val('0').text('Zone 1'));
+            optionsZone.append($("<option />").val('1').text('Zone 2'));
+            optionsZone.append($("<option />").val('1').text('Zone 3'));
+            optionsZone.append($("<option />").val('1').text('Zone 4'));
 
             var optionsPlantRatoon = $("#ddlSearchType");
             optionsPlantRatoon.append($("<option />").val('').text('All'));
@@ -303,6 +313,8 @@
                 initComplete: function (settings, json) {
                     supplyOrder1.smsData = json.smsData;
                     supplyOrder1.initTodaysSupplyOrderCheckBox(datatable);
+                    $('#tableSupplyInformation_length').parent().removeClass('col-sm-6').addClass('col-sm-2');
+                    $('#tableSupplyInformation_filter').parent().removeClass('col-sm-6').addClass('col-sm-8').css('float', 'right');
                 },
                 ajax: {
                     url: '@Url.Action("GetAllCollectionInformations", "SugerMill")',
@@ -322,12 +334,12 @@
                     { targets: 8, data: "CollectionDate", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "dd/MM/yyyy hh:mm tt" }) } },
                     { targets: 9, data: "IsCollected", orderable: false },
                     { targets: 10, data: "Note", orderable: false },
-                    { targets:11, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='supplyorder.initSupplyOrder(this);'><i id='addHide' class='fa fa-bars'></i></a>"; } },
+                    { targets: 11, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='supplyorder.initSupplyOrder(this);'><i id='addHide' class='fa fa-bars'></i></a>"; } },
                     {
-                         targets: 12, data: null, render: function (data, type, full, meta) {
-                             return '<input type="checkbox" class="childCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
-                         }
-                     },],
+                        targets: 12, data: null, orderable: false, render: function (data, type, full, meta) {
+                            return '<input type="checkbox" class="childCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+                        }
+                    }, ],
                 order: [[1, "asc"]],
                 lengthChange: true,
                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
@@ -340,12 +352,12 @@
                                                     }
                                                 },
                                                 {
-                                                     text: 'Delete',
-                                                     action: function (e, dt, node, config) {
-                                                         supplyOrder1.deleteBulkSO(datatable, '@Url.Action("DeleteSupplyOrder", "SugerMill")', null, function () {
-                                                             searchCollectionInformations();
-                                                         });
-                                                     }
+                                                    text: 'Delete',
+                                                    action: function (e, dt, node, config) {
+                                                        supplyOrder1.deleteBulkSO(datatable, '@Url.Action("DeleteSupplyOrder", "SugerMill")', null, function () {
+                                                            searchCollectionInformations();
+                                                        });
+                                                    }
                                                 },
                                                {
                                                    extend: 'excel',
@@ -456,7 +468,7 @@
                 var supplyOrderObj = new Object();
                 supplyOrderObj.Id = supplyOrderData.Id;
                 supplyOrderObj.SugerMillId = supplyOrderData.SugerMillId;
-                supplyOrderObj.SupplyInformationId = supplyOrderData.Id;
+                supplyOrderObj.SupplyInformationId = supplyOrderData.SupplyInformationId;
                 supplyOrderObj.MobileNo = supplyOrderData.MobileNo;
                 var collectedAmount = parseFloat($('#txtAmountoCollect').val());
                 supplyOrderObj.EstimatedAmount = isNaN(collectedAmount) ? null : collectedAmount;
@@ -530,13 +542,14 @@
             $("#ddlCaneVariety").val('');
             $("#ddlPlantRatoon").val('');
             $("#ddlSearchType").val('');
+            $("#ddlZone").val('');
             $("#txtDateofPlanting").val('');
 
             $("#txtSupplyDate").val('');
             $("#txtSearchAmounttoCollect").val('');
             $("#txtSearchActuallyCollected").val('');
             $("#cbSearchIsCollected").prop('checked', false);
-            
+
         }
         function searchCollectionInformations() {
             var supplyInformationSearchObj = new Object();
@@ -552,6 +565,8 @@
             supplyInformationSearchObj.CaneVariety = isNaN(caneVariety) ? null : caneVariety;
             var plantRatoon = parseInt($("#ddlPlantRatoon").val());
             supplyInformationSearchObj.PlantRatoon = isNaN(plantRatoon) ? null : plantRatoon;
+            var zone = parseInt($("#ddlZone").val());
+            supplyInformationSearchObj.Zone = isNaN(zone) ? null : zone;
             supplyInformationSearchObj.DateofPlanting = !$("#txtDateofPlanting").val() ? null : $("#txtDateofPlanting").val();
             supplyInformationSearchObj.CollectionDate = !$("#txtSupplyDate").val() ? null : $("#txtSupplyDate").val();
 

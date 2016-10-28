@@ -1,6 +1,7 @@
 ﻿
 @using MinervaSystem.Base.Models
 @{
+    ViewBag.Title = "Farmer";
     @Styles.Render("~/Content/kendo.office365")
     ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Farmer",
         new BreadcrumbModel("Farmer Information", new List<LinkModel>() { new LinkModel("/Farmer", "Site Action") }));
@@ -48,6 +49,12 @@
                         <div class="row">
                             <div class='col-sm-3'>
                                 <div class="form-group">
+                                    <label for="txtMemberKey">Member Key</label>
+                                    <input type="text" class="form-control" id="txtMemberKey" placeholder="Member Key">
+                                </div>
+                            </div>
+                            <div class='col-sm-3'>
+                                <div class="form-group">
                                     <label for="txtName">Name</label>
                                     <input type="text" class="form-control" id="txtName" placeholder="Farmer name">
                                 </div>
@@ -65,18 +72,18 @@
                                     <input type="text" class="form-control" id="txtMobileNumber" placeholder="Mobile Number">
                                 </div>
                             </div>
-                            <div class='col-sm-3'>
-                                <div class="form-group">
-                                    <label for="txtMemberKey">Member Key</label>
-                                    <input type="text" class="form-control" id="txtMemberKey" placeholder="Member Key">
-                                </div>
-                            </div>
                         </div>
                         <div class="row">
                             <div class='col-sm-3'>
                                 <div class="form-group">
                                     <label for="ddlSugerMillId">Suger Mill</label>
                                     <select class="form-control" id="ddlSugerMillId"></select>
+                                </div>
+                            </div>
+                            <div class='col-sm-3'>
+                                <div class="form-group">
+                                    <label for="ddlZone">Zone</label>
+                                    <select class="form-control" id="ddlZone"></select>
                                 </div>
                             </div>
                             <div class='col-sm-3'>
@@ -202,6 +209,13 @@
             getAllSugerMills();
             createFarmerDataTable();
             SetupPopupBoxes();
+
+            var optionsZone = $("#ddlZone");
+            optionsZone.append($("<option />").val('').text('Select'));
+            optionsZone.append($("<option />").val('0').text('Zone 1'));
+            optionsZone.append($("<option />").val('1').text('Zone 2'));
+            optionsZone.append($("<option />").val('1').text('Zone 3'));
+            optionsZone.append($("<option />").val('1').text('Zone 4'));
         });
         function getAllSugerMills()
         {
@@ -419,7 +433,9 @@
             var totalLand = parseFloat($('#txtTotalaLand').val());
             searchFarmerObj.TotalLand = isNaN(totalLand) ? null : totalLand;
             var sugerMillId = parseInt($("#ddlSugerMillId").val());
-            searchFarmerObj.SugerMillId =  isNaN(sugerMillId) ? null : sugerMillId;
+            searchFarmerObj.SugerMillId = isNaN(sugerMillId) ? null : sugerMillId;
+            var zone = parseInt($("#ddlZone").val());
+            searchFarmerObj.Zone = isNaN(zone) ? null : zone;
             if (searchFarmerObj) {
                 createFarmerDataTable(searchFarmerObj);
             }
@@ -433,6 +449,7 @@
             $("#txtMobileNumber").val('');
             $("#txtNationalIdNo").val('');
             $("#txtTotalaLand").val('');
+            $("#ddlZone").val('');
             $("#ddlSugerMillId").val('-1');
         }
 

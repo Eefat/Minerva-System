@@ -141,6 +141,7 @@ namespace MinervaSystem.Base.Models
         public Int64? SugerMillId { get; set; }
         public int? CaneVariety { get; set; }
         public int? PlantRatoon { get; set; }
+        public int? Zone { get; set; }
         public Decimal? LandArea { get; set; }
         public Decimal? EstimatedAmount { get; set; }
         public String DateofPlanting { get; set; }
@@ -156,6 +157,7 @@ namespace MinervaSystem.Base.Models
     public class FarmerSearch
     {
         public string MemberKey { get; set; }
+        public int? Zone { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public string MobileNumber { get; set; }

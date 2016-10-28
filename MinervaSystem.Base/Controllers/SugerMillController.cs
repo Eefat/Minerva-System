@@ -130,6 +130,7 @@ namespace MinervaSystem.Web.Controllers
         {
             try
             {
+               // DateTime? establishDate = DateTime.ParseExact(model.EstablishDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 if (ModelState.IsValid)
                 {
                     SugerMill sugerMill = new SugerMill();
@@ -263,7 +264,7 @@ namespace MinervaSystem.Web.Controllers
         public JsonResult GetAllFarmers(FarmerSearch farmerSearch)
         {
             if (farmerSearch.MemberKey == null && farmerSearch.Name == null && farmerSearch.Address == null && farmerSearch.MobileNumber == null
-                && farmerSearch.NationalIdNo == null && farmerSearch.TotalLand == null && farmerSearch.SugerMillId == null)
+                && farmerSearch.NationalIdNo == null && farmerSearch.TotalLand == null && farmerSearch.SugerMillId == null && farmerSearch.Zone == null)
             {
                 return GetAllFarmers();
             }
@@ -275,6 +276,7 @@ namespace MinervaSystem.Web.Controllers
                 if (farmerSearch.NationalIdNo != null) farmers = farmers.Where(oh => oh.NationalIdNo.Contains(farmerSearch.NationalIdNo));
                 if (farmerSearch.MemberKey != null) farmers = farmers.Where(oh => oh.FarmerIdNo.Contains(farmerSearch.MemberKey));
                 if (farmerSearch.MobileNumber != null) farmers = farmers.Where(oh => oh.CellPhone.Contains(farmerSearch.MobileNumber));
+                if (farmerSearch.Zone != null) farmers = farmers.Where(oh => oh.ZoneId == (Zone)farmerSearch.Zone);
 
                 var list = farmers.OrderBy(a => a.Name)
                 .Select(a => new
@@ -512,7 +514,7 @@ namespace MinervaSystem.Web.Controllers
         [HttpPost]
         public JsonResult GetAllSupplyInformations(SupplyInformationSearch supplyInformationSearch)
         {
-            DateTime dateofPlanting = supplyInformationSearch.DateofPlanting != null ? DateTime.ParseExact(supplyInformationSearch.DateofPlanting, "d", null) : System.DateTime.Now;
+            DateTime dateofPlanting = supplyInformationSearch.DateofPlanting != null ? DateTime.ParseExact(supplyInformationSearch.DateofPlanting, "dd/MM/yyyy", null) : System.DateTime.Now;
 
 
             var supplyInformations = from s in ContextPerRequest.CurrentContext.SupplyInformation
@@ -531,7 +533,8 @@ namespace MinervaSystem.Web.Controllers
             if (supplyInformationSearch.SugerMillId != null) supplyInformations = supplyInformations.Where(oh => oh.SugerMillId == supplyInformationSearch.SugerMillId);
             if (supplyInformationSearch.LandArea != null) supplyInformations = supplyInformations.Where(oh => oh.LandArea == supplyInformationSearch.LandArea);
             if (supplyInformationSearch.DateofPlanting != null) supplyInformations = supplyInformations.Where(oh => oh.DateofPlanting == dateofPlanting);
-            
+            if (supplyInformationSearch.Zone != null) supplyInformations = supplyInformations.Where(oh => oh.Farmer.ZoneId == (Zone)supplyInformationSearch.Zone);
+
             var list = supplyInformations.OrderByDescending(a => a.DateofPlanting)
             .Select(a => new
             {
@@ -895,8 +898,8 @@ namespace MinervaSystem.Web.Controllers
         [HttpPost]
         public JsonResult GetAllCollectionInformations(ColectionInformationSearch colectionInformationSearch)
         {
-            DateTime dateofPlanting = colectionInformationSearch.DateofPlanting != null ? DateTime.ParseExact(colectionInformationSearch.DateofPlanting, "d", null) : System.DateTime.Now;
-            DateTime collectionDate = colectionInformationSearch.CollectionDate != null ? DateTime.ParseExact(colectionInformationSearch.CollectionDate, "d", null) : System.DateTime.Now;
+            DateTime dateofPlanting = colectionInformationSearch.DateofPlanting != null ? DateTime.ParseExact(colectionInformationSearch.DateofPlanting, "dd/MM/yyyy", CultureInfo.InvariantCulture) : System.DateTime.Now;
+            DateTime collectionDate = colectionInformationSearch.CollectionDate != null ? DateTime.ParseExact(colectionInformationSearch.CollectionDate, "dd/MM/yyyy", CultureInfo.InvariantCulture) : System.DateTime.Now;
 
             var supplyOrders = from s in ContextPerRequest.CurrentContext.SupplyOrder
                                select s;
@@ -906,10 +909,11 @@ namespace MinervaSystem.Web.Controllers
             if (colectionInformationSearch.EstimatedAmount != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.EstimatedAmount == colectionInformationSearch.EstimatedAmount);
             if (colectionInformationSearch.CaneVariety != null) supplyOrders = supplyOrders.Where(oh => (oh.SupplyInformation.CaneVariety == (CaneVariety)colectionInformationSearch.CaneVariety));
             if (colectionInformationSearch.PlantRatoon != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.PlantRatoon == (PlantRatoon)colectionInformationSearch.PlantRatoon);
+            if (colectionInformationSearch.Zone != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.Farmer.ZoneId == (Zone)colectionInformationSearch.Zone);
             if (colectionInformationSearch.SugerMillId != null) supplyOrders = supplyOrders.Where(oh => oh.SugerMillId == colectionInformationSearch.SugerMillId);
             if (colectionInformationSearch.LandArea != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.LandArea == colectionInformationSearch.LandArea);
             if (colectionInformationSearch.DateofPlanting != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.DateofPlanting == dateofPlanting);
-            if (colectionInformationSearch.CollectionDate != null) supplyOrders = supplyOrders.Where(oh => oh.CollectionDate == collectionDate);
+            if (colectionInformationSearch.CollectionDate != null) supplyOrders = supplyOrders.Where(oh => oh.CollectionDate.HasValue && EntityFunctions.TruncateTime(oh.CollectionDate.Value) == EntityFunctions.TruncateTime(collectionDate));
             if (colectionInformationSearch.AmounttoCollect != null) supplyOrders = supplyOrders.Where(oh => oh.EstimatedAmount == colectionInformationSearch.AmounttoCollect);
             if (colectionInformationSearch.CollectedAmount != null) supplyOrders = supplyOrders.Where(oh => oh.CollectedAmount == colectionInformationSearch.CollectedAmount);
             if (colectionInformationSearch.IsCollected) supplyOrders = supplyOrders.Where(oh => oh.IsCollected == colectionInformationSearch.IsCollected);
@@ -968,7 +972,7 @@ namespace MinervaSystem.Web.Controllers
         {
             try
             {
-                DateTime dateofPlanting = DateTime.ParseExact(model.CollectionDate, "dd/MM/yyyy hh:mm tt", null);
+                DateTime dateofPlanting = DateTime.ParseExact(model.CollectionDate, "dd/MM/yyyy h:mm tt", CultureInfo.InvariantCulture);
                 if (ModelState.IsValid)
                 {
                     SupplyOrder supplyOrder = new SupplyOrder();
@@ -1048,7 +1052,7 @@ namespace MinervaSystem.Web.Controllers
                 {
                     foreach (var model in things)
                     {
-                        DateTime dateofPlanting = DateTime.ParseExact(model.CollectionDate, "dd/MM/yyyy hh:mm tt", null);
+                        DateTime dateofPlanting = DateTime.ParseExact(model.CollectionDate, "dd/MM/yyyy h:mm tt", CultureInfo.InvariantCulture);
                         SupplyOrder supplyOrder = new SupplyOrder();
                         supplyOrder.SugerMillId = model.SugerMillId;
                         supplyOrder.SupplyInformationId = model.SupplyInformationId;

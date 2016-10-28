@@ -35,7 +35,7 @@
 
 <section class="content">
     <div id="placeHolder-pageDescription">
-        <a href="/SugerMill/CreateSugerMill" class="addnew-link">
+        <a href="@Url.Action("CreateSugerMill", "SugerMill")" class="addnew-link">
             <i class="fa fa-plus-square add-icon"></i> Add new suger mill
         </a>
         @*<li>@Html.ActionLink(" Add new farmer", "CreateFarmer", "SugerMill", routeValues: null, htmlAttributes: null)</li>*@
@@ -247,10 +247,10 @@
         var sugerMill = {
             getFormattedAddress: function (row) {
                 var formattedAddress = (row.Village || '');
-                formattedAddress = (formattedAddress && row.UpazilaName) ? formattedAddress + ', ' + row.UpazilaName : (row.UpazilaName || '');
-                formattedAddress = (formattedAddress && row.DistrictName) ? formattedAddress + ', ' + row.DistrictName : (row.DistrictName || '');
-                formattedAddress = (formattedAddress && row.StateName) ? formattedAddress + ', ' + row.StateName : (row.StateName || '');
-                formattedAddress = (formattedAddress && row.PostalCode) ? formattedAddress + ', ' + row.PostalCode : (row.PostalCode || '');
+                formattedAddress = (formattedAddress && row.UpazilaName) ? formattedAddress + ', ' + row.UpazilaName : (row.UpazilaName || formattedAddress);
+                formattedAddress = (formattedAddress && row.DistrictName) ? formattedAddress + ', ' + row.DistrictName : (row.DistrictName || formattedAddress);
+                formattedAddress = (formattedAddress && row.StateName) ? formattedAddress + ', ' + row.StateName : (row.StateName || formattedAddress);
+                formattedAddress = (formattedAddress && row.PostalCode) ? formattedAddress + ', ' + row.PostalCode : (row.PostalCode || formattedAddress);
                 return formattedAddress;
             }
         }

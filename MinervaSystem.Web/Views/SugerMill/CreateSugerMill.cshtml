@@ -114,6 +114,7 @@
     @Scripts.Render("~/bundles/kendo")
     <script type="text/javascript">
         $(document).ready(function () {
+            utility.addActiveLink('sugerMillSideBarMenu');
             $.validator.addMethod(
                "date",
                function (value, element) {
