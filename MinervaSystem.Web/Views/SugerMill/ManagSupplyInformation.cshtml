@@ -122,9 +122,9 @@
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
+                        <button type="button" class="btn btn-primary" id="btnTodaysOrder">Todays Order</button>
                         <button type="button" class="btn btn-primary" onclick="clearSupplyInformation();">Reset</button>
                         <button type="button" class="btn btn-primary" onclick="searchSupplyInformations();">Search</button>
-                        <button type="button" class="btn btn-primary" id="btnTodaysOrder">Todays Order</button>
                     </div>
                     <hr style="margin:0" />
                 </form>
@@ -160,7 +160,7 @@
     </div>*@
 <div id="todaysOrderPopup">
     <div style="margin:0">
-        <table id="tableSupplyOrder1" class=" table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="98%">
+        <table id="tableSupplyOrder1" class=" table table-striped table-bordered nowrap" cellspacing="0" width="98%">
             <thead>
                 <tr>
                     <th width="5%">Code</th>
@@ -790,7 +790,7 @@
                 $('#btnSupplyOrderSubmit').off('click').click(function () {
                     supplyorder.createSupplyOrder(supplyOrderData);
                 });
-               
+
                 winViewItem.center().open();
             },
             initEditSupplyOrder: function (obj) {
@@ -1057,7 +1057,15 @@
                                                  {
                                                      text: 'Send Sms',
                                                      action: function (e, dt, node, config) {
-                                                         supplyOrder1.sendBulkSMSsO(datatable2);
+                                                         supplyOrder1.sendBulkSMSsO(datatable2,'@Url.Action("DeleteSupplyOrder", "SugerMill")', null, function (response) {
+                                                             SetupAnnouncementsDataTable();
+                                                         });
+                                                     }
+                                                 },
+                                                 {
+                                                     text: 'Delete',
+                                                     action: function (e, dt, node, config) {
+                                                         supplyOrder1.deleteBulkSO(test, '@Url.Action("DeleteSupplyOrder", "SugerMill")');
                                                      }
                                                  },
                                                {

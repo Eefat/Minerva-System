@@ -76,7 +76,7 @@ namespace MinervaSystem.Base.Models
         public CaneVariety? CaneVariety { get; set; }
         public PlantRatoon? PlantRatoon { get; set; }
         public Decimal LandArea { get; set; }
-        public  Decimal EstimatedAmount { get; set; }
+        public Decimal EstimatedAmount { get; set; }
         public DateTime DateofPlanting { get; set; }
         public DateTime SupplyDate { get; set; }
         public string Note { get; set; }
@@ -104,8 +104,8 @@ namespace MinervaSystem.Base.Models
         public int CountryId { get; set; }
         public string Name { get; set; }
         public string BnName { get; set; }
-        public Decimal ? Latitude { get; set; }
-        public Decimal ? Longitude { get; set; }
+        public Decimal? Latitude { get; set; }
+        public Decimal? Longitude { get; set; }
         public string website { get; set; }
         public virtual ICollection<District> Districts { get; set; }
     }
@@ -132,19 +132,26 @@ namespace MinervaSystem.Base.Models
         public Decimal? Latitude { get; set; }
         public Decimal? Longitude { get; set; }
         public string website { get; set; }
-       // public virtual District District { get; set; }
+        // public virtual District District { get; set; }
     }
     public class SupplyInformationSearch
     {
         public string MemberKey { get; set; }
-        public string Name {get; set;}
+        public string Name { get; set; }
         public Int64? SugerMillId { get; set; }
-        public int? CaneVariety { get; set;}
-        public int? PlantRatoon { get; set;}
+        public int? CaneVariety { get; set; }
+        public int? PlantRatoon { get; set; }
         public Decimal? LandArea { get; set; }
-        public Decimal? EstimatedAmount { get; set;}
-        public String DateofPlanting { get; set;}
-        public String SearchType { get; set;}
+        public Decimal? EstimatedAmount { get; set; }
+        public String DateofPlanting { get; set; }
+        public String SearchType { get; set; }
+    }
+    public class ColectionInformationSearch: SupplyInformationSearch
+    {
+        public String CollectionDate{ get; set; }
+        public bool IsCollected { get; set; }
+        public Decimal? AmounttoCollect { get; set; }
+        public Decimal? CollectedAmount { get; set; }
     }
     public class FarmerSearch
     {

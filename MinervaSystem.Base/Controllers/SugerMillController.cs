@@ -893,14 +893,26 @@ namespace MinervaSystem.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAllCollectionInformations(SupplyInformationSearch supplyInformationSearch)
+        public JsonResult GetAllCollectionInformations(ColectionInformationSearch colectionInformationSearch)
         {
-            DateTime collectionDate = new DateTime();
+            DateTime dateofPlanting = colectionInformationSearch.DateofPlanting != null ? DateTime.ParseExact(colectionInformationSearch.DateofPlanting, "d", null) : System.DateTime.Now;
+            DateTime collectionDate = colectionInformationSearch.CollectionDate != null ? DateTime.ParseExact(colectionInformationSearch.CollectionDate, "d", null) : System.DateTime.Now;
 
             var supplyOrders = from s in ContextPerRequest.CurrentContext.SupplyOrder
                                select s;
-
-            supplyOrders = supplyOrders.Where(oh => oh.CollectionDate == collectionDate);
+            
+            if (colectionInformationSearch.MemberKey != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.Farmer.FarmerIdNo.Contains(colectionInformationSearch.MemberKey));
+            if (colectionInformationSearch.Name != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.Farmer.Name.Contains(colectionInformationSearch.Name));
+            if (colectionInformationSearch.EstimatedAmount != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.EstimatedAmount == colectionInformationSearch.EstimatedAmount);
+            if (colectionInformationSearch.CaneVariety != null) supplyOrders = supplyOrders.Where(oh => (oh.SupplyInformation.CaneVariety == (CaneVariety)colectionInformationSearch.CaneVariety));
+            if (colectionInformationSearch.PlantRatoon != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.PlantRatoon == (PlantRatoon)colectionInformationSearch.PlantRatoon);
+            if (colectionInformationSearch.SugerMillId != null) supplyOrders = supplyOrders.Where(oh => oh.SugerMillId == colectionInformationSearch.SugerMillId);
+            if (colectionInformationSearch.LandArea != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.LandArea == colectionInformationSearch.LandArea);
+            if (colectionInformationSearch.DateofPlanting != null) supplyOrders = supplyOrders.Where(oh => oh.SupplyInformation.DateofPlanting == dateofPlanting);
+            if (colectionInformationSearch.CollectionDate != null) supplyOrders = supplyOrders.Where(oh => oh.CollectionDate == collectionDate);
+            if (colectionInformationSearch.AmounttoCollect != null) supplyOrders = supplyOrders.Where(oh => oh.EstimatedAmount == colectionInformationSearch.AmounttoCollect);
+            if (colectionInformationSearch.CollectedAmount != null) supplyOrders = supplyOrders.Where(oh => oh.CollectedAmount == colectionInformationSearch.CollectedAmount);
+            if (colectionInformationSearch.IsCollected) supplyOrders = supplyOrders.Where(oh => oh.IsCollected == colectionInformationSearch.IsCollected);
 
             var list = supplyOrders.OrderBy(a => a.CollectionDate)
             .Select(a => new

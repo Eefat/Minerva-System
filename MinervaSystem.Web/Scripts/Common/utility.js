@@ -215,7 +215,7 @@ var supplyOrder1 = {
             }
         });
     },
-    deleteBulkSO: function (datatable, url, parentTr) {
+    deleteBulkSO: function (datatable, url, parentTr, callback) {
         var listIds = [];
         datatable.$('input[type="checkbox"].childCB').each(function () {
             if (this.checked) {
@@ -236,6 +236,9 @@ var supplyOrder1 = {
                     winViewItem.close();
                     $(parentTr).find("i.details-control").click();
                     $(parentTr).find("i.details-control").click();
+                    if (callback && typeof callback === 'function') {
+                        callback(response);
+                    }
                 } else {
                     alert(response.responseMsg);
                 }
