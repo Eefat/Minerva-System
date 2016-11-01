@@ -1,6 +1,6 @@
 ﻿@using MinervaSystem.Base.Models
 @{
-    ViewBag.Title = "Collection Information";
+    ViewBag.Title = "Scheduler Information";
     @Styles.Render("~/Content/kendo.office365")
     ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Supply Order",
         new BreadcrumbModel("Supply Order", new List<LinkModel>() { new LinkModel("/SupplyOrder", "Site Action") }));
@@ -20,11 +20,15 @@
         background: #605ca8;
         color: #fff;
     }
+     /*.table > tbody > tr > td {
+        white-space:normal;
+    }*/
 
     .form-control {
         height: auto;
     }
     .kendo-datetimepicker{width:auto;}
+    
     /*.k-header{background:#ccc;}*/
 </style>
 
@@ -138,7 +142,7 @@
                     <hr style="margin:0" />
                 </form>
                 <div class="box-body">
-                    <table id="tableSupplyInformation" class="table table-striped table-bordered  nowrap" cellspacing="0">
+                    <table id="tableSupplyInformation" class="table table-striped table-bordered nowrap" cellspacing="0">
                         <thead>
                             <tr>
                                 <th width="5%">Order Key</th>
@@ -147,6 +151,7 @@
                                 <th width="10%">Mobile</th>
                                 <th width="5%">Zone</th>
                                 <th width="12%">Suger Mill</th>
+                                <th width="10%">Estimated Amount</th>
                                 <th width="10%">Amount to Collect</th>
                                 <th width="10%">Actually Collected</th>
                                 <th width="10%">Collection Date</th>
@@ -242,6 +247,7 @@
 {
     @Scripts.Render("~/bundles/DataTables/Allbuttons")
     @Scripts.Render("~/bundles/kendo")
+      @*<script type="text/javascript" language="javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.colVis.min.js"/>*@
 
     <script type="text/javascript" language="javascript">
         var datatable;
@@ -310,6 +316,7 @@
             datatable = $("#tableSupplyInformation").DataTable({
                 bDestroy: true,
                 scrollX: true,
+                bAutoWidth:false,
                 initComplete: function (settings, json) {
                     supplyOrder1.smsData = json.smsData;
                     supplyOrder1.initTodaysSupplyOrderCheckBox(datatable);
@@ -321,6 +328,7 @@
                     type: "Post",
                     data: collectionInformationSearchObj
                 },
+                aoColumns: [null, null, null, null, null, null, { "sClass": "a-right" }, { "sClass": "a-right" }, { "sType": "date-uk" }, null, null, null, null],
                 columnDefs: [
                     { targets: 0, data: "Code" },
                     { targets: 1, data: "MemberKey", orderable: true },
@@ -329,14 +337,14 @@
                     { targets: 4, data: "Zone", orderable: true },
                     { targets: 5, data: "SugerMillName", orderable: false },
                     { targets: 6, data: "EstimatedAmount", orderable: false },
-                    { targets: 7, data: "AmounttoCollect", orderable: false },
-                    { targets: 7, data: "CollectedAmount", orderable: false },
-                    { targets: 8, data: "CollectionDate", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "dd/MM/yyyy hh:mm tt" }) } },
-                    { targets: 9, data: "IsCollected", orderable: false },
-                    { targets: 10, data: "Note", orderable: false },
-                    { targets: 11, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='supplyorder.initSupplyOrder(this);'><i id='addHide' class='fa fa-bars'></i></a>"; } },
+                    { targets: 7, data: "AmounttoCollect", orderable: false},
+                    { targets: 8, data: "CollectedAmount", orderable: false },
+                    { targets: 9, data: "CollectionDate", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "dd/MM/yyyy hh:mm tt" }) } },
+                    { targets: 10, data: "IsCollected", orderable: false },
+                    { targets: 11, data: "Note", orderable: false },
+                    { targets: 12, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='supplyorder.initSupplyOrder(this);' style='cursor:pointer' title='Schedule'><i id='addHide' class='fa fa-bars'></i></a>"; } },
                     {
-                        targets: 12, data: null, orderable: false, render: function (data, type, full, meta) {
+                        targets: 13, data: null, orderable: false, render: function (data, type, full, meta) {
                             return '<input type="checkbox" class="childCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
                         }
                     }, ],
@@ -452,12 +460,12 @@
                         data: supplyOrderObj,
                         success: function (response) {
                             winViewItem.close();
-                            supplyorder.sendSMS();
+                            searchCollectionInformations();
                         }, error: function (response) {
-
+                            KendoAlert("Error Occured!! Contact to your administrator");
                         }
                     });
-                } else alert("Please Enter Required Information.");
+                } else KendoAlert("Please Enter Required Information.");
             },
             validateSupplyOrder: function (supplyOrderData) {
                 var msg = "";
@@ -490,7 +498,7 @@
                     dataType: "json",
                     success: function (response) {
                         winViewItem.close();
-                        alert("You will get a quick SMS");
+                        KendoAlert("You will get a quick SMS");
                     }, error: function (response) {
                         console.log(response);
                     }
@@ -579,5 +587,5 @@
                 SetupSupplyOrdersDataTable(supplyInformationSearchObj);
             }
         }
-    </script>
+</script>
 }

@@ -2,8 +2,8 @@
 @{
     ViewBag.Title = "Supply Order";
     @Styles.Render("~/Content/kendo.office365")
-    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Supply Information",
-        new BreadcrumbModel("Supply Information", new List<LinkModel>() { new LinkModel("/SupplyInformation", "Site Action") }));
+    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Supply Order",
+        new BreadcrumbModel("Supply Order", new List<LinkModel>() { new LinkModel("/SupplyInformation", "Site Action") }));
 
 }
 
@@ -148,8 +148,8 @@
                                 <th width="10%">Estimated Yield (Ton)</th>
                                 <th width="10%">Date of Planting</th>
                                 <th width="8%">Cane Age (Month)</th>
-                                <th width="5%">Schedule</th>
-                                <th width="5%">Edit</th>
+                                <th width="5%"></th>
+                                <th width="5%"></th>
                                 <th>
                                     <input type="checkbox" name="select_all" value="1" id="cbSiSelectAll">
                                 </th>
@@ -454,7 +454,7 @@
                     //dataType: 'json',
                     data: supplyInformationSearchObj
                 },
-                aoColumns: [null, null, null, null, null, null, { "sType": "date-uk" }, null, null, null],
+                aoColumns: [null, null, null, null, { "sClass": "a-right" }, { "sClass": "a-right" }, { "sType": "date-uk", "sClass": "a-center" }, { "sClass": "a-right" }, null, null],
                 columnDefs: [
                     {
                         data: null,
@@ -463,7 +463,7 @@
                         orderable: false,
                         className: 'dt-body-center',
                         render: function (data, type, full, meta) {
-                            return '<i class="fa fa-plus-circle details-control"></i>';
+                            return '<i class="fa fa-plus-circle details-control" style="cursor:pointer;"></i>';
                         }
                     },
                     { targets: 1, data: "Name" },
@@ -495,16 +495,16 @@
                             var totalmonth = 0;
                             if (row.DateofPlanting) {
                                 var from = FormatDateValue(ParseJsonDate(row.DateofPlanting)).split("/");
-                                var startdate = new Date(from[2], from[0], from[1]);
+                                var startdate = new Date(from[2], from[0], from[1]); 
                                 totalmonth = utility.monthDiff(startdate, new Date());
                             }
                             if ((row.PlantRatoon == 'Plant' && totalmonth >= 12) || (row.PlantRatoon == 'Ratoon' && totalmonth >= 12 && totalmonth <= 14)) {
-                                return "<a onclick='supplyorder.initSupplyOrder(this);'><i id='addHide' class='fa fa-bars'></i></a>";
+                                return "<a onclick='supplyorder.initSupplyOrder(this);' style='cursor:pointer' title='Schedule'><i id='addHide' class='fa fa-bars'></i></a>";
                             } else return "<i id='addHide' class='fa fa-bars'></i>";
 
                         }
                     },
-                    { targets: 9, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateSupplyInformation", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },
+                    { targets: 9, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateSupplyInformation", "SugerMill")/" + row.Id + "' style='cursor:pointer' title='Edit'><i class='fa fa-edit'></i></a>"; } },
                     {
                         data: null,
                         targets: 10,
@@ -619,7 +619,7 @@
                                     return FormatDateValue(ParseJsonDate(data), { "format": "dd/MM/yyyy hh:mm tt" }) } },
                                 { targets: 4, data: "Note", orderable: false },
                                 { targets: 5, data: "IsCollected", orderable: false },
-                                { targets: 6, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<i class='fa fa-edit' onclick='supplyorder.initEditSupplyOrder(this);'></i>"; } },
+                                { targets: 6, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<i class='fa fa-edit' onclick='supplyorder.initEditSupplyOrder(this);' style='cursor:pointer'></i>"; } },
                                 {
                                     targets: 7,
                                     searchable: false,
@@ -925,7 +925,7 @@
                 var supplyOrderObj = new Object();
                 supplyOrderObj.Id = supplyOrderData.Id;
                 supplyOrderObj.SugerMillId = supplyOrderData.SugerMillId;
-                supplyOrderObj.SupplyInformationId = supplyOrderData.Id;
+                supplyOrderObj.SupplyInformationId = supplyOrderData.SupplyInformationId;
                 supplyOrderObj.MobileNo = supplyOrderData.MobileNo;
                 var collectedAmount = parseFloat($('#txtAmountoCollect').val());
                 supplyOrderObj.EstimatedAmount = isNaN(collectedAmount) ? null : collectedAmount;

@@ -226,6 +226,29 @@ namespace MinervaSystem.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.Conflict, ex.Message);
             }
         }
+        [HttpPost]
+        public ActionResult DeleteSugerMill(IEnumerable<Int64> sugerMillIds)
+        {
+            try
+            {
+                var sugerMillList = ContextPerRequest.CurrentContext.SugerMill.Where(x => sugerMillIds.Contains(x.Id)).ToList();
+                foreach (var sugerMill in sugerMillList)
+                {
+                    ContextPerRequest.CurrentContext.SugerMill.Remove(sugerMill);
+                    ContextPerRequest.CurrentContext.SaveChanges();
+                }
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 0;
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 1;
+                response.responseMsg = ex.Message;
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+        }
         #endregion
         #region ----- Farmer Information-----
         public ActionResult ManageFarmers()
@@ -475,6 +498,29 @@ namespace MinervaSystem.Web.Controllers
             catch (Exception ex)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Conflict, ex.Message);
+            }
+        }
+        [HttpPost]
+        public ActionResult DeleteFarmer(IEnumerable<Int64> farmerIds)
+        {
+            try
+            {
+                var farmerList = ContextPerRequest.CurrentContext.Farmer.Where(x => farmerIds.Contains(x.Id)).ToList();
+                foreach (var farmer in farmerList)
+                {
+                    ContextPerRequest.CurrentContext.Farmer.Remove(farmer);
+                    ContextPerRequest.CurrentContext.SaveChanges();
+                }
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 0;
+                return Json(response, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+                response.status = 1;
+                response.responseMsg = ex.Message;
+                return Json(response, JsonRequestBehavior.AllowGet);
             }
         }
         #endregion
@@ -892,7 +938,7 @@ namespace MinervaSystem.Web.Controllers
                 response.authorization = BasicInformation.smsAuth;
             }
             var result = new { aaData = supplyOrders, smsData = response };
-            return Json(new { aaData = supplyOrders }, JsonRequestBehavior.AllowGet);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -939,7 +985,17 @@ namespace MinervaSystem.Web.Controllers
                 a.IsCollected,
                 a.Note
             }).ToList();
-            return Json(new { aaData = list }, JsonRequestBehavior.AllowGet);
+            SupplyOrderResponseMsg response = new SupplyOrderResponseMsg();
+            if (list.Count > 0)
+            {
+                response.status = 0;
+                response.url = BasicInformation.SmsUrl;
+                response.from = BasicInformation.From;
+                response.countryCode = BasicInformation.CountryCode;
+                response.authorization = BasicInformation.smsAuth;
+            }
+            var result = new { aaData = list, smsData = response };
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetSupplyOrderDetails(int supplyOrderId)
         {

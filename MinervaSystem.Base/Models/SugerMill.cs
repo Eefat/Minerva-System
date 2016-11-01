@@ -76,7 +76,7 @@ namespace MinervaSystem.Base.Models
         public CaneVariety? CaneVariety { get; set; }
         public PlantRatoon? PlantRatoon { get; set; }
         public Decimal LandArea { get; set; }
-        public Decimal EstimatedAmount { get; set; }
+        public Decimal? EstimatedAmount { get; set; }
         public DateTime DateofPlanting { get; set; }
         public DateTime SupplyDate { get; set; }
         public string Note { get; set; }

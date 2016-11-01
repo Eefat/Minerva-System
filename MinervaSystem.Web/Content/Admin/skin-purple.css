@@ -144,3 +144,6 @@
   border-bottom-right-radius: 2px;
   border-bottom-left-radius: 0;
 }
+.a-right{text-align:right;}
+.a-left{text-align:left;}
+.a-center{text-align:center;}

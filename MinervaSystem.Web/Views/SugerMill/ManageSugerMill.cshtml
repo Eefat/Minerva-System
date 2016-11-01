@@ -1,7 +1,7 @@
 ﻿
 @using MinervaSystem.Base.Models
 @{
-    @*@Styles.Render("~/Content/datatables")*@
+    ViewBag.Title = "Suger Mill";
     @Styles.Render("~/Content/kendo.office365")
     ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Suger Mill",
         new BreadcrumbModel("Farmer Information", new List<LinkModel>() { new LinkModel("/SugerMill", "Site Actions") }));
@@ -143,9 +143,9 @@
                     },
                     { targets: 2, data: "Code", orderable: false },
                     { targets: 3, data: "Phone", render: function (data, type, row) { return FormatDateValue(ParseJsonDate(data), { "format": "yyyy-MM-dd" }) } },
-                    { targets: 4, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='farmerId=" + row.Id + ";winViewItem.center().open();'><i id='addHide' class='fa fa-bars'></i></a>"; } },
-                    { targets: 5, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateSugerMill", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },
-                    { targets: 6, data: null, orderable: false, class: "text-center delete-control", render: function (data, type, row) { return "<a onclick='itemId=" + row.Id + ";winDeleteItem.center().open();'><i class='fa fa-remove'></i></a>"; } }],
+                    { targets: 4, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='farmerId=" + row.Id + ";winViewItem.center().open();' title='Detail'><i id='addHide' class='fa fa-bars'></i></a>"; } },
+                    { targets: 5, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateSugerMill", "SugerMill")/" + row.Id + "' title='Edit'><i class='fa fa-edit'></i></a>"; } },
+                    { targets: 6, data: null, orderable: false, class: "text-center delete-control", render: function (data, type, row) { return "<a onclick='itemId=" + row.Id + ";winDeleteItem.center().open();' title='Delete'><i class='fa fa-remove'></i></a>"; } }],
                 order: [[1, "asc"]],
                 lengthChange: true,
                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],

@@ -15,7 +15,7 @@
 <link href="~/Content/telerik/kendo.material.min.css" rel="stylesheet" />
 <link href="~/Content/telerik/kendo.material.mobile.min.css" rel="stylesheet" />
 <style>
-     .table > thead > tr > th {
+    .table > thead > tr > th {
         background: #605ca8;
         color: #fff;
     }
@@ -93,22 +93,22 @@
                                 </div>
                             </div>
                             @*<div class='col-sm-3'>
-                                <div class="form-group">
-                                    <label for="" style="visibility:hidden;">dsdsdsdsdsdsdsdsds</label><br>
-                                   <button type="button" class="btn btn-primary">Reset</button>
-                                    <button type="submit" class="btn btn-primary">Search</button>
-                                </div>
-                            </div>*@
+                                    <div class="form-group">
+                                        <label for="" style="visibility:hidden;">dsdsdsdsdsdsdsdsds</label><br>
+                                       <button type="button" class="btn btn-primary">Reset</button>
+                                        <button type="submit" class="btn btn-primary">Search</button>
+                                    </div>
+                                </div>*@
                         </div>
                         @*<div class="row">
-                            <div class='col-sm-12' style="float:right">
-                                <div class="form-group" style="float:right;">
-                                    
-                                    <button type="button" class="btn btn-primary">Reset</button>
-                                    <button type="submit" class="btn btn-primary">Search</button>
+                                <div class='col-sm-12' style="float:right">
+                                    <div class="form-group" style="float:right;">
+
+                                        <button type="button" class="btn btn-primary">Reset</button>
+                                        <button type="submit" class="btn btn-primary">Search</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>*@
+                            </div>*@
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
@@ -124,12 +124,12 @@
                             <tr>
                                 <th width="20%">Name</th>
                                 <th width="20%">Address</th>
-                                <th width="10%">MObile No</th>
+                                <th width="10%">Mobile No</th>
                                 <th width="20%">Member Key</th>
                                 <th>Zone</th>
-                                <th>&nbsp;</th>
-                                <th>&nbsp;</th>
-                                <th>&nbsp;</th>
+                                @*<th>Details</th>*@
+                                <th></th>
+                                <th width="2%"><input type="checkbox" name="select_all" value="1" id="cbFarmerSelectAll"></th>
                             </tr>
                         </thead>
                     </table>
@@ -196,8 +196,8 @@
 
 @section Scripts
 {
-   @Scripts.Render("~/bundles/DataTables/Allbuttons")
-   @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/DataTables/Allbuttons")
+    @Scripts.Render("~/bundles/kendo")
 
     <script type="text/javascript" language="javascript">
         var datatable;
@@ -217,8 +217,7 @@
             optionsZone.append($("<option />").val('1').text('Zone 3'));
             optionsZone.append($("<option />").val('1').text('Zone 4'));
         });
-        function getAllSugerMills()
-        {
+        function getAllSugerMills() {
             $.ajax({
                 url: '@Url.Action("GetAllSugerMillsforDdl", "SugerMill")',
                 type: "Post",
@@ -229,7 +228,7 @@
                     $.each(response.aaData, function (key, value) {
                         options.append($("<option />").val(this.Id).text(this.Name));
                     });
-                }, error: function () {  }
+                }, error: function () { }
             });
         }
         function createFarmerDataTable(searchFarmerObj) {
@@ -238,18 +237,20 @@
             }
             datatable = $("#tableAnnouncements").DataTable({
                 bDestroy: true,
-                //paging: true,
-                //searching: true,
-                //ordering: true,
-                //info: true,
-                //autoWidth: false,
+                initComplete: function (settings, json) {
+                    supplyOrder1.smsData = json.smsData;
+                    supplyOrder1.initFarmerCheckBox(datatable);
+                    $('#tableAnnouncements_length').parent().removeClass('col-sm-6').addClass('col-sm-2');
+                    $('#tableAnnouncements_filter').parent().removeClass('col-sm-6').addClass('col-sm-8').css('float', 'right');
+                },
                 ajax: {
 
-                       url: '@Url.Action("GetAllFarmers", "SugerMill")',
-                       type: "Post",
-                       //dataType: 'json',
-                       data: searchFarmerObj
+                    url: '@Url.Action("GetAllFarmers", "SugerMill")',
+                    type: "Post",
+                    //dataType: 'json',
+                    data: searchFarmerObj
                 },
+                aoColumns: [null, null, { "sClass": "a-center" }, { "sClass": "a-center" }, { "sClass": "a-center" },  null, null],
                 columnDefs: [
                     { targets: 0, data: "Name" },
                     {
@@ -259,26 +260,42 @@
                         },
                     },
                     { targets: 2, data: "CellPhone", orderable: false },
-                    { targets: 3, data: "FarmerIdNo", orderable: false },
+                    { targets: 3, data: "FarmerIdNo", orderable: true },
                     { targets: 4, data: "Zone", orderable: false },
-                    { targets: 5, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='farmerId=" + row.Id + ";winViewItem.center().open();'><i id='addHide' class='fa fa-bars'></i></a>"; } },
-                    { targets: 6, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateFarmer", "SugerMill")/" + row.Id + "'><i class='fa fa-edit'></i></a>"; } },
-                    { targets: 7, data: null, orderable: false, class: "text-center delete-control", render: function (data, type, row) { return "<a onclick='itemId=" + row.Id + ";winDeleteItem.center().open();'><i class='fa fa-remove'></i></a>"; } }],
+                    //{ targets: 5, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<a onclick='farmerId=" + row.Id + ";winViewItem.center().open();' style='cursor:pointer'><i id='addHide' class='fa fa-bars'></i></a>"; } },
+                    { targets: 5, data: null, orderable: false, class: "text-center edit-control", render: function (data, type, row) { return "<a href='@Url.Action("UpdateFarmer", "SugerMill")/" + row.Id + "' style='cursor:pointer' title='Edit'><i class='fa fa-edit'></i></a>"; } },
+                     {
+                         targets: 6, data: null, orderable: false, render: function (data, type, full, meta) {
+                             return '<input type="checkbox" class="childCBFarmer" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+                         }
+                     }, ],
                 order: [[3, "asc"]],
                 lengthChange: true,
                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
             });
 
 
-            new $.fn.dataTable.Buttons(datatable, [{ extend: 'excel',text: '<span class="fa fa-file-excel-o"></span> Excel',
-                                                   exportOptions: {modifier: {search: 'applied', order: 'applied'} }
+            new $.fn.dataTable.Buttons(datatable, [
+                {
+                    text: 'Delete',
+                    action: function (e, dt, node, config) {
+                        supplyOrder1.deleteBulkFarmers(datatable, '@Url.Action("DeleteFarmer", "SugerMill")', function () {
+                            searchFarmers();
+                        });
+                    }
+                },
+                {
+                    extend: 'excel', text: '<span class="fa fa-file-excel-o"></span> Excel',
+                    exportOptions: { modifier: { search: 'applied', order: 'applied' } }
+                },
+                                               {
+                                                   extend: 'pdf', text: '<span class="fa fa-file-pdf-o"></span> PDF',
+                                                   exportOptions: { modifier: { search: 'applied', order: 'applied' } }
                                                },
-                                               { extend: 'pdf',text: '<span class="fa fa-file-pdf-o"></span> PDF',
-                                                   exportOptions: { modifier: {search: 'applied',order: 'applied' } }
-                                               },
-                                               {extend: 'print', text: '<span class="fa fa-print"></span> Print',
-                                                    exportOptions: { modifier: { search: 'applied',order: 'applied'} }
-                                                }
+                                               {
+                                                   extend: 'print', text: '<span class="fa fa-print"></span> Print',
+                                                   exportOptions: { modifier: { search: 'applied', order: 'applied' } }
+                                               }
             ]);
 
             datatable.buttons().container().appendTo($('.col-sm-6:eq(0)', datatable.table().container()));
@@ -422,8 +439,7 @@
                 });
             }
         }
-        function searchFarmers()
-        {
+        function searchFarmers() {
             var searchFarmerObj = new Object();
             searchFarmerObj.MemberKey = !$("#txtMemberKey").val() ? null : $("#txtMemberKey").val();
             searchFarmerObj.Name = !$("#txtName").val() ? null : $("#txtName").val();
@@ -441,8 +457,7 @@
             }
         }
 
-        function clearFarmers ()
-        {
+        function clearFarmers() {
             $("#txtMemberKey").val('');
             $("#txtName").val('');
             $("#txtAddress").val('');

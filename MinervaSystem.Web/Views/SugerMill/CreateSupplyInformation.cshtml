@@ -5,7 +5,7 @@
     ViewBag.Title = "Create Supply Information";
     @Styles.Render("~/Content/kendo.office365")
     ViewBag.ReturnUrl = "/SugerMill";
-    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Create Supply Information", new BreadcrumbModel("Create Supply Information"));
+    ViewBag.HeaderContent = ViewBag.HeaderContent ?? new HeaderContentModel("Create Supply Order", new BreadcrumbModel("Create Supply Order"));
 }
 @*<link href="~/Content/site.css" rel="stylesheet" />*@
 @Html.Partial("_HeaderContentPartial", (HeaderContentModel)ViewBag.HeaderContent)
@@ -125,11 +125,14 @@
     @Scripts.Render("~/bundles/datatables")
     @Scripts.Render("~/bundles/kendo")
     @*@Scripts.Render("~/bundles/jqueryval")*@
-
     <script type="text/javascript">
         var winViewItem;
         $(document).ready(function () {
             utility.addActiveLink('sOrderSideBarMenu');
+            var todayDate = new Date();
+            $("#DateofPlanting").data("kendoDatePicker").value(kendo.toString(kendo.parseDate(new Date()), 'dd/MM/yyyy'));
+            var after12Monthsdate = new Date(new Date(todayDate).setMonth(todayDate.getMonth() + 12));
+            $("#SupplyDate").data("kendoDatePicker").value(kendo.toString(kendo.parseDate(after12Monthsdate), 'dd/MM/yyyy'));
             $.validator.addMethod(
                 "date",
                 function (value, element) {
@@ -161,7 +164,7 @@
                 }
             }).data("kendoWindow");
         });
-        function SetupAnnouncementsDataTable() {
+        function SetupAnnouncementsDataTable(searchFarmerObj) {
 
             var datatable;
             if (datatable != null) {
@@ -171,7 +174,13 @@
             datatable = $("#tableFarmerListPopup").DataTable({
                 bDestroy: true,
                 bFilter: false,
-                ajax: '@Url.Action("GetAllFarmers", "SugerMill")',
+                ajax: {
+
+                    url: '@Url.Action("GetAllFarmers", "SugerMill")',
+                    type: "Post",
+                    //dataType: 'json',
+                    data: searchFarmerObj
+                },
                 columnDefs: [
                     { targets: 0, data: null, defaultContent: "<button>Select</button>" },
                     { targets: 1, data: "Name" },
@@ -214,5 +223,34 @@
                 return formattedAddress;
             }
         }
+        function searchFarmers() {
+            var searchFarmerObj = new Object();
+            searchFarmerObj.MemberKey = !$("#txtMemberKey").val() ? null : $("#txtMemberKey").val();
+            searchFarmerObj.Name = !$("#txtName").val() ? null : $("#txtName").val();
+            searchFarmerObj.Address = !$("#txtAddress").val() ? null : $("#txtAddress").val();
+            searchFarmerObj.MobileNumber = !$("#txtMobileNumber").val() ? null : $("#txtMobileNumber").val();
+            searchFarmerObj.NationalIdNo = !$("#txtNationalIdNo").val() ? null : $("#txtNationalIdNo").val();
+            var totalLand = parseFloat($('#txtTotalaLand').val());
+            searchFarmerObj.TotalLand = isNaN(totalLand) ? null : totalLand;
+            var sugerMillId = parseInt($("#ddlSugerMillId").val());
+            searchFarmerObj.SugerMillId = isNaN(sugerMillId) ? null : sugerMillId;
+            var zone = parseInt($("#ddlZone").val());
+            searchFarmerObj.Zone = isNaN(zone) ? null : zone;
+            if (searchFarmerObj) {
+                SetupAnnouncementsDataTable(searchFarmerObj);
+            }
+        }
+
+        function clearFarmers() {
+            $("#txtMemberKey").val('');
+            $("#txtName").val('');
+            $("#txtAddress").val('');
+            $("#txtMobileNumber").val('');
+            $("#txtNationalIdNo").val('');
+            $("#txtTotalaLand").val('');
+            $("#ddlZone").val('');
+            $("#ddlSugerMillId").val('-1');
+        }
+
     </script>
 }

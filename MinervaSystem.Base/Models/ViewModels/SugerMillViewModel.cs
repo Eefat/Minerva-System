@@ -171,7 +171,7 @@ namespace MinervaSystem.Base.Models.ViewModels
         [Display(Name = "Land Area")]
         public Decimal LandArea { get; set; }
         [Display(Name = "Estimated Amount")]
-        public Decimal EstimatedAmount { get; set; }
+        public Decimal? EstimatedAmount { get; set; }
 
         private DateTime _returnDate = DateTime.MinValue;
         [Required]
@@ -236,7 +236,7 @@ namespace MinervaSystem.Base.Models.ViewModels
         public static string UserId = "itel786";
         public static string Password = "01818856792SMS";
         public static string smsAuth = "Basic " + Base64Encode(UserId + ":" + Password);
-        public static string From = "InfoSMS";
+        public static string From = "BSFIC Admin";
 
         #region----- Utility-----
         public static string Base64Encode(string plainText)

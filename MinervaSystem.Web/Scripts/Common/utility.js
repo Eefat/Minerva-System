@@ -65,11 +65,15 @@ var utility = {
             }
         });
     },
-    populateCountryCityUpazillaDropDown: function (dropDownControlId, responseList, defaultvalue, isBangla) {
+    populateCountryCityUpazillaDropDown: function (dropDownControlId, responseList, defaultvalue, isBangla, callback) {
         utility.RemoveAllOptions(dropDownControlId, "Select");
         for (i = 0; i < responseList.length; i++) {
-            var isselected = defaultvalue ? defaultvalue : null;
+            var isselected = null;
             utility.PopulateDropdown(dropDownControlId, (isBangla ? responseList[i].BnName : responseList[i].Name), responseList[i].Id, isselected);
+        }
+        if (defaultvalue) $(dropDownControlId).val(defaultvalue);
+        if (callback && typeof callback == 'function') {
+            callback();
         }
     },
     PopulateDropdown: function (dropDownControlId, text, value, isselected) {
@@ -145,6 +149,50 @@ var utility = {
 
 var supplyOrder1 = {
     smsData: "",
+    initFarmerCheckBox: function (datatable) {
+        $('#cbFarmerSelectAll').on('click', function () {
+            var rows = datatable.rows({ 'search': 'applied' }).nodes();
+            $('input[type="checkbox"]', rows).prop('checked', this.checked);
+        });
+        $('#cbFarmerSelectAll tbody').on('change', 'input[type="checkbox"]', function () {
+            if (!this.checked) {
+                var el = $('#cbFarmerSelectAll').get(0);
+                if (el && el.checked && ('indeterminate' in el)) {
+                    el.indeterminate = true;
+                }
+            }
+        });
+    },
+    deleteBulkFarmers: function (datatable, url, callback) {
+        var listIds = [];
+        datatable.$('input[type="checkbox"].childCBFarmer').each(function () {
+            if (this.checked) {
+                var tr = $(this).closest("tr");
+                var row = datatable.row(tr);
+                listIds.push(row.data().Id);
+            }
+        });
+        things = JSON.stringify({ 'farmerIds': listIds });
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            url: url,
+            type: "POST",
+            //dataType: 'json',
+            data: things,
+            success: function (response) {
+                if (response.status == 0) {
+                    if (callback && typeof callback === 'function') {
+                        callback(response);
+                    }
+                } else {
+                    alert(response.responseMsg);
+                }
+
+            }, error: function (response) {
+                alert("Error occured!!! Contact to admonistrator!!!");
+            }
+        });
+    },
     initSupplyInformationCheckBox: function (datatable) {
         $('#cbSiSelectAll').on('click', function () {
             var rows = datatable.rows({ 'search': 'applied' }).nodes();
