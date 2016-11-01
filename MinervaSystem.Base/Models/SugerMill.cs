@@ -165,4 +165,10 @@ namespace MinervaSystem.Base.Models
         public Decimal? TotalLand { get; set; }
         public Int64? SugerMillId { get; set; }
     }
+    public class SchedulerWeekSummary
+    {
+        public Int64? SugerMillId { get; set; }
+        public String StartDate { get; set; }
+        public String Endate { get; set; }
+    }
 }

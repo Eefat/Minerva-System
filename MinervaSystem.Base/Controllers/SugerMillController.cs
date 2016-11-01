@@ -997,6 +997,27 @@ namespace MinervaSystem.Web.Controllers
             var result = new { aaData = list, smsData = response };
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult GetSchedulerTotalSummary(SchedulerWeekSummary schedulerWeekSummary)
+        {
+            DateTime startDate = schedulerWeekSummary.StartDate != null ? DateTime.ParseExact(schedulerWeekSummary.StartDate, "dd/MM/yyyy", CultureInfo.InvariantCulture) : System.DateTime.Now;
+            DateTime endDate = schedulerWeekSummary.Endate != null ? DateTime.ParseExact(schedulerWeekSummary.Endate, "dd/MM/yyyy", CultureInfo.InvariantCulture) : System.DateTime.Now.AddDays(7);
+
+
+            var summary = from r in ContextPerRequest.CurrentContext.SupplyOrder
+                          .Where(a => a.CollectionDate>= startDate && a.CollectionDate <= endDate).OrderBy(a => a.CollectionDate)
+                          group r by new
+                          {
+                              r.CollectionDate
+                          } into g
+                          select new
+                          {
+                              g.Key.CollectionDate,
+                              CurrentHours = g.Sum(x => x.EstimatedAmount)
+                          };
+            return Json(new { aaData = summary }, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult GetSupplyOrderDetails(int supplyOrderId)
         {
             var SupplyOrder = ContextPerRequest.CurrentContext.SupplyOrder.Find(Convert.ToInt64(supplyOrderId));

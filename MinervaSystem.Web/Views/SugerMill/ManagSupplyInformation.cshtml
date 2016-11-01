@@ -52,79 +52,87 @@
                 </div>
                 <form role="form">
                     <div class="box-body">
-                        <div class="row">
-                            <div class='col-sm-3'>
-                                <div class="form-group">
-                                    <label for="txtName">Farmer Name</label>
-                                    <input type="text" class="form-control" id="txtName" placeholder="Farmer name">
-                                </div>
-                            </div>
-                            <div class='col-sm-3'>
-                                <div class="form-group">
-                                    <label for="txtMemberKey">Member Key</label>
-                                    <input type="text" class="form-control" id="txtMemberKey" placeholder="Member Key">
-                                </div>
-                            </div>
-
-                            <div class='col-sm-3'>
-                                <div class="form-group">
-                                    <label for="txtLandArea">Land Area(Acres)</label>
-                                    <input type="text" class="form-control" id="txtLandArea" placeholder="Land Area">
-                                </div>
-                            </div>
-                            <div class='col-sm-3'>
-                                <div class="form-group">
-                                    <label for="ddlZone">Zone</label>
-                                    <select class="form-control" id="ddlZone"></select>
-                                </div>
-                            </div>
-                            @*<div class='col-sm-3'>
-                                <div class="form-group">
-                                    <label for="txtEstimatedAmount">Estimated Yield (Ton)</label>
-                                    <input type="text" class="form-control" id="txtEstimatedAmount" placeholder="Estimated Amount">
-                                </div>
-                            </div>*@
-                        </div>
-                        <div class="row">
-                            <div class='col-sm-3'>
-                                <div class="form-group">
-                                    <label for="ddlSugerMillId">Suger Mill</label>
-                                    <select class="form-control" id="ddlSugerMillId"></select>
-                                </div>
-                            </div>
-                            @*<div class='col-sm-3'>
+                        <div class='col-sm-6'>
+                            <div class="row">
+                                <div class='col-sm-3'>
                                     <div class="form-group">
-                                        <label for="ddlCaneVariety">Cane Variety</label>
-                                        <select class="form-control" id="ddlCaneVariety"></select>
+                                        <label for="txtName">Farmer Name</label>
+                                        <input type="text" class="form-control" id="txtName" placeholder="Farmer name">
                                     </div>
-                                </div>*@
-                            <div class='col-sm-3'>
-                                <div class="form-group">
-                                    <label for="ddlPlantRatoon">Plant/Ratoon</label>
-                                    <select class="form-control" id="ddlPlantRatoon"></select>
                                 </div>
-                            </div>
-                            <div class='col-sm-3'>
-                                <div class="form-group">
-                                    <label for="txtDateofPlanting" style="width:100%">Date of Planting</label>
-                                    <input type="text" class="form-control kendo-datepicker" id="txtDateofPlanting" placeholder="Date of Planting">
+                                <div class='col-sm-3'>
+                                    <div class="form-group">
+                                        <label for="txtMemberKey">Member Key</label>
+                                        <input type="text" class="form-control" id="txtMemberKey" placeholder="Member Key">
+                                    </div>
                                 </div>
+
+                                <div class='col-sm-3'>
+                                    <div class="form-group">
+                                        <label for="txtLandArea">Land Area(Acres)</label>
+                                        <input type="text" class="form-control" id="txtLandArea" placeholder="Land Area">
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="form-group">
+                                        <label for="ddlZone">Zone</label>
+                                        <select class="form-control" id="ddlZone"></select>
+                                    </div>
+                                </div>
+                                @*<div class='col-sm-3'>
+                                        <div class="form-group">
+                                            <label for="txtEstimatedAmount">Estimated Yield (Ton)</label>
+                                            <input type="text" class="form-control" id="txtEstimatedAmount" placeholder="Estimated Amount">
+                                        </div>
+                                    </div>*@
                             </div>
-                            <div class='col-sm-3'>
+                            <div class="row">
+                                <div class='col-sm-3'>
+                                    <div class="form-group">
+                                        <label for="ddlSugerMillId">Suger Mill</label>
+                                        <select class="form-control" id="ddlSugerMillId"></select>
+                                    </div>
+                                </div>
+                                @*<div class='col-sm-3'>
+                                        <div class="form-group">
+                                            <label for="ddlCaneVariety">Cane Variety</label>
+                                            <select class="form-control" id="ddlCaneVariety"></select>
+                                        </div>
+                                    </div>*@
+                                <div class='col-sm-3'>
+                                    <div class="form-group">
+                                        <label for="ddlPlantRatoon">Plant/Ratoon</label>
+                                        <select class="form-control" id="ddlPlantRatoon"></select>
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
+                                    <div class="form-group">
+                                        <label for="txtDateofPlanting" style="width:100%">Date of Planting</label>
+                                        <input type="text" class="form-control kendo-datepicker" id="txtDateofPlanting" placeholder="Date of Planting">
+                                    </div>
+                                </div>
+                                <div class='col-sm-3'>
                                     <div class="form-group">
                                         <label for="txtSupplyDate">Search Type</label>
                                         <select class="form-control" id="ddlSearchType"></select>
                                     </div>
                                 </div>
+                            </div>
                         </div>
-                        @*<div class="row">
-                                <div class='col-sm-3'>
-                                    <div class="form-group">
-                                        <label for="txtSupplyDate">Supply Date</label>
-                                        <input type="text" class="form-control kendo-datepicker" id="txtSupplyDate" placeholder="Supply Date">
-                                    </div>
-                                </div>
-                            </div>*@
+                        <div class='col-sm-6'>
+                            <table class="table table-bordered" id="tblScheduleSummay">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Scheduled Yeild Amount</th>
+                                        <th>Remaining</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scheduleSummayBody">
+                                </tbody>
+                            </table>
+                            <div class="row"><div class="col-sm-7"><div class="dataTables_paginate paging_simple_numbers" id="tableSupplyInformation_paginate"><ul class="pagination"><li class="paginate_button previous disabled" id="tableSupplyInformation_previous"><a href="#" aria-controls="tableSupplyInformation" data-dt-idx="0" tabindex="0">Previous</a></li><li class="paginate_button next disabled" id="tableSupplyInformation_next"><a href="#" aria-controls="tableSupplyInformation" data-dt-idx="1" tabindex="0">Next</a></li></ul></div></div></div>
+                        </div>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
@@ -376,6 +384,7 @@
 
         $(document).ready(function () {
             utility.addActiveLink('sOrderSideBarMenu');
+            utility.loadScheduledSummayTable('@Url.Action("GetSchedulerTotalSummary", "SugerMill")');
             populateDropDown();
             SetupSupplyInformationsDataTable();
             SetupPopupBoxes();
@@ -444,7 +453,7 @@
                     supplyOrder1.smsData = json.smsData;
                     supplyOrder1.initSupplyInformationCheckBox(datatable);
                     $('#tableSupplyInformation_length').parent().removeClass('col-sm-6').addClass('col-sm-2');
-                    $('#tableSupplyInformation_filter').parent().removeClass('col-sm-6').addClass('col-sm-8').css('float','right');
+                    $('#tableSupplyInformation_filter').parent().removeClass('col-sm-6').addClass('col-sm-8').css('float', 'right');
                     //datatable.order([7, 'dsc']).draw();
                 },
                 ajax: {
@@ -495,7 +504,7 @@
                             var totalmonth = 0;
                             if (row.DateofPlanting) {
                                 var from = FormatDateValue(ParseJsonDate(row.DateofPlanting)).split("/");
-                                var startdate = new Date(from[2], from[0], from[1]); 
+                                var startdate = new Date(from[2], from[0], from[1]);
                                 totalmonth = utility.monthDiff(startdate, new Date());
                             }
                             if ((row.PlantRatoon == 'Plant' && totalmonth >= 12) || (row.PlantRatoon == 'Ratoon' && totalmonth >= 12 && totalmonth <= 14)) {
@@ -615,8 +624,11 @@
                                 { targets: 0, data: "Code" },
                                 { targets: 1, data: "AmounttoCollect", orderable: true },
                                 { targets: 2, data: "CollectedAmount", orderable: false },
-                                { targets: 3, data: "CollectionDate", render: function (data, type, row) {
-                                    return FormatDateValue(ParseJsonDate(data), { "format": "dd/MM/yyyy hh:mm tt" }) } },
+                                {
+                                    targets: 3, data: "CollectionDate", render: function (data, type, row) {
+                                        return FormatDateValue(ParseJsonDate(data), { "format": "dd/MM/yyyy hh:mm tt" })
+                                    }
+                                },
                                 { targets: 4, data: "Note", orderable: false },
                                 { targets: 5, data: "IsCollected", orderable: false },
                                 { targets: 6, data: null, orderable: false, class: "text-center view-control", render: function (data, type, row) { return "<i class='fa fa-edit' onclick='supplyorder.initEditSupplyOrder(this);' style='cursor:pointer'></i>"; } },
@@ -853,7 +865,7 @@
                 $("#soLandArea").text(supplyOrderData.LandArea);
                 $("#soTotalEstimatedAmount").text(supplyOrderData.EstimatedAmount);
             },
-            createSupplyOrder: function (supplyOrderData,tr) {
+            createSupplyOrder: function (supplyOrderData, tr) {
                 var listSupplyOrderRequest = supplyorder.getSupplyOrderData(supplyOrderData);
                 var isError = supplyorder.validateSupplyOrder(listSupplyOrderRequest);
                 things = JSON.stringify({ 'things': listSupplyOrderRequest });
@@ -1017,16 +1029,16 @@
                         { targets: 7, data: "IsCollected", orderable: false },
                         { targets: 8, data: "Note", orderable: false },
                         {
-                             data: null,
-                             targets: 9,
-                             searchable: false,
-                             orderable: false,
+                            data: null,
+                            targets: 9,
+                            searchable: false,
+                            orderable: false,
 
 
-                             render: function (data, type, full, meta) {
-                                 return '<input type="checkbox" class="siTSOCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
-                             }
-                         },
+                            render: function (data, type, full, meta) {
+                                return '<input type="checkbox" class="siTSOCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+                            }
+                        },
                     ],
                     order: [[1, "asc"]],
                     lengthChange: true,
@@ -1067,10 +1079,10 @@
                     { targets: 7, data: "IsCollected", orderable: false },
                     { targets: 8, data: "Note", orderable: false },
                     {
-                         targets: 9, data: null, render: function (data, type, full, meta) {
-                             return '<input type="checkbox" class="childCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
-                         }
-                     },
+                        targets: 9, data: null, render: function (data, type, full, meta) {
+                            return '<input type="checkbox" class="childCB" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+                        }
+                    },
                 ],
                 order: [[1, "asc"]],
                 lengthChange: true,
@@ -1080,7 +1092,7 @@
                                                  {
                                                      text: 'Send Sms',
                                                      action: function (e, dt, node, config) {
-                                                         supplyOrder1.sendBulkSMSsO(datatable2,'@Url.Action("DeleteSupplyOrder", "SugerMill")', null, function (response) {
+                                                         supplyOrder1.sendBulkSMSsO(datatable2, '@Url.Action("DeleteSupplyOrder", "SugerMill")', null, function (response) {
                                                              SetupAnnouncementsDataTable();
                                                          });
                                                      }

@@ -145,6 +145,26 @@ var utility = {
         months += d2.getMonth();
         return months <= 0 ? 0 : months + 2;
     },
+
+    loadScheduledSummayTable: function (url, startDate, endDate) {
+        var SchedulerWeekSummary = new Object();
+        SchedulerWeekSummary.startDate = null;
+        SchedulerWeekSummary.endDate = null;
+        things = JSON.stringify({ 'schedulerWeekSummary': SchedulerWeekSummary });
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            url: url,
+            type: "POST",
+            //dataType: 'json',
+            data: things,
+            success: function (response) {
+                console.log(response.aaData);
+
+            }, error: function (response) {
+                alert("Error occured!!! Contact to admonistrator!!!");
+            }
+        });
+    }
 }
 
 var supplyOrder1 = {
