@@ -145,11 +145,26 @@ var utility = {
         months += d2.getMonth();
         return months <= 0 ? 0 : months + 2;
     },
-
+    startDate: '',
+    endDate:'',
     loadScheduledSummayTable: function (url, startDate, endDate) {
+        $('#tblScheduleSummay_previous').on('click', function () {
+            var stDate = utility.startDate;
+            var enDate = utility.startDate;
+            stDate = Date.parse(stDate);
+            enDate = Date.parse(enDate);
+            utility.loadScheduledSummayTable(url, stDate.addDays(-6).toString('dd/MM/yyyy'), enDate.addDays(-1).toString('dd/MM/yyyy'));
+        });
+        $('#tblScheduleSummay_next').on('click', function () {
+            var stDate = utility.endDate;
+            var enDate = utility.endDate;
+            stDate = Date.parse(stDate, "dd/MM/yyyy");
+            enDate = Date.parse(enDate, "dd/MM/yyyy");
+            utility.loadScheduledSummayTable(url, enDate.addDays(1).toString('dd/MM/yyyy'), enDate.addDays(7).toString('dd/MM/yyyy'));
+        });
         var SchedulerWeekSummary = new Object();
-        SchedulerWeekSummary.startDate = null;
-        SchedulerWeekSummary.endDate = null;
+        SchedulerWeekSummary.startDate = startDate ? startDate : null;
+        SchedulerWeekSummary.endDate = endDate ? endDate : null;
         things = JSON.stringify({ 'schedulerWeekSummary': SchedulerWeekSummary });
         $.ajax({
             contentType: 'application/json; charset=utf-8',
@@ -158,7 +173,17 @@ var utility = {
             //dataType: 'json',
             data: things,
             success: function (response) {
-                console.log(response.aaData);
+                if (response.startDate) utility.startDate = FormatDateValue(ParseJsonDate(response.startDate), { "format": "MM/dd/yyyy" });
+                if (response.endDate) utility.endDate = FormatDateValue(ParseJsonDate(response.endDate), { "format": "MM/dd/yyyy" });
+                var tbody = $('tbody', '#tblScheduleSummay');
+                tbody.empty();
+                for (var i = 0; i < response.aaData.length; i++) {
+                    var element = response.aaData[i];
+                    var tr = $('<tr>').appendTo(tbody);
+                    $('<td align="center">').html(FormatDateValue(ParseJsonDate(element.date), { "format": "dd/MM/yyyy" })).appendTo(tr);
+                    $('<td align="right">').html(element.totalScheduledAmount).appendTo(tr);
+                    $('<td align="right">').html(1200 - parseFloat(element.totalScheduledAmount)).appendTo(tr);
+                }
 
             }, error: function (response) {
                 alert("Error occured!!! Contact to admonistrator!!!");

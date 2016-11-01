@@ -10,6 +10,7 @@ using MinervaSystem.Base.Models;
 using MinervaSystem.Base.Models.ViewModels;
 using System.Data.Entity.Core.Objects;
 using System.Globalization;
+using System.Dynamic;
 
 namespace MinervaSystem.Web.Controllers
 {
@@ -1001,22 +1002,45 @@ namespace MinervaSystem.Web.Controllers
         [HttpPost]
         public JsonResult GetSchedulerTotalSummary(SchedulerWeekSummary schedulerWeekSummary)
         {
-            DateTime startDate = schedulerWeekSummary.StartDate != null ? DateTime.ParseExact(schedulerWeekSummary.StartDate, "dd/MM/yyyy", CultureInfo.InvariantCulture) : System.DateTime.Now;
-            DateTime endDate = schedulerWeekSummary.Endate != null ? DateTime.ParseExact(schedulerWeekSummary.Endate, "dd/MM/yyyy", CultureInfo.InvariantCulture) : System.DateTime.Now.AddDays(7);
+            DateTime startDate = schedulerWeekSummary.StartDate != null ? DateTime.ParseExact(schedulerWeekSummary.StartDate, "dd/MM/yyyy", CultureInfo.InvariantCulture) : DateTime.Now;
+            DateTime endDate = schedulerWeekSummary.StartDate != null ? DateTime.ParseExact(schedulerWeekSummary.StartDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).AddDays(6) : DateTime.Now.AddDays(6);
 
 
-            var summary = from r in ContextPerRequest.CurrentContext.SupplyOrder
-                          .Where(a => a.CollectionDate>= startDate && a.CollectionDate <= endDate).OrderBy(a => a.CollectionDate)
-                          group r by new
-                          {
-                              r.CollectionDate
-                          } into g
+            var summaryList = (from r in ContextPerRequest.CurrentContext.SupplyOrder
+                          .Where(a => EntityFunctions.TruncateTime(a.CollectionDate) >= startDate.Date && EntityFunctions.TruncateTime(a.CollectionDate) <= endDate.Date).OrderBy(a => a.CollectionDate)
+                          group r by EntityFunctions.TruncateTime(r.CollectionDate) into g
                           select new
                           {
-                              g.Key.CollectionDate,
-                              CurrentHours = g.Sum(x => x.EstimatedAmount)
-                          };
-            return Json(new { aaData = summary }, JsonRequestBehavior.AllowGet);
+                              date = g.Key.Value,
+                              totalScheduledAmount = g.Sum(x => x.EstimatedAmount)
+                          }).ToList();
+            List<object> list = new List<object>();
+
+            for(int i=0; i<7; i++)
+            {
+                bool isfound = false;
+                foreach (var summary in summaryList)
+                {
+                    if(summary.date.DayOfWeek == (DayOfWeek)i)
+                    {
+                        list.Add(summary);
+                        isfound = true; break;
+                    }
+                }
+                if(!isfound)
+                {
+                    int delta = (DayOfWeek)i - startDate.DayOfWeek;
+                    DateTime newDate = startDate.AddDays(delta);
+                    var newObj = new { date = newDate, totalScheduledAmount = 0 };
+                    list.Add(newObj);
+                }
+            }
+
+            startDate = startDate.AddDays(DayOfWeek.Sunday - startDate.DayOfWeek);
+            endDate = startDate.AddDays(DayOfWeek.Saturday - startDate.DayOfWeek);
+
+            var result = new { aaData = list, startDate = startDate, endDate = endDate };
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetSupplyOrderDetails(int supplyOrderId)
         {
